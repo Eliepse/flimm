@@ -2,19 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\FilmMember;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 
-class UserFactory extends Factory
+class FilmMemberFactory extends Factory
 {
 	/**
 	 * The name of the factory's corresponding model.
 	 *
 	 * @var string
 	 */
-	protected $model = User::class;
+	protected $model = FilmMember::class;
 
 
 	/**
@@ -27,10 +26,6 @@ class UserFactory extends Factory
 		return [
 			'firstname' => Arr::random(["Pia", "Melinde", "Tadd", "Nerty", "Jobina", "Iggie", "Marci", "Paule", "Bob"]),
 			'lastname' => Arr::random(["Empleton", "Coales", "Siney", "Cromleholme", "Janoschek", "Ilsley", "Franseco", "Lockyear", "Ebenezer"]),
-			'role' => Arr::random(["admin", "editor"]),
-			'email' => Str::random() . "@" . Str::random(6) . ".fr",
-			'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-			'remember_token' => Str::random(10),
 		];
 	}
 }
