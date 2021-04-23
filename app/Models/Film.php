@@ -3,8 +3,11 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
  * Class Film
@@ -19,6 +22,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $imdb_link
  * @property-read Carbon $created_at
  * @property-read Carbon $updated_at
+ * @property-read Collection $schedules
+ * @property-read Collection $editions
  */
 class Film extends Model
 {
@@ -32,4 +37,16 @@ class Film extends Model
 		"video_link",
 		"imdb_link",
 	];
+
+
+	public function schedules(): HasMany
+	{
+		return $this->hasMany(FilmSchedule::class);
+	}
+
+
+	public function edtions(): HasManyThrough
+	{
+		return $this->hasManyThrough(Edition::class, FilmSchedule::class);
+	}
 }
