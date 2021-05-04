@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * Class FilmMember
+ * Class Personality
  *
  * @package App\Models
  * @property-read int $id
@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
-class FilmMember extends Model
+class Personality extends Model
 {
 	use HasFactory;
 

@@ -2,18 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\FilmMember;
+use App\Models\Personality;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 
-class FilmMemberFactory extends Factory
+class PersonalityFactory extends Factory
 {
 	/**
 	 * The name of the factory's corresponding model.
 	 *
 	 * @var string
 	 */
-	protected $model = FilmMember::class;
+	protected $model = Personality::class;
 
 
 	/**

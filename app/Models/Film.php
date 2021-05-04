@@ -39,6 +39,12 @@ class Film extends Model
 	];
 
 
+	public function personalities(): HasMany
+	{
+		return $this->hasMany(Personality::class);
+	}
+
+
 	public function schedules(): HasMany
 	{
 		return $this->hasMany(FilmSchedule::class);

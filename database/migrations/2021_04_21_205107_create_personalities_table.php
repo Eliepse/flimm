@@ -1,12 +1,12 @@
 <?php
 
 use App\Models\Film;
-use App\Models\FilmMember;
+use App\Models\Personality;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFilmMembersTable extends Migration
+class CreatePersonalitiesTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -15,22 +15,22 @@ class CreateFilmMembersTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('film_members', function (Blueprint $table) {
+		Schema::create('personalities', function (Blueprint $table) {
 			$table->id();
 			$table->string("firstname");
 			$table->string("lastname");
 			$table->timestamps();
 		});
 
-		Schema::create("film_film_member", function (Blueprint $table) {
+		Schema::create("film_personality", function (Blueprint $table) {
 			$table->foreignIdFor(Film::class)
 				->references("id")
 				->on("films")
 				->cascadeOnUpdate()
 				->cascadeOnDelete();
-			$table->foreignIdFor(FilmMember::class)
+			$table->foreignIdFor(Personality::class)
 				->references("id")
-				->on("film_members")
+				->on("personalities")
 				->cascadeOnUpdate()
 				->cascadeOnDelete();
 			$table->string("title")->nullable();
@@ -46,6 +46,7 @@ class CreateFilmMembersTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('film_members');
+		Schema::dropIfExists('personalities');
+		Schema::dropIfExists('film_personality');
 	}
 }
