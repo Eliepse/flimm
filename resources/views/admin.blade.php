@@ -21,7 +21,7 @@
 		Learn how to configure a non-root public URL by running `npm run build`.
 	-->
 	<link rel="stylesheet" href="https://unpkg.com/carbon-components/css/carbon-components.min.css">
-	<link rel="stylesheet" href="{{ mix("/css/app.css") }}"
+	<link rel="stylesheet" href="{{ mix("/css/app.css") }}">
 	<title>FLiMM - Admin</title>
 </head>
 <body>
