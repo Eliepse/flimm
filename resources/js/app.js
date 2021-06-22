@@ -1,15 +1,22 @@
 import {Link as RouterLink, Route, Switch} from 'react-router-dom';
 import HomePage from './pages/home';
 import LoginPage from './pages/login';
+import AuthRequired from './lib/auth/authRequired';
 
 export const URL_PREFFIX = "/admin";
 
 export default function App() {
 	return (
-		<Switch>
-			<Route exact path={URL_PREFFIX} component={HomePage}/>
-			<Route exact path={`${URL_PREFFIX}/login`} component={LoginPage}/>
-		</Switch>
+		<>
+			<AuthRequired>
+				<Switch>
+					<Route exact path={URL_PREFFIX} component={HomePage}/>
+				</Switch>
+			</AuthRequired>
+			<Switch>
+				<Route exact path={`${URL_PREFFIX}/login`} component={LoginPage}/>
+			</Switch>
+		</>
 	);
 }
 

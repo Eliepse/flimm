@@ -5,7 +5,7 @@ export default function HomePage() {
 	return (
 		<DashboardLayout>
 
-			Homepage | <Link to="/login"><a href="#">Login</a></Link>
+			Homepage | <Link to="/login">Login</Link>
 		</DashboardLayout>
 	);
 }
