@@ -1,6 +1,7 @@
 import {useAuth} from './useAuth';
 import {useRouter} from '../useRouter';
 import {useEffect} from 'react';
+import LoadingLayout from '../../components/layouts/LoadingLayout';
 
 export default function AuthRequired({children}) {
 	const auth = useAuth();
@@ -17,6 +18,14 @@ export default function AuthRequired({children}) {
 		}
 
 	}, [auth.isInitialized, auth.isAuth, router.pathname]);
+
+	if (!auth.isInitialized) {
+		return <LoadingLayout/>;
+	}
+
+	if (!auth.isAuth) {
+		return null;
+	}
 
 	return children;
 }

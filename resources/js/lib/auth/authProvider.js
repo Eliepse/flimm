@@ -16,7 +16,10 @@ export function AuthProvider({children}) {
 	// Check if the user is already authenticated
 	useEffect(() => {
 		function authInitialized() {
-			setTimeout(() => setInitializing(false), 250);
+			setTimeout(() => {
+				console.debug("[Auth] Initialized");
+				setInitializing(false);
+			}, 250);
 		}
 
 		// Break if there is no token
