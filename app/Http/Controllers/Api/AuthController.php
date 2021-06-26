@@ -26,7 +26,7 @@ class AuthController extends Controller
 			return Auth::user();
 		}
 
-		return response(status: 401);
+		return response()->json(["message" => "Identifiants invalides."], 401);
 	}
 
 
