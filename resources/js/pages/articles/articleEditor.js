@@ -6,6 +6,7 @@ import apiArticle from '../../lib/api/apiArticle';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import EditorJS from '@editorjs/editorjs';
+import EditorJSHeader from "@editorjs/header";
 import dayjs from 'dayjs';
 
 const newArticleSchema = Yup.object().shape({
@@ -46,27 +47,25 @@ export default function ArticleEditorPage() {
 				});
 			})
 			.catch(console.error);
+	}, []);
+
+	useEffect(() => {
+		if(!article) {
+			return;
+		}
 
 		//noinspection JSValidateTypes
 		editor.current = new EditorJS({
 			holder: "editorjs",
 			placeholder: 'Écrivez votre article ici...',
 			autofocus: true,
-			data: {},
 			minHeight: 32,
+			data: article?.content || {},
 		});
 
 		return () => {
-			editor.current.destroy();
+			editor.current?.destroy();
 		};
-	}, []);
-
-	useEffect(() => {
-		if (!article?.content) {
-			return;
-		}
-
-		editor.current.data = article.content || {};
 	}, [article]);
 
 	/** @param {String} value */
