@@ -16,6 +16,7 @@ export default function DashboardLayout({children}) {
 			>
 				<Navigation.Row variant="inline">
 					<Navigation.Item label="Admin" as={Link} href="/"/>
+					<Navigation.Item label="Articles" as={Link} href="/articles"/>
 				</Navigation.Row>
 				<Navigation.Actions>
 					<Navigation.User authenticated label="Se connecter" userName={user.firstname}>

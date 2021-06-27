@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int $id
  * @property string $title
  * @property string $slug
- * @property ArticleContent $content
+ * @property ArticleContent|null $content
  * @property Carbon $published_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -24,16 +24,23 @@ class Article extends Model
 {
 	use HasFactory;
 
+	protected $fillable = [
+		"title",
+		"slug",
+		"content",
+		"published_at",
+	];
+
 	protected $casts = [
 		"content" => ArticleContent::class,
 	];
-
 
 
 	public function isPublished(): bool
 	{
 		return $this->published_at->isPast();
 	}
+
 
 	public function scopePublished(Builder $query): Builder
 	{

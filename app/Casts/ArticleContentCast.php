@@ -9,8 +9,12 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 class ArticleContentCast implements CastsAttributes
 {
-	public function get($model, string $key, $value, array $attributes): ArticleContent
+	public function get($model, string $key, $value, array $attributes): ?ArticleContent
 	{
+		if(is_null($value)) {
+			return null;
+		}
+
 		if (is_string($value)) {
 			$value = json_decode($value, true);
 		}
