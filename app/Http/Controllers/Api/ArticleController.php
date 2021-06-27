@@ -4,13 +4,17 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreArticleRequest;
+use App\Http\Requests\UpdateArticleRequest;
 use App\Models\Article;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ArticleController extends Controller
 {
 
-	public function index()
+	public function index(): Collection
 	{
 		return Article::all();
 	}
@@ -19,12 +23,12 @@ class ArticleController extends Controller
 	/**
 	 * Store a newly created resource in storage.
 	 *
-	 * @param \Illuminate\Http\Request $request
+	 * @param StoreArticleRequest $request
 	 *
-	 * @return \Illuminate\Http\JsonResponse
+	 * @return JsonResponse
 	 * @throws \Throwable
 	 */
-	public function store(StoreArticleRequest $request)
+	public function store(StoreArticleRequest $request): JsonResponse
 	{
 		$article = new Article($request->all(["title", "content", "published_at"]));
 		$article->slug = $request->getSlug();
@@ -38,11 +42,11 @@ class ArticleController extends Controller
 	/**
 	 * Display the specified resource.
 	 *
-	 * @param \App\Models\Article $article
+	 * @param Article $article
 	 *
 	 * @return Article
 	 */
-	public function show(Article $article)
+	public function show(Article $article): Article
 	{
 		return $article;
 	}
@@ -51,23 +55,27 @@ class ArticleController extends Controller
 	/**
 	 * Update the specified resource in storage.
 	 *
-	 * @param \Illuminate\Http\Request $request
-	 * @param \App\Models\Article $article
+	 * @param Request $request
+	 * @param Article $article
 	 *
-	 * @return \Illuminate\Http\Response
+	 * @return Response
 	 */
-	public function update(Request $request, Article $article)
+	public function update(UpdateArticleRequest $request, Article $article): Article
 	{
-		//
+		$article->fill($request->all());
+		$article->slug = $request->getSlug();
+		$article->saveOrFail();
+
+		return $article;
 	}
 
 
 	/**
 	 * Remove the specified resource from storage.
 	 *
-	 * @param \App\Models\Article $article
+	 * @param Article $article
 	 *
-	 * @return \Illuminate\Http\Response
+	 * @return Response
 	 */
 	public function destroy(Article $article)
 	{

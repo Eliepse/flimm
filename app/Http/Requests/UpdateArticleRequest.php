@@ -4,8 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
-class StoreArticleRequest extends FormRequest
+class UpdateArticleRequest extends FormRequest
 {
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -27,8 +28,8 @@ class StoreArticleRequest extends FormRequest
 	{
 		return [
 			"title" => ["required", "string", "between:3,250"],
-			"slug" => ["nullable", "string", "between:3,64", "unique:App\Models\Article,slug"],
-			"content" => ["nullable", "array:time,blocks,version"],
+			"slug" => ["nullable", "string", "between:3,64", Rule::unique("App\Models\Article", "slug")->ignoreModel($this->article)],
+			"content" => ["required", "array:time,blocks,version"],
 			"published_at" => ["nullable", "date_format:Y-m-d\TH:i:sO"],
 		];
 	}
