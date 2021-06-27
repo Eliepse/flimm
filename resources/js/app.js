@@ -21,5 +21,6 @@ export default function App() {
 }
 
 export function Link({to, ...props}) {
-	return <RouterLink {...props} to={`${URL_PREFFIX}${to}`}/>;
+	const link = to || props.href;
+	return <RouterLink {...props} to={`${URL_PREFFIX}${link}`}/>;
 }
