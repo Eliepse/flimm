@@ -6,7 +6,9 @@ import apiArticle from '../../lib/api/apiArticle';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import EditorJS from '@editorjs/editorjs';
-import EditorJSHeader from "@editorjs/header";
+import HeaderTool from "@editorjs/header";
+import EmbedTool from "@editorjs/embed";
+import ImageTool from '@editorjs/image';
 import dayjs from 'dayjs';
 
 const newArticleSchema = Yup.object().shape({
@@ -60,6 +62,11 @@ export default function ArticleEditorPage() {
 			placeholder: 'Écrivez votre article ici...',
 			autofocus: true,
 			minHeight: 32,
+			tools: {
+				header: HeaderTool,
+				embed: EmbedTool,
+				image: ImageTool,
+			},
 			data: article?.content || {},
 		});
 
