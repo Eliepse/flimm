@@ -982,16 +982,16 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@pmmmwh/react-refresh-webpack-plugin@0.5.0-beta.0":
-  version "0.5.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.5.0-beta.0.tgz#78227eaddafdc8859b679da6493bbfd2ee9ae58b"
-  integrity sha512-q+TNaRgREFad/9zXPk+7a1I+3u4Bq/xVwhcuqJmZmkhMwZ/ENrmf87ZzBBc9W4J77WhjQYOaoqkN7XAbQeSNgA==
+"@pmmmwh/react-refresh-webpack-plugin@0.5.0-rc.0":
+  version "0.5.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.5.0-rc.0.tgz#2343f558dbc3a4cfa532d6d43cdabf72c4cd02f8"
+  integrity sha512-oJV/ukrTxm1zjq/D4A3arLSqDMCy4jnIVDYEfe+KX5FX07b0blWmGa3UaqtLYqZsb++V8VnyFlq0OYS3f9yi0g==
   dependencies:
     ansi-html "^0.0.7"
     core-js-pure "^3.8.1"
     error-stack-parser "^2.0.6"
-    html-entities "^1.2.1"
-    native-url "^0.3.4"
+    html-entities "^2.1.0"
+    loader-utils "^2.0.0"
     schema-utils "^3.0.0"
     source-map "^0.7.3"
 
