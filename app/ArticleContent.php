@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Collection;
 
 class ArticleContent implements Jsonable, Arrayable, Castable
 {
@@ -61,6 +62,12 @@ class ArticleContent implements Jsonable, Arrayable, Castable
 	public function getVersion(): string
 	{
 		return $this->version;
+	}
+
+
+	public function getBlocksByType(string $type): Collection
+	{
+		return collect($this->getBlocks())->filter(fn($block) => $block["type"] === $type);
 	}
 
 

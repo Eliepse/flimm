@@ -10,6 +10,7 @@ import HeaderTool from "@editorjs/header";
 import EmbedTool from "@editorjs/embed";
 import ImageTool from '@editorjs/image';
 import dayjs from 'dayjs';
+import {getCsrfToken} from '../../lib/api/broker';
 
 const newArticleSchema = Yup.object().shape({
 	title: Yup.string().min(5).max(100).required().trim(),
@@ -52,7 +53,7 @@ export default function ArticleEditorPage() {
 	}, []);
 
 	useEffect(() => {
-		if(!article) {
+		if (!article) {
 			return;
 		}
 
@@ -65,7 +66,17 @@ export default function ArticleEditorPage() {
 			tools: {
 				header: HeaderTool,
 				embed: EmbedTool,
-				image: ImageTool,
+				image: {
+					class: ImageTool,
+					config: {
+						endpoints: {
+							byFile: `${location.protocol}//${location.host}/api/articles/${article.id}/media`,
+						},
+						additionalRequestHeaders: {
+							"X-XSRF-TOKEN": getCsrfToken(),
+						},
+					},
+				},
 			},
 			data: article?.content || {},
 		});

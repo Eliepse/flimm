@@ -22,4 +22,5 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::get("/me", fn() => Auth::user());
 	Route::post("/logout", [AuthController::class, "logout"]);
 	Route::resource("articles", ArticleController::class);
+	Route::post("/articles/{article}/media", [ArticleController::class, "saveContentMedia"]);
 });

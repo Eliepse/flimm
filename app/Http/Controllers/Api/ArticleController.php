@@ -81,4 +81,23 @@ class ArticleController extends Controller
 	{
 		//
 	}
+
+
+	public function saveContentMedia(Request $request, Article $article)
+	{
+		try {
+			$media = $article->saveContentImage("image");
+		} catch (\Exception $exception) {
+			return response()->json(["success" => 0], 201);
+		}
+
+		return response()->json([
+			"success" => 1,
+			"file" => [
+				"url" => $media->getFullUrl(),
+				"uuid" => $media->uuid,
+				// ... and any additional fields you want to store, such as width, height, color, extension, etc
+			],
+		], 201);
+	}
 }
