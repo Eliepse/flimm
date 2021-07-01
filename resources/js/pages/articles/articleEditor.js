@@ -11,6 +11,7 @@ import EmbedTool from "@editorjs/embed";
 import ImageTool from '@editorjs/image';
 import dayjs from 'dayjs';
 import {getCsrfToken} from '../../lib/api/broker';
+import FileInput from '../../components/FileInput/FileInput';
 
 const newArticleSchema = Yup.object().shape({
 	title: Yup.string().min(5).max(100).required().trim(),
@@ -25,7 +26,7 @@ export default function ArticleEditorPage() {
 	const [article, setArticle] = useState();
 	const editor = useRef();
 	const formik = useFormik({
-		initialValues: {title: "", slug: "", content: null, published_at: null},
+		initialValues: {title: "", slug: "", content: null, published_at: null, thumbnail: undefined},
 		validationSchema: newArticleSchema,
 		validateOnChange: false,
 		validateOnBlur: true,
@@ -87,7 +88,7 @@ export default function ArticleEditorPage() {
 	}, [article]);
 
 	/** @param {String} value */
-	function handeDateChange(value) {
+	function handleDateChange(value) {
 		if (value.trim().length === 0) {
 			formik.setFieldValue("published_at", null);
 			return;
@@ -95,6 +96,11 @@ export default function ArticleEditorPage() {
 
 		const [day, month, year] = value.split(".");
 		formik.setFieldValue("published_at", new Date(Number(year), Number(month), Number(day)));
+	}
+
+	/** @param {InputEvent} event */
+	function handleFileChange(event) {
+		formik.setFieldValue("thumbnail", event.target.files[0]);
 	}
 
 	function submitForm() {
@@ -154,11 +160,24 @@ export default function ArticleEditorPage() {
 						label="Date de publication"
 						className="mb-6"
 						required
-						onChange={handeDateChange}
+						onChange={handleDateChange}
 						value={formik.values.published_at ? dayjs(formik.values.published_at).format("D.M.YYYY") : null}
 						errorText={formik.errors.published_at}
 						invalid={formik.errors.published_at}
 					/>
+
+					<FileInput
+						id="thumbnail"
+						name="thumbnail"
+						label="Thumbnail"
+						helperText="Image d'en-tête"
+						value={formik.values.thumbnail}
+						errorText={formik.errors.thumbnail}
+						invalid={formik.errors.thumbnail}
+						onChange={handleFileChange}
+						required
+					/>
+
 
 					<div className="mt-8">
 						<Button onClick={submitForm} isLoading={isLoading} loadingText="Sauvegarde en cours...">Sauvegarder</Button>

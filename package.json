@@ -28,6 +28,7 @@
         "@editorjs/embed": "^2.4.6",
         "@editorjs/header": "^2.6.1",
         "@editorjs/image": "^2.6.0",
+        "clsx": "^1.1.1",
         "dayjs": "^1.10.5",
         "formik": "^2.2.9",
         "hds-core": "^1.1.0",
