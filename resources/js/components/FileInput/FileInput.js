@@ -32,12 +32,24 @@ const FileInput = (
 		onChange({target: inputRef.current});
 	}
 
+	function getFormattedValue() {
+		if(!value) {
+			return "";
+		}
+
+		if(typeof value === "string") {
+			return <img src={value} className="h-10 w-auto" alt="" />;
+		}
+
+		return value?.name;
+	}
+
 	return (
 		<div className={clsx(styles.root, "hds-text-input", invalid && "hds-text-input--invalid")}>
 			<label htmlFor={id}>
 				<div className="hds-text-input__label">{label}</div>
 				<div className={clsx("hds-text-input__input-wrapper cursor-pointer", styles.inputWrapper)}>
-					<div className={clsx("hds-text-input__input flex items-center", styles.input)}>{value && value?.name}</div>
+					<div className={clsx("hds-text-input__input flex items-center", styles.input)}>{getFormattedValue()}</div>
 					{value && (
 						<div className="TextInput-module_buttonWrapper___filA text-input_hds-text-input__buttons__1RMzT">
 							<button

@@ -3,19 +3,18 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class UpdateArticleRequest extends FormRequest
 {
-	/**
-	 * Determine if the user is authorized to make this request.
-	 *
-	 * @return bool
-	 */
-	public function authorize()
+	protected function prepareForValidation()
 	{
-		return $this->user();
+		$this->merge([
+			'content' => json_decode($this->input("content"), true),
+		]);
 	}
 
 
@@ -31,6 +30,7 @@ class UpdateArticleRequest extends FormRequest
 			"slug" => ["nullable", "string", "between:3,64", Rule::unique("App\Models\Article", "slug")->ignoreModel($this->article)],
 			"content" => ["required", "array:time,blocks,version"],
 			"published_at" => ["nullable", "date_format:Y-m-d\TH:i:sO"],
+			"thumbnail" => ["nullable", "image"],
 		];
 	}
 
@@ -44,5 +44,11 @@ class UpdateArticleRequest extends FormRequest
 		}
 
 		return Str::slug(substr($this->get("title"), 0, 64));
+	}
+
+
+	public function getThumbnail(): ?UploadedFile
+	{
+		return Arr::wrap($this->file("thumbnail"))[0] ?? null;
 	}
 }

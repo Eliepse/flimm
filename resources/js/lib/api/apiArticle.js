@@ -17,7 +17,18 @@ export function create(article) {
 }
 
 export function update(article) {
-	return Api.put(`${basePath}/${article.id}`, formatArticleData(article));
+	const data = formatArticleData(article);
+	const params = new FormData();
+	params.set("title", data.title || "");
+	params.set("slug", data.slug || "");
+	params.set("published_at", data.published_at || "");
+	params.set("content", JSON.stringify(data.content));
+
+	if (typeof data.thumbnail !== "string") {
+		params.set("thumbnail", data.thumbnail || "");
+	}
+
+	return Api.post(`${basePath}/${article.id}`, params, {headers: {"Content-Type": "multipart/form-data"}});
 }
 
 export function remove(article) {

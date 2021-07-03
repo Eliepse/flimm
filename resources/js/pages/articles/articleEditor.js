@@ -34,9 +34,19 @@ export default function ArticleEditorPage() {
 			apiArticle.update({id: article.id, ...data})
 				.then((data) => {
 					setArticle(data);
+					formik.setValues({
+						title: data.title,
+						slug: data.slug,
+						published_at: data.published_at,
+						content: data.content,
+						thumbnail: data.thumbnail,
+					});
 					setIsLoading(false);
 				})
-				.catch(console.error);
+				.catch((err) => {
+					formik.setErrors(err.errors);
+					setIsLoading(false);
+				});
 		},
 	});
 
@@ -48,6 +58,8 @@ export default function ArticleEditorPage() {
 					title: data.title,
 					slug: data.slug,
 					published_at: data.published_at,
+					content: data.content,
+					thumbnail: data.thumbnail,
 				});
 			})
 			.catch(console.error);
@@ -58,32 +70,34 @@ export default function ArticleEditorPage() {
 			return;
 		}
 
-		//noinspection JSValidateTypes
-		editor.current = new EditorJS({
-			holder: "editorjs",
-			placeholder: 'Écrivez votre article ici...',
-			autofocus: true,
-			minHeight: 32,
-			tools: {
-				header: HeaderTool,
-				embed: EmbedTool,
-				image: {
-					class: ImageTool,
-					config: {
-						endpoints: {
-							byFile: `${location.protocol}//${location.host}/api/articles/${article.id}/media`,
-						},
-						additionalRequestHeaders: {
-							"X-XSRF-TOKEN": getCsrfToken(),
+		if (!editor.current) {
+			//noinspection JSValidateTypes
+			editor.current = new EditorJS({
+				holder: "editorjs",
+				placeholder: 'Écrivez votre article ici...',
+				autofocus: true,
+				minHeight: 32,
+				tools: {
+					header: HeaderTool,
+					embed: EmbedTool,
+					image: {
+						class: ImageTool,
+						config: {
+							endpoints: {
+								byFile: `${location.protocol}//${location.host}/api/articles/${article.id}/media`,
+							},
+							additionalRequestHeaders: {
+								"X-XSRF-TOKEN": getCsrfToken(),
+							},
 						},
 					},
 				},
-			},
-			data: article?.content || {},
-		});
+				data: article?.content || {},
+			});
+		}
 
 		return () => {
-			editor.current?.destroy();
+			editor.current?.blocks.clear();
 		};
 	}, [article]);
 
@@ -115,14 +129,15 @@ export default function ArticleEditorPage() {
 	return (
 		<DashboardLayout>
 			<div className="grid grid-cols-3">
-				<form className="col-span-2 p-4">
+				<div className="col-span-2 p-4">
 					<h2 className="text-xl font-bold">Contenu</h2>
 					<p className="text-gray-400">
 						Ce block représente le contenu de l'article. Vous pouvez y écrire ce que vous souhaitez, ajouter des images
 						et autres médias. Le style affiché dans cet éditeur est proche du rendu final.
 					</p>
 					<div id="editorjs" className="relative py-4 mt-6 border-2 border-solid border-gray-800"/>
-				</form>
+					{formik.errors.content && formik.errors.content.map((msg) => <p className="my-2 text-red-500">{msg}</p>)}
+				</div>
 				<aside className="p-4 border-2 border-solid border-gray-200">
 					<TextInput
 						type="text"

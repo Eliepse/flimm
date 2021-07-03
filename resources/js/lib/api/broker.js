@@ -21,27 +21,37 @@ function baseHeaders(headers = {}) {
  * @param {String} url
  * @param {"GET"|"POST"|"PUT"|"PATCH"|"DELETE"} method
  * @param {Object} params - Data sent as url parameters
- * @param {Object} body - Data sent in the body
+ * @param {Object} config - Data sent in the body
  * @returns {Promise<unknown>}
  */
-function apiRequest(url, method, params = null, body = null) {
-
+function apiRequest(url, method = "GET", params = null, config = {}) {
 	const prefix = url.startsWith("/") ? "/api" : "/api/";
-	const freshUrl = new URL(prefix + url, document.location.href);
+	const requestConfig = {};
+	const requestUrl = new URL(prefix + url, document.location.href);
+	const headers = baseHeaders(config?.headers || {});
+	const hasParams = Boolean(params);
+	const hasJsonContentType = headers["Content-Type"] === "application/json";
 
-	// Add query parameters if set
-	if (params && typeof params === "object") {
+	requestConfig.method = method;
+	requestConfig.headers = headers;
+
+	// Parameters as url on GET method
+	if (hasParams && typeof params === "object" && method === "GET") {
 		Object.entries(params).forEach(([key, value]) => {
-			freshUrl.searchParams.set(key, value.toString());
+			requestUrl.searchParams.set(key, value.toString());
 		});
+	} else if (hasParams) {
+		requestConfig.body = hasJsonContentType ? JSON.stringify(params) : params;
+	}
+
+	// The browser handle the correct content type
+	// for us when handling complicated multi-part form data.
+	if(hasParams && params instanceof FormData) {
+		delete requestConfig.headers["Content-Type"];
 	}
 
 	return new Promise((resolve, reject) => {
-		fetch(freshUrl.href, {
-			method,
-			headers: baseHeaders(),
-			body: (body && method !== "GET") ? JSON.stringify(body) : body,
-		})
+		fetch(requestUrl.href, requestConfig)
 			.then((res) => handleRequestResponse(res, resolve, reject))
 			.catch((err) => handeRequestError(err, resolve, reject));
 	});
@@ -103,11 +113,11 @@ function requestCsrfToken() {
 }
 
 const Api = {
-		get: (url, params = null) => apiRequest(url, "GET", params),
-		post: (url, data = null) => apiRequest(url, "POST", null, data),
-		put: (url, data = null) => apiRequest(url, "PUT", null, data),
-		patch: (url, data = null) => apiRequest(url, "PATCH", null, data),
-		delete: (url, data = null) => apiRequest(url, "DELETE", null, data),
+		get: (url, data = null, config = {}) => apiRequest(url, "GET", data, config),
+		post: (url, data = null, config = {}) => apiRequest(url, "POST", data, config),
+		put: (url, data = null, config = {}) => apiRequest(url, "PUT", data, config),
+		patch: (url, data = null, config = {}) => apiRequest(url, "PATCH", data, config),
+		delete: (url, data = null, config = {}) => apiRequest(url, "DELETE", data, config),
 		requestToken: requestCsrfToken,
 		request: apiRequest,
 	}

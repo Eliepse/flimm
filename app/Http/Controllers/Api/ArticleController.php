@@ -64,6 +64,13 @@ class ArticleController extends Controller
 	{
 		$article->fill($request->all());
 		$article->slug = $request->getSlug();
+
+		if ($thumbnail = $request->getThumbnail()) {
+			$article->saveThumbnail($thumbnail);
+		} else if ($request->has("thumbnail")) {
+			optional($article->thumbnail)->delete();
+		}
+
 		$article->saveOrFail();
 
 		return $article;
