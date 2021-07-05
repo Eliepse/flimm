@@ -24,6 +24,7 @@ export default function ArticleEditorPage() {
 	const {query} = useRouter();
 	const [isLoading, setIsLoading] = useState(false);
 	const [article, setArticle] = useState();
+	const editorWrapperRef = useRef();
 	const editor = useRef();
 	const formik = useFormik({
 		initialValues: {title: "", slug: "", content: null, published_at: null, thumbnail: undefined},
@@ -97,7 +98,15 @@ export default function ArticleEditorPage() {
 		}
 
 		return () => {
-			editor.current?.blocks.clear();
+			if (typeof editor.current.destroy === "function") {
+				editor.current?.destroy();
+			}
+			if (!editorWrapperRef.current.querySelector("#editorjs")) {
+				const newEditorDiv = document.createElement("div");
+				newEditorDiv.id = "editorjs";
+				editorWrapperRef.current.append(newEditorDiv);
+			}
+			editor.current = undefined;
 		};
 	}, [article]);
 
@@ -135,7 +144,9 @@ export default function ArticleEditorPage() {
 						Ce block représente le contenu de l'article. Vous pouvez y écrire ce que vous souhaitez, ajouter des images
 						et autres médias. Le style affiché dans cet éditeur est proche du rendu final.
 					</p>
-					<div id="editorjs" className="relative py-4 mt-6 border-2 border-solid border-gray-800"/>
+					<div ref={editorWrapperRef} className="relative py-4 mt-6 border-2 border-solid border-gray-800">
+						<div id="editorjs"/>
+					</div>
 					{formik.errors.content && formik.errors.content.map((msg) => <p className="my-2 text-red-500">{msg}</p>)}
 				</div>
 				<aside className="p-4 border-2 border-solid border-gray-200">
