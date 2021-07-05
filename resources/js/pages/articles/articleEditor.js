@@ -146,6 +146,12 @@ export default function ArticleEditorPage() {
 			}).catch(console.error);
 	}
 
+	/*
+	| -------------------------------------------------
+	| Render
+	| -------------------------------------------------
+	 */
+
 	return (
 		<DashboardLayout>
 			<div className="grid grid-cols-3">
@@ -154,15 +160,15 @@ export default function ArticleEditorPage() {
 				| Content editor
 				| -------------------------------------------------
 				*/}
-				<div className="col-span-2 p-4">
-					<div className="p-4 pb-6 border-2 border-solid border-gray-800">
+				<div className="col-span-2 px-4">
+					<div className="p-4 pb-6 border-2 border-solid border-gray-300">
 						<h2 className="text-xl font-bold">Contenu</h2>
 						<p className="text-gray-500">
 							Le bloc ci-dessous représente le contenu de l'article. Vous pouvez y écrire ce que vous souhaitez,
 							ajouter des images et autres médias. Le style affiché dans cet éditeur est proche du rendu final.
 						</p>
 					</div>
-					<div ref={editorWrapperRef} className="relative py-4 mt-6 border-2 border-solid border-gray-800">
+					<div ref={editorWrapperRef} className="relative py-4 mt-6 border-2 border-solid border-gray-300">
 						<div id="editorjs"/>
 					</div>
 					{formik.errors.content && formik.errors.content.map((msg) => <p className="my-2 text-red-500">{msg}</p>)}
@@ -174,7 +180,7 @@ export default function ArticleEditorPage() {
 				| -------------------------------------------------
 				*/}
 				<aside className="col-span-1">
-					<div className="p-4 border-2 border-solid border-gray-200">
+					<div className="p-4 border-2 border-solid border-gray-300">
 						<TextInput
 							type="text"
 							id="title"
