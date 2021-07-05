@@ -1,5 +1,5 @@
 import DashboardLayout from '../../components/layouts/DashboardLayout';
-import {Button, DateInput, TextInput} from 'hds-react';
+import {Button, TextInput} from 'hds-react';
 import {useEffect, useRef, useState} from 'react';
 import {useRouter} from '../../lib/useRouter';
 import apiArticle from '../../lib/api/apiArticle';
@@ -14,7 +14,7 @@ import FileInput from '../../components/FileInput/FileInput';
 import DateTimeInput from '../../components/DateTimeInput/DateTimeInput';
 import dayjs from 'dayjs';
 
-const newArticleSchema = Yup.object().shape({
+const articleSchema = Yup.object().shape({
 	title: Yup.string().min(5).max(100).required().trim(),
 	slug: Yup.string().min(5, "Trop court").required(),
 	content: Yup.object().nullable(),
@@ -27,9 +27,32 @@ export default function ArticleEditorPage() {
 	const [article, setArticle] = useState();
 	const editorWrapperRef = useRef();
 	const editor = useRef();
+
+	// Load the article on start
+	useEffect(() => {
+		apiArticle.get(query.id)
+			.then((data) => {
+				setArticle(data);
+				formik.setValues({
+					title: data.title,
+					slug: data.slug,
+					published_at: data.published_at ? dayjs(data.published_at).toDate() : undefined,
+					content: data.content,
+					thumbnail: data.thumbnail,
+				});
+			})
+			.catch(console.error);
+	}, []);
+
+	/*
+	| -------------------------------------------------
+	| Formik
+	| -------------------------------------------------
+	 */
+
 	const formik = useFormik({
 		initialValues: {title: "", slug: "", content: null, published_at: null, thumbnail: undefined},
-		validationSchema: newArticleSchema,
+		validationSchema: articleSchema,
 		validateOnChange: false,
 		validateOnBlur: true,
 		onSubmit: (data) => {
@@ -52,21 +75,13 @@ export default function ArticleEditorPage() {
 		},
 	});
 
-	useEffect(() => {
-		apiArticle.get(query.id)
-			.then((data) => {
-				setArticle(data);
-				formik.setValues({
-					title: data.title,
-					slug: data.slug,
-					published_at: data.published_at ? dayjs(data.published_at).toDate() : undefined,
-					content: data.content,
-					thumbnail: data.thumbnail,
-				});
-			})
-			.catch(console.error);
-	}, []);
+	/*
+	| -------------------------------------------------
+	| Event handlers
+	| -------------------------------------------------
+	 */
 
+	// Update the editor when the article changes (save, reload, ...)
 	useEffect(() => {
 		if (!article) {
 			return;
@@ -116,6 +131,12 @@ export default function ArticleEditorPage() {
 		formik.setFieldValue("thumbnail", event.target.files[0]);
 	}
 
+	/*
+	| -------------------------------------------------
+	| Actions
+	| -------------------------------------------------
+	 */
+
 	function submitForm() {
 		setIsLoading(true);
 		editor.current.save()
@@ -128,75 +149,90 @@ export default function ArticleEditorPage() {
 	return (
 		<DashboardLayout>
 			<div className="grid grid-cols-3">
+				{/*
+				| -------------------------------------------------
+				| Content editor
+				| -------------------------------------------------
+				*/}
 				<div className="col-span-2 p-4">
-					<h2 className="text-xl font-bold">Contenu</h2>
-					<p className="text-gray-400">
-						Ce block représente le contenu de l'article. Vous pouvez y écrire ce que vous souhaitez, ajouter des images
-						et autres médias. Le style affiché dans cet éditeur est proche du rendu final.
-					</p>
+					<div className="p-4 pb-6 border-2 border-solid border-gray-800">
+						<h2 className="text-xl font-bold">Contenu</h2>
+						<p className="text-gray-500">
+							Le bloc ci-dessous représente le contenu de l'article. Vous pouvez y écrire ce que vous souhaitez,
+							ajouter des images et autres médias. Le style affiché dans cet éditeur est proche du rendu final.
+						</p>
+					</div>
 					<div ref={editorWrapperRef} className="relative py-4 mt-6 border-2 border-solid border-gray-800">
 						<div id="editorjs"/>
 					</div>
 					{formik.errors.content && formik.errors.content.map((msg) => <p className="my-2 text-red-500">{msg}</p>)}
 				</div>
-				<aside className="p-4 border-2 border-solid border-gray-200">
-					<TextInput
-						type="text"
-						id="title"
-						name="title"
-						label="Titre"
-						className="mb-6"
-						required
-						onChange={formik.handleChange}
-						value={formik.values.title}
-						errorText={formik.errors.title}
-						invalid={formik.errors.title}
-					/>
 
-					<TextInput
-						type="text"
-						id="slug"
-						name="slug"
-						label="Slug"
-						helperText="Text affiché dans le lien pour identifier l'article. Attention, si l'article
+				{/*
+				| -------------------------------------------------
+				| Other fields (title, metadata, ...)
+				| -------------------------------------------------
+				*/}
+				<aside className="col-span-1">
+					<div className="p-4 border-2 border-solid border-gray-200">
+						<TextInput
+							type="text"
+							id="title"
+							name="title"
+							label="Titre"
+							className="mb-6"
+							required
+							onChange={formik.handleChange}
+							value={formik.values.title}
+							errorText={formik.errors.title}
+							invalid={formik.errors.title}
+						/>
+
+						<TextInput
+							type="text"
+							id="slug"
+							name="slug"
+							label="Slug"
+							helperText="Text affiché dans le lien pour identifier l'article. Attention, si l'article
 						a déjà été publié, les visiteurs ne pourront plus retrouver l'article si cette valeur
 						change (le précédent lien ne sera plus valide)."
-						className="mb-6"
-						required
-						onChange={formik.handleChange}
-						value={formik.values.slug}
-						errorText={formik.errors.slug}
-						invalid={formik.errors.slug}
-					/>
+							className="mb-6"
+							required
+							onChange={formik.handleChange}
+							value={formik.values.slug}
+							errorText={formik.errors.slug}
+							invalid={formik.errors.slug}
+						/>
 
-					<DateTimeInput
-						type="text"
-						id="published_at"
-						name="published_at"
-						label="Date de publication"
-						className="mb-6"
-						required
-						onChange={formik.handleChange}
-						value={formik.values.published_at}
-						errorText={formik.errors.published_at}
-						invalid={formik.errors.published_at}
-					/>
+						<DateTimeInput
+							type="text"
+							id="published_at"
+							name="published_at"
+							label="Date de publication"
+							className="mb-6"
+							required
+							onChange={formik.handleChange}
+							value={formik.values.published_at}
+							errorText={formik.errors.published_at}
+							invalid={formik.errors.published_at}
+						/>
 
-					<FileInput
-						id="thumbnail"
-						name="thumbnail"
-						label="Thumbnail"
-						helperText="Image d'en-tête"
-						value={formik.values.thumbnail}
-						errorText={formik.errors.thumbnail}
-						invalid={formik.errors.thumbnail}
-						onChange={handleFileChange}
-						required
-					/>
+						<FileInput
+							id="thumbnail"
+							name="thumbnail"
+							label="Thumbnail"
+							helperText="Image d'en-tête"
+							value={formik.values.thumbnail}
+							errorText={formik.errors.thumbnail}
+							invalid={formik.errors.thumbnail}
+							onChange={handleFileChange}
+							required
+						/>
 
 
-					<div className="mt-8">
-						<Button onClick={submitForm} isLoading={isLoading} loadingText="Sauvegarde en cours...">Sauvegarder</Button>
+						<div className="mt-8">
+							<Button onClick={submitForm} isLoading={isLoading} loadingText="Sauvegarde en cours...">Sauvegarder</Button>
+						</div>
 					</div>
 				</aside>
 			</div>
