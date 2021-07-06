@@ -42,6 +42,8 @@ class Article extends Model implements HasMedia
 		"content" => ArticleContent::class,
 	];
 
+	protected $dates = ["published_at"];
+
 
 	public function getThumbnailAttribute(): ?Media
 	{
@@ -51,7 +53,7 @@ class Article extends Model implements HasMedia
 
 	public function isPublished(): bool
 	{
-		return $this->published_at->isPast();
+		return $this->published_at && $this->published_at->isPast();
 	}
 
 
