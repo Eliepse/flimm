@@ -10,9 +10,15 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ArticleController
 {
+	public function index(): View
+	{
+		return view("articlesIndex", ["articles" => Article::published()->get()]);
+	}
+
+
 	public function show(Article $article): View
 	{
-		if(!$article->isPublished()) {
+		if (! $article->isPublished()) {
 			throw new ModelNotFoundException();
 		}
 
