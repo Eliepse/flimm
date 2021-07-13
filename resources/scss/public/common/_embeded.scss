@@ -1,0 +1,10 @@
+figure,
+iframe,
+img {
+	@apply max-w-2xl;
+}
+
+figure,
+img {
+	@apply w-full my-6;
+}

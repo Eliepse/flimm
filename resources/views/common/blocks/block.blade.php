@@ -15,5 +15,9 @@
 	@case("paragraph")
 	@include("common.blocks.paragraph", $data)
 	@break
+
+	@case("embed")
+	@include("common.blocks.embed", $data)
+	@break
 @endswitch
 

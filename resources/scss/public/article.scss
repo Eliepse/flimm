@@ -3,12 +3,12 @@
 }
 
 .article-headerImage {
-	@apply mx-auto mb-6;
+	@apply mx-auto mb-6 w-auto max-w-full;
 	max-height: 26rem;
 }
 
 .article-title {
-	@apply mx-auto text-3xl uppercase font-bold max-w-xl mb-2;
+	@apply mx-auto uppercase max-w-xl mb-2;
 }
 
 .article-publishDate {
