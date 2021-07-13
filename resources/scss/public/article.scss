@@ -1,0 +1,24 @@
+.article-header {
+	@apply p-8 border-b-2 border-black text-center;
+}
+
+.article-headerImage {
+	@apply mx-auto mb-6 w-auto max-w-full;
+	max-height: 26rem;
+}
+
+.article-title {
+	@apply mx-auto uppercase max-w-xl mb-2;
+}
+
+.article-excerpt {
+	@apply mx-auto font-bold max-w-lg text-center;
+}
+
+.article-publishDate {
+	@apply text-center text-xl font-bold;
+}
+
+.article-content {
+	@apply px-4 py-2;
+}

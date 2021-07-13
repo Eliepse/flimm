@@ -1,4 +1,5 @@
 const mix = require('laravel-mix');
+const tailwindcss = require('tailwindcss');
 
 /*
  |--------------------------------------------------------------------------
@@ -11,12 +12,24 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/index.js', 'public/js')
+mix
 	.extract(['react', 'react-dom'])
-	.react()
-	.sass('resources/css/app.scss', 'public/css', {}, [
-		require("tailwindcss"),
-	]);
+	.js('resources/js/index.js', 'public/js')
+	.sass('resources/scss/app.scss', 'public/css', {})
+	.options({
+		postCss: [
+			tailwindcss('./tailwind.config.js'),
+		],
+	})
+	.react();
+
+mix
+	.sass('resources/scss/public.scss', 'public/css', {})
+	.options({
+		postCss: [
+			tailwindcss('./tailwind.config.js'),
+		],
+	});
 
 if (!mix.inProduction()) {
 	mix.disableNotifications();

@@ -2,6 +2,8 @@ import {Link as RouterLink, Route, Switch} from 'react-router-dom';
 import HomePage from './pages/home';
 import LoginPage from './pages/login';
 import AuthRequired from './lib/auth/authRequired';
+import ArticleIndexPage from './pages/articles/articleIndex';
+import ArticleEditorPage from './pages/articles/articleEditor';
 
 export const URL_PREFFIX = "/admin";
 
@@ -11,6 +13,8 @@ export default function App() {
 			<AuthRequired>
 				<Switch>
 					<Route exact path={URL_PREFFIX} component={HomePage}/>
+					<Route exact path={`${URL_PREFFIX}/articles`} component={ArticleIndexPage}/>
+					<Route path={`${URL_PREFFIX}/articles/:id`} component={ArticleEditorPage}/>
 				</Switch>
 			</AuthRequired>
 			<Switch>
@@ -21,5 +25,6 @@ export default function App() {
 }
 
 export function Link({to, ...props}) {
-	return <RouterLink {...props} to={`${URL_PREFFIX}${to}`}/>;
+	const link = to || props.href;
+	return <RouterLink {...props} to={`${URL_PREFFIX}${link}`}/>;
 }

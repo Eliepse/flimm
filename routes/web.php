@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,3 +16,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
 Route::view('/admin/{any?}', 'admin')->where("any", ".*");
+Route::get('/actus', [ArticleController::class, "index"])->name("actus");
+Route::get('/actus/{article:slug}', [ArticleController::class, "show"])->name("article");
