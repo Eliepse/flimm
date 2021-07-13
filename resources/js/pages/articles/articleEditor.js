@@ -95,7 +95,13 @@ export default function ArticleEditorPage() {
 				autofocus: true,
 				minHeight: 32,
 				tools: {
-					header: HeaderTool,
+					header: {
+						class: HeaderTool,
+						config: {
+							levels: [2, 3, 4],
+							defaultLevel: 2,
+						},
+					},
 					embed: EmbedTool,
 					image: {
 						class: ImageTool,
