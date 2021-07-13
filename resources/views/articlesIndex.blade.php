@@ -15,7 +15,7 @@
 					<article>
 						<div
 							class="actu-thumbnail"
-							style="background-image: url({{ optional($article->thumbnail)->getUrl()  }})"
+							style="background-image: url('{{ optional($article->thumbnail)->getUrl()  }}')"
 						></div>
 						<h2 class="actu-title">{{ $article->title }}</h2>
 					</article>
