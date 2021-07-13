@@ -17,6 +17,7 @@ class CreateArticlesTable extends Migration
 			$table->id();
 			$table->string("title");
 			$table->string("slug")->unique();
+			$table->string("excerpt")->nullable();
 			$table->json("content")->nullable();
 			$table->dateTime("published_at")->nullable();
 			$table->timestamps();

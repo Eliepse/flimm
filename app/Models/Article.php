@@ -21,6 +21,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property-read int $id
  * @property string $title
  * @property string $slug
+ * @property string $excerpt
  * @property ArticleContent|null $content
  * @property Media|null $thumbnail
  * @property Carbon $published_at
@@ -34,6 +35,7 @@ class Article extends Model implements HasMedia
 	protected $fillable = [
 		"title",
 		"slug",
+		"excerpt",
 		"content",
 		"published_at",
 	];

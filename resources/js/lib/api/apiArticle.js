@@ -21,6 +21,7 @@ export function update(article) {
 	const params = new FormData();
 	params.set("title", data.title || "");
 	params.set("slug", data.slug || "");
+	params.set("excerpt", data.excerpt || "");
 	params.set("published_at", data.published_at || "");
 	params.set("content", JSON.stringify(data.content));
 

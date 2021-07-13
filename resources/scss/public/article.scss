@@ -11,6 +11,10 @@
 	@apply mx-auto uppercase max-w-xl mb-2;
 }
 
+.article-excerpt {
+	@apply mx-auto font-bold max-w-lg text-center;
+}
+
 .article-publishDate {
 	@apply text-center text-xl font-bold;
 }

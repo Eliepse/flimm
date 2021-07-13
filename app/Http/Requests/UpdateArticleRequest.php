@@ -28,6 +28,7 @@ class UpdateArticleRequest extends FormRequest
 		return [
 			"title" => ["required", "string", "between:3,250"],
 			"slug" => ["nullable", "string", "between:3,64", Rule::unique("App\Models\Article", "slug")->ignoreModel($this->article)],
+			"excerpt" => ["nullable", "string", "max:250"],
 			"content" => ["required", "array:time,blocks,version"],
 			"published_at" => ["nullable", "date_format:Y-m-d\TH:i:sO"],
 			"thumbnail" => ["nullable", "image"],

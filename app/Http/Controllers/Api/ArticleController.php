@@ -62,7 +62,7 @@ class ArticleController extends Controller
 	 */
 	public function update(UpdateArticleRequest $request, Article $article): Article
 	{
-		$article->fill($request->all());
+		$article->fill($request->validated());
 		$article->slug = $request->getSlug();
 
 		if ($thumbnail = $request->getThumbnail()) {

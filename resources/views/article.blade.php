@@ -12,8 +12,11 @@
 			<img src="{{ $article->thumbnail->getUrl() }}" class="article-headerImage" alt=""/>
 		@endif
 		<h1 class="article-title">{{ $article->title }}</h1>
+		@if(!empty($article->excerpt))
+			<p class="article-excerpt">{{ $article->excerpt }}</p>
+		@endif
 		<p class="article-publishDate">
-			<time>{{ $article->published_at->format("j.n.y") }}</time>
+			<time>{{ $article->published_at->format("d.m.y") }}</time>
 		</p>
 	</header>
 	<div class="article-content">

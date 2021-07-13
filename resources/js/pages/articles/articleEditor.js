@@ -1,5 +1,5 @@
 import DashboardLayout from '../../components/layouts/DashboardLayout';
-import {Button, TextInput} from 'hds-react';
+import {Button, TextArea, TextInput} from 'hds-react';
 import {useEffect, useRef, useState} from 'react';
 import {useRouter} from '../../lib/useRouter';
 import apiArticle from '../../lib/api/apiArticle';
@@ -51,7 +51,7 @@ export default function ArticleEditorPage() {
 	 */
 
 	const formik = useFormik({
-		initialValues: {title: "", slug: "", content: null, published_at: null, thumbnail: undefined},
+		initialValues: {title: "", slug: "", excerpt: null, content: null, published_at: null, thumbnail: undefined},
 		validationSchema: articleSchema,
 		validateOnChange: false,
 		validateOnBlur: true,
@@ -62,6 +62,7 @@ export default function ArticleEditorPage() {
 					formik.setValues({
 						title: data.title,
 						slug: data.slug,
+						excerpt: data.excerpt,
 						published_at: data.published_at ? dayjs(data.published_at).toDate() : undefined,
 						content: data.content,
 						thumbnail: data.thumbnail,
@@ -214,6 +215,17 @@ export default function ArticleEditorPage() {
 							value={formik.values.slug}
 							errorText={formik.errors.slug}
 							invalid={formik.errors.slug}
+						/>
+
+						<TextArea
+							id="excerpt"
+							name="excerpt"
+							label="Chapô"
+							className="mb-6"
+							onChange={formik.handleChange}
+							value={formik.values.excerpt}
+							errorText={formik.errors.excerpt}
+							invalid={formik.errors.excerpt}
 						/>
 
 						<DateTimeInput
