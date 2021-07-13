@@ -8,11 +8,15 @@
 </head>
 <body>
 
-@include("common.header")
+<div class="root">
 
-<main>
-	@yield("main")
-</main>
+	@include("common.header")
+
+	<main>
+		@yield("main")
+	</main>
+
+</div>
 
 </body>
 </html>

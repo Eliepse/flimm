@@ -16,7 +16,7 @@
 			<time>{{ $article->published_at->format("j.n.y") }}</time>
 		</p>
 	</header>
-	<div class="article">
+	<div class="article-content">
 		@foreach($article->content->getBlocks() as $block)
 			@include("common.blocks.block", $block)
 		@endforeach
