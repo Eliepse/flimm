@@ -1,8 +1,33 @@
 .root {
-	@apply mx-auto max-w-5xl;
+	@apply mx-auto max-w-7xl mb-4;
 }
 
-@screen lg {
+.mainContent {
+	@apply flex flex-nowrap;
+}
+
+.mainNav {
+	@apply w-48 px-4 py-4 border-r-2 border-black;
+
+	a {
+		@apply block text-sm font-bold no-underline;
+
+		&:focus,
+		&:hover {
+			@apply underline;
+		}
+	}
+
+	li {
+		@apply mb-1;
+	}
+}
+
+.page {
+	@apply flex-auto;
+}
+
+@screen xl {
 	.root {
 		@apply border-2 border-black;
 	}

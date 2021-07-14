@@ -5,6 +5,10 @@
 .actus-listItem {
 	@apply inline-block mb-8 w-full;
 	max-width: 18rem;
+
+	> a:not(:hover) {
+		@apply no-underline;
+	}
 }
 
 .actu-thumbnail {
@@ -12,5 +16,5 @@
 }
 
 .actu-title {
-	@apply font-bold leading-tight pr-4;
+	@apply text-lg font-bold leading-tight pr-4;
 }
