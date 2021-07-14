@@ -25,6 +25,7 @@ mix
 
 mix
 	.sass('resources/scss/public.scss', 'public/css', {})
+	.js('resources/js/public.js', 'public/js')
 	.options({
 		postCss: [
 			tailwindcss('./tailwind.config.js'),

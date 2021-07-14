@@ -12,11 +12,17 @@
 
 	@include("common.header")
 
-	<main>
-		@yield("main")
-	</main>
+	<div class="mainContent">
+		@include("common.navigation")
+
+		<main class="page">
+			@yield("main")
+		</main>
+	</div>
 
 </div>
+
+<script src="{{ mix("/js/public.js") }}"></script>
 
 </body>
 </html>

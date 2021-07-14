@@ -7,7 +7,7 @@
 ?>
 
 @section("main")
-	<h1 class="mx-auto text-center my-24 text-2xl font-bold">Actus</h1>
+	<h1 class="mx-auto text-center my-24">Actus</h1>
 	<ul class="actus-list">
 		@foreach($articles as $article)
 			<li class="actus-listItem">
