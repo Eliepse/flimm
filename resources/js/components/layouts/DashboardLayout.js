@@ -15,7 +15,7 @@ export default function DashboardLayout({children}) {
 				skipToContentLabel="Skip to content"
 			>
 				<Navigation.Row variant="inline">
-					<Navigation.Item label="Admin" as={Link} href="/"/>
+					<Navigation.Item label="Dashboard" as={Link} href="/"/>
 					<Navigation.Item label="Articles" as={Link} href="/articles"/>
 				</Navigation.Row>
 				<Navigation.Actions>
