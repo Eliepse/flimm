@@ -1,5 +1,5 @@
 import DashboardLayout from '../../components/layouts/DashboardLayout';
-import {Button, TextArea, TextInput} from 'hds-react';
+import {Button, IconLinkExternal, TextArea, TextInput} from 'hds-react';
 import {useEffect, useRef, useState} from 'react';
 import {useRouter} from '../../lib/useRouter';
 import apiArticle from '../../lib/api/apiArticle';
@@ -188,6 +188,20 @@ export default function ArticleEditorPage() {
 				*/}
 				<aside className="col-span-1">
 					<div className="p-4 border-2 border-solid border-gray-300">
+
+						{/* See article link */}
+						<div className="text-right">
+							{Boolean(article?.slug) && (
+								<a href={`/actus/${article.slug}`} target="_blank" className="inline-flex items-center">
+									Voir l'article
+									<IconLinkExternal className="ml-2"/>
+								</a>
+							)}
+						</div>
+
+						<hr className="my-4 border-t-2 border-gray-300"/>
+
+						{/* Inputs */}
 						<TextInput
 							type="text"
 							id="title"
@@ -253,7 +267,7 @@ export default function ArticleEditorPage() {
 							required
 						/>
 
-
+						{/* Actions */}
 						<div className="mt-8">
 							<Button onClick={submitForm} isLoading={isLoading} loadingText="Sauvegarde en cours...">Sauvegarder</Button>
 						</div>

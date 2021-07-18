@@ -1,12 +1,13 @@
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import {useEffect, useState} from 'react';
 import apiArticle from '../../lib/api/apiArticle';
-import {Button, Card, Dialog, IconDocument, TextInput} from 'hds-react';
+import {Button, Card, Dialog, IconDocument, IconLinkExternal, TextInput} from 'hds-react';
 import {useRouter} from '../../lib/useRouter';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import slug from 'slug';
 import {Link} from '../../app';
+import dayjs from 'dayjs';
 
 const newArticleSchema = Yup.object().shape({
 	title: Yup.string().min(3).max(250).required(),
@@ -14,7 +15,6 @@ const newArticleSchema = Yup.object().shape({
 });
 
 export default function ArticleIndexPage() {
-	const router = useRouter();
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [articles, setArticles] = useState([]);
 
@@ -36,10 +36,21 @@ export default function ArticleIndexPage() {
 				<ul>
 					{articles.map((article) => (
 						<li key={article.id}>
-							<Card heading={article.title} border>
-								<Link to={`/articles/${article.id}`}>
-									<Button variant="secondary" theme="black">Editer</Button>
-								</Link>
+							<Card heading={article.title} border className="mb-4">
+								<div className="flex items-center justify-between">
+									<div className="flex items-center">
+										<Link to={`/articles/${article.id}`}>
+											<Button variant="secondary" theme="black" className="mr-4">Editer</Button>
+										</Link>
+										<a href={`/actus/${article.slug}`} target="_blank" className="inline-flex items-center">
+											Voir l'article
+											<IconLinkExternal className="ml-2"/>
+										</a>
+									</div>
+									<div>
+										{Boolean(article?.published_at) && dayjs(article.published_at).format("D MMMM YYYY")}
+									</div>
+								</div>
 							</Card>
 						</li>
 					))}
