@@ -26,8 +26,8 @@ class Setting extends Model implements HasMedia
 	protected $primaryKey = "name";
 	public $timestamps = false;
 	protected $casts = ["value" => SerializationCast::class, "isMedia" => "bool"];
-	protected $fillable = [];
-	protected $hidden = ["value"];
+	protected $fillable = ["name", "value"];
+	protected $hidden = ["value", "media"];
 
 
 	public function registerMediaCollections(): void
@@ -39,13 +39,26 @@ class Setting extends Model implements HasMedia
 	}
 
 
+	/** @noinspection PhpUnused */
 	public function getValueAttribute(): mixed
 	{
 		if ($this->isMedia) {
-			return $this->getFirstMedia("settings");
+			return $this->getValueAsMedia();
 		}
 
-		return $this->attributes["value"];
+		return $this->castAttribute("value", $this->attributes["value"]);
+	}
+
+
+	public function getIsMediaAttribute(): bool
+	{
+		return $this->attributes["isMedia"] ?? false;
+	}
+
+
+	private function getValueAsMedia(): ?Media
+	{
+		return $this->getFirstMedia("settings");
 	}
 
 
@@ -56,5 +69,14 @@ class Setting extends Model implements HasMedia
 		}
 
 		return $this->addMedia($media)->toMediaCollection("settings");
+	}
+
+
+	public function toArray()
+	{
+		return array_merge([
+			"name" => $this->name,
+			"value" => $this->isMedia ? $this->getValueAsMedia()?->getFullUrl() : $this->value,
+		]);
 	}
 }

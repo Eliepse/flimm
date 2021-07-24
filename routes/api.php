@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\SettingController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -24,4 +25,6 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::resource("articles", ArticleController::class);
 	Route::post("/articles/{article}", [ArticleController::class, "update"]);
 	Route::post("/articles/{article}/media", [ArticleController::class, "saveContentMedia"]);
+	Route::get("settings", [SettingController::class, "index"]);
+	Route::post("settings/{name}", [SettingController::class, "upsert"]);
 });
