@@ -34,6 +34,7 @@
         "formik": "^2.2.9",
         "hds-core": "^1.1.0",
         "hds-react": "^1.1.0",
+        "prop-types": "^15.7.2",
         "query-string": "^7.0.0",
         "react": "^17.0.2",
         "react-datetime-picker": "^3.3.0",
