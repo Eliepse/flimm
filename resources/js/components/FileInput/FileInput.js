@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import styles from "./FileInput.module.scss";
 import {IconCrossCircle} from 'hds-react';
 
+//noinspection JSCommentMatchesSignature
 /**
  * @param {File} value
  */
@@ -45,7 +46,7 @@ const FileInput = (
 	}
 
 	return (
-		<div className={clsx(styles.root, "hds-text-input", invalid && "hds-text-input--invalid")}>
+		<div className={clsx(styles.root, "hds-text-input", invalid && "hds-text-input--invalid", className)}>
 			<label htmlFor={id}>
 				<div className="hds-text-input__label">{label}</div>
 				<div className={clsx("hds-text-input__input-wrapper cursor-pointer", styles.inputWrapper)}>
