@@ -2,6 +2,6 @@
 	<div>
 		FLiMM<br>
 		Festival Libre du Moyen-Métrage<br>
-		21 - 24.10.2021
+		{{ app(\App\Repositories\SettingRepository::class)->get("header.text")?->value }}
 	</div>
 </header>

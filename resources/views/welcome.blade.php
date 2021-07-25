@@ -15,7 +15,10 @@ use Illuminate\Database\Eloquent\Collection;
 @section("main")
 	@if($featuredImage = $settings->get("homepage.featuredImage"))
 		<header class="border-b-2 border-solid border-black">
-			<img src="{{ $featuredImage->value->getFullUrl() }}" class="mx-auto my-0 object-cover" alt="" />
+			<img
+				src="{{ $featuredImage->value->getFullUrl() }}" class="mx-auto my-0 object-cover"
+				alt="{{ app(\App\Repositories\SettingRepository::class)->get("homepage.featuredImage.altText")?->value }}"
+			/>
 		</header>
 	@endif
 	<section>

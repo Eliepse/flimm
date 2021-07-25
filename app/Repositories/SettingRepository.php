@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Models\Setting;
 use Illuminate\Cache\ArrayStore;
+use Illuminate\Log\Logger;
 use Illuminate\Support\Collection;
 
 class SettingRepository
@@ -13,8 +14,9 @@ class SettingRepository
 	private ArrayStore $cache;
 
 
-	public function __construct()
+	public function __construct(Logger $logger)
 	{
+		$logger->debug("Initialize SettingRepository");
 		$this->cache = new ArrayStore();
 		$this->cacheMany(Setting::query()->get());
 	}
