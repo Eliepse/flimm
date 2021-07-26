@@ -1,10 +1,10 @@
 import FileInput from "../FileInput/FileInput";
-import { Button, TextInput } from "hds-react";
+import {Button, TextArea, TextInput} from "hds-react";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import apiSettings from "../../lib/api/apiSettings";
 
-const Setting = ({ label, name, isMedia = false, initialValue }) => {
+const Setting = ({ label, name, variant = "text", initialValue }) => {
 	const [loading, setLoading] = useState(false);
 	const [isDirty, setIsDirty] = useState(false);
 	const [setting, setSetting] = useState({});
@@ -15,7 +15,7 @@ const Setting = ({ label, name, isMedia = false, initialValue }) => {
 		setIsDirty(true);
 		setSetting((st) => ({
 			...st,
-			value: isMedia ? target.files[0] : target.value,
+			value: variant === "file" ? target.files[0] : target.value,
 		}));
 	}
 
@@ -33,15 +33,24 @@ const Setting = ({ label, name, isMedia = false, initialValue }) => {
 
 	return (
 		<div className="flex items-end mb-4">
-			{isMedia ? (
+			{variant === "file" && (
 				<FileInput
 					label={label}
 					className="flex-auto"
 					value={setting.value}
 					onChange={handleChange}
 				/>
-			) : (
+			)}
+			{variant === "text" && (
 				<TextInput
+					label={label}
+					value={setting.value || ""}
+					className="flex-auto"
+					onChange={handleChange}
+				/>
+			)}
+			{variant === "textarea" && (
+				<TextArea
 					label={label}
 					value={setting.value || ""}
 					className="flex-auto"
@@ -61,7 +70,7 @@ Setting.propTypes = {
 	label: PropTypes.string.isRequired,
 	name: PropTypes.string.isRequired,
 	initialValue: PropTypes.object,
-	isMedia: PropTypes.bool,
+	variant: PropTypes.oneOf(["text", "textarea", "file"]),
 };
 
 export default Setting;

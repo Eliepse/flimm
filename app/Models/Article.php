@@ -27,6 +27,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property Carbon $published_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @method static Builder published()
  */
 class Article extends Model implements HasMedia
 {

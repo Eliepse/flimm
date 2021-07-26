@@ -34,12 +34,27 @@ export default function SettingsPage() {
 			</h1>
 
 			<section className={styles.section}>
+				<h2 className={styles.sectionTitle}>Général</h2>
+				<Setting
+					variant="textarea"
+					label="Text additionel du bandeau d'en-tête"
+					name="header.text"
+					initialValue={initalData["header.text"]}
+				/>
+			</section>
+
+			<section className={styles.section}>
 				<h2 className={styles.sectionTitle}>Homepage</h2>
 				<Setting
+					variant="file"
 					label="Image en avant"
 					name="homepage.featuredImage"
 					initialValue={initalData["homepage.featuredImage"]}
-					isMedia
+				/>
+				<Setting
+					label="Description de l'image mise en avant"
+					name="homepage.featuredImage.altText"
+					initialValue={initalData["homepage.featuredImage.altText"]}
 				/>
 			</section>
 

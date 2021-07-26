@@ -15,7 +15,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  *
  * @package App\Models
  * @property-read string $name
- * @property mixed $value
+ * @property Media|mixed $value
  * @property bool $isMedia
  */
 class Setting extends Model implements HasMedia
