@@ -2,6 +2,6 @@
 	<div>
 		FLiMM<br>
 		Festival Libre du Moyen-Métrage<br>
-		{{ app(\App\Repositories\SettingRepository::class)->get("header.text")?->value }}
+		@nl2br(app(\App\Repositories\SettingRepository::class)->get("header.text")?->value)
 	</div>
 </header>
