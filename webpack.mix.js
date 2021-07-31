@@ -1,5 +1,6 @@
-const mix = require('laravel-mix');
-const tailwindcss = require('tailwindcss');
+const mix = require("laravel-mix");
+const tailwindcss = require("tailwindcss");
+const path = require("path");
 
 /*
  |--------------------------------------------------------------------------
@@ -12,24 +13,28 @@ const tailwindcss = require('tailwindcss');
  |
  */
 
+mix.alias({
+	components: path.join(__dirname, "resources/js/components"),
+	configs: path.join(__dirname, "resources/js/configs"),
+	lib: path.join(__dirname, "resources/js/lib"),
+	pages: path.join(__dirname, "resources/js/pages"),
+	app$: path.join(__dirname, "resources/js/app.js"),
+});
+
 mix
-	.extract(['react', 'react-dom'])
-	.js('resources/js/index.js', 'public/js')
-	.sass('resources/scss/app.scss', 'public/css', {})
+	.extract(["react", "react-dom"])
+	.js("resources/js/index.js", "public/js")
+	.sass("resources/scss/app.scss", "public/css", {})
 	.options({
-		postCss: [
-			tailwindcss('./tailwind.config.js'),
-		],
+		postCss: [tailwindcss("./tailwind.config.js")],
 	})
 	.react();
 
 mix
-	.sass('resources/scss/public.scss', 'public/css', {})
-	.js('resources/js/public.js', 'public/js')
+	.sass("resources/scss/public.scss", "public/css", {})
+	.js("resources/js/public.js", "public/js")
 	.options({
-		postCss: [
-			tailwindcss('./tailwind.config.js'),
-		],
+		postCss: [tailwindcss("./tailwind.config.js")],
 	});
 
 if (!mix.inProduction()) {
