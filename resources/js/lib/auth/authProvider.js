@@ -1,6 +1,7 @@
-import {createContext, useEffect, useMemo, useState} from 'react';
-import Api, {getCsrfToken} from '../api/broker';
-import {LoadingSpinner} from 'hds-react';
+import { createContext, useEffect, useMemo, useState } from "react";
+import Api, { getCsrfToken } from "../api/broker";
+import { LoadingSpinner } from "hds-react";
+import PropTypes from "prop-types";
 
 export const authContext = createContext({
 	user: null,
@@ -9,7 +10,7 @@ export const authContext = createContext({
 	logout: () => {},
 });
 
-export function AuthProvider({children}) {
+export const AuthProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
 	const [initializing, setInitializing] = useState(true);
 
@@ -43,7 +44,6 @@ export function AuthProvider({children}) {
 			});
 	}, []);
 
-
 	async function login(email, password, remember) {
 		if (user) {
 			return;
@@ -52,8 +52,7 @@ export function AuthProvider({children}) {
 		return new Promise((resolve, reject) => {
 			Api.requestToken()
 				.then(() => {
-
-					Api.post("/login", {email, password, remember})
+					Api.post("/login", { email, password, remember })
 						.then((data) => {
 							console.info("[Auth] Authenticated");
 							setUser(data);
@@ -61,13 +60,12 @@ export function AuthProvider({children}) {
 						})
 						.catch((err) => {
 							console.error(err);
-							reject({ message: err?.message || err.statusText })
+							reject({ message: err?.message || err.statusText });
 						});
-
 				})
 				.catch((err) => {
 					console.error(err);
-					reject({ message: err.statusText })
+					reject({ message: err.statusText });
 				});
 		});
 	}
@@ -78,21 +76,29 @@ export function AuthProvider({children}) {
 			.catch(console.error);
 	}
 
-	const auth = useMemo(() => ({
-		user,
-		initializing,
-		login,
-		logout,
-	}), [user, initializing]);
+	const auth = useMemo(
+		() => ({
+			user,
+			initializing,
+			login,
+			logout,
+		}),
+		//eslint-disable-next-line react-hooks/exhaustive-deps
+		[user, initializing]
+	);
 
 	// Display a loader until the Auth provider is ready
 	if (initializing) {
 		return (
 			<div className="h-screen flex justify-center items-center">
-				<LoadingSpinner size="large"/>
+				<LoadingSpinner size="large" />
 			</div>
 		);
 	}
 
-	return <authContext.Provider value={auth} children={children}/>;
-}
+	return <authContext.Provider value={auth}>{children}</authContext.Provider>;
+};
+
+AuthProvider.propTypes = {
+	children: PropTypes.any,
+};

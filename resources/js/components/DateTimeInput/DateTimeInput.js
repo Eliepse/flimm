@@ -1,30 +1,22 @@
-import clsx from 'clsx';
+import clsx from "clsx";
 import styles from "./DateTimeInput.module.scss";
-import DateTimePicker from 'react-datetime-picker';
+import DateTimePicker from "react-datetime-picker";
+import PropTypes from "prop-types";
+import CustomPropTypes from "lib/customProptypes";
 
-/**
- * @param {Date} value
- */
-const DateTimeInput = (
-	{
-		className = '',
-		children,
-		defaultValue,
-		errorText,
-		helperText,
-		invalid,
-		id,
-		label,
-		style,
-		successText,
-		onChange,
-		name,
-		value = undefined,
-		...rest
-	},
-) => {
+const DateTimeInput = ({
+	className = "",
+	errorText,
+	helperText,
+	invalid,
+	id,
+	label,
+	onChange,
+	name,
+	value = undefined,
+}) => {
 	function handleChange(e) {
-		onChange({target: {name, value: e}});
+		onChange({ target: { name, value: e } });
 	}
 
 	return (
@@ -46,6 +38,18 @@ const DateTimeInput = (
 			{helperText && <span className="hds-text-input__helper-text">{helperText}</span>}
 		</div>
 	);
+};
+
+DateTimeInput.propTypes = {
+	className: CustomPropTypes.className,
+	errorText: PropTypes.string,
+	helperText: PropTypes.string,
+	invalid: PropTypes.bool,
+	id: PropTypes.string,
+	label: PropTypes.string,
+	name: PropTypes.string,
+	value: PropTypes.instanceOf(Date),
+	onChange: PropTypes.func,
 };
 
 export default DateTimeInput;

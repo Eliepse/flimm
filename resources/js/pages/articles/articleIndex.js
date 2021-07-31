@@ -1,13 +1,14 @@
-import DashboardLayout from '../../components/layouts/DashboardLayout';
-import {useEffect, useState} from 'react';
-import apiArticle from '../../lib/api/apiArticle';
-import {Button, Card, Dialog, IconDocument, IconLinkExternal, TextInput} from 'hds-react';
-import {useRouter} from '../../lib/useRouter';
-import {useFormik} from 'formik';
-import * as Yup from 'yup';
-import slug from 'slug';
-import {Link} from '../../app';
-import dayjs from 'dayjs';
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import slug from "slug";
+import { Link } from "app";
+import dayjs from "dayjs";
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import { Button, Card, Dialog, IconDocument, IconLinkExternal, TextInput } from "hds-react";
+import apiArticle from "lib/api/apiArticle";
+import { useRouter } from "lib/useRouter";
+import DashboardLayout from "components/layouts/DashboardLayout";
 
 const newArticleSchema = Yup.object().shape({
 	title: Yup.string().min(3).max(250).required(),
@@ -19,7 +20,8 @@ export default function ArticleIndexPage() {
 	const [articles, setArticles] = useState([]);
 
 	useEffect(() => {
-		apiArticle.all()
+		apiArticle
+			.all()
 			.then((data) => setArticles(data))
 			.catch(console.error);
 	}, []);
@@ -29,7 +31,9 @@ export default function ArticleIndexPage() {
 			<div className="flex justify-between items-center mb-6">
 				<h1>Articles</h1>
 				<div>
-					<Button type="primary" onClick={() => setDialogOpen(true)}>Nouveau</Button>
+					<Button type="primary" onClick={() => setDialogOpen(true)}>
+						Nouveau
+					</Button>
 				</div>
 			</div>
 			<div>
@@ -40,46 +44,53 @@ export default function ArticleIndexPage() {
 								<div className="flex items-center justify-between">
 									<div className="flex items-center">
 										<Link to={`/articles/${article.id}`}>
-											<Button variant="secondary" theme="black" className="mr-4">Editer</Button>
+											<Button variant="secondary" theme="black" className="mr-4">
+												Editer
+											</Button>
 										</Link>
-										<a href={`/actus/${article.slug}`} target="_blank" className="inline-flex items-center">
-											Voir l'article
-											<IconLinkExternal className="ml-2"/>
+										<a
+											href={`/actus/${article.slug}`}
+											target="_blank"
+											className="inline-flex items-center"
+											rel="noreferrer"
+										>
+											Voir l&apos;article
+											<IconLinkExternal className="ml-2" />
 										</a>
 									</div>
-									<div>
-										{Boolean(article?.published_at) && dayjs(article.published_at).format("D MMMM YYYY")}
-									</div>
+									<div>{Boolean(article?.published_at) && dayjs(article.published_at).format("D MMMM YYYY")}</div>
 								</div>
 							</Card>
 						</li>
 					))}
 				</ul>
 			</div>
-			<Dialog id="new-article" isOpen={dialogOpen}>
-				<Dialog.Header id="new-article-title" title="Nouvel article" iconLeft={<IconDocument aria-hidden/>}/>
+			<Dialog id="new-article" isOpen={dialogOpen} aria-labelledby="">
+				<Dialog.Header id="new-article-title" title="Nouvel article" iconLeft={<IconDocument aria-hidden />} />
 				<Dialog.Content>
 					<p className="mb-8">
-						Vous vous apprettez à créer un nouvel article. Veuillez d'abord renseigner quelques informations de base.
+						Vous vous apprettez à créer un nouvel article. Veuillez d&apos;abord renseigner quelques informations de
+						base.
 					</p>
-					<CreateArticleForm onClose={() => setDialogOpen(false)}/>
+					<CreateArticleForm onClose={() => setDialogOpen(false)} />
 				</Dialog.Content>
 			</Dialog>
 		</DashboardLayout>
 	);
 }
 
-function CreateArticleForm({onClose}) {
+const CreateArticleForm = ({ onClose }) => {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 
 	const formik = useFormik({
-		initialValues: {title: "", slug: ""},
+		initialValues: { title: "", slug: "" },
 		validationSchema: newArticleSchema,
 		validateOnChange: false,
-		onSubmit: ({title, slug}) => {
+		onSubmit: ({ title, slug }) => {
 			setLoading(true);
-			apiArticle.create({title, slug})
+			apiArticle
+				.create({ title, slug })
 				.then((data) => {
 					setLoading(false);
 					router.pushAdmin(`/articles/${data.id}`);
@@ -105,7 +116,7 @@ function CreateArticleForm({onClose}) {
 			value = slug(value);
 		}
 
-		formik.handleChange({...event, target: {name, value}});
+		formik.handleChange({ ...event, target: { name, value } });
 	}
 
 	return (
@@ -138,9 +149,17 @@ function CreateArticleForm({onClose}) {
 			/>
 
 			<div className="mb-6">
-				<Button theme="black" variant="secondary" className="mr-4" onClick={onClose} disabled={loading}>Annuler</Button>
-				<Button type="submit" isLoading={loading} loadingText="Création...">Créer</Button>
+				<Button theme="black" variant="secondary" className="mr-4" onClick={onClose} disabled={loading}>
+					Annuler
+				</Button>
+				<Button type="submit" isLoading={loading} loadingText="Création...">
+					Créer
+				</Button>
 			</div>
 		</form>
 	);
-}
+};
+
+CreateArticleForm.propTypes = {
+	onClose: PropTypes.func,
+};

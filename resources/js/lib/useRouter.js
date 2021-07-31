@@ -1,7 +1,7 @@
-import {useMemo} from "react";
-import {useHistory, useLocation, useParams, useRouteMatch} from "react-router-dom";
+import { useMemo } from "react";
+import { useHistory, useLocation, useParams, useRouteMatch } from "react-router-dom";
 import queryString from "query-string";
-import {URL_PREFFIX} from '../app';
+import { URL_PREFIX } from "configs/app";
 
 export function useRouter() {
 	const params = useParams();
@@ -29,7 +29,7 @@ export function useRouter() {
 			match,
 			location,
 			history,
-			pushAdmin: (url) => history.push(URL_PREFFIX + url),
+			pushAdmin: (url) => history.push(URL_PREFIX + url),
 		};
 	}, [params, match, location, history]);
 }

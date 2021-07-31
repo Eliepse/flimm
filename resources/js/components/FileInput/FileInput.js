@@ -1,44 +1,40 @@
-import {useRef} from 'react';
-import clsx from 'clsx';
+import { useRef } from "react";
+import clsx from "clsx";
 import styles from "./FileInput.module.scss";
-import {IconCrossCircle} from 'hds-react';
+import { IconCrossCircle } from "hds-react";
+import CustomPropTypes from "lib/customProptypes";
+import PropTypes from "prop-types";
 
 //noinspection JSCommentMatchesSignature
 /**
  * @param {File} value
  */
-const FileInput = (
-	{
-		className = '',
-		children,
-		defaultValue,
-		errorText,
-		helperText,
-		invalid,
-		id,
-		label,
-		style,
-		successText,
-		onChange,
-		name,
-		value = undefined,
-		...rest
-	},
-) => {
-
+const FileInput = ({
+	className = "",
+	defaultValue,
+	errorText,
+	helperText,
+	invalid,
+	id,
+	label,
+	onChange,
+	name,
+	value = undefined,
+	...rest
+}) => {
 	const inputRef = useRef();
 
 	function clearInput() {
 		inputRef.current.value = "";
-		onChange({target: inputRef.current});
+		onChange({ target: inputRef.current });
 	}
 
 	function getFormattedValue() {
-		if(!value) {
+		if (!value) {
 			return "";
 		}
 
-		if(typeof value === "string") {
+		if (typeof value === "string") {
 			return <img src={value} className="h-10 w-auto" alt="" />;
 		}
 
@@ -59,7 +55,7 @@ const FileInput = (
 								aria-label="Remove image"
 								onClick={clearInput}
 							>
-								<IconCrossCircle className="Icon-module_icon__1Jtzj icon_hds-icon__1YqNC Icon-module_s__2WGWe icon_hds-icon--size-s__2Lkik"/>
+								<IconCrossCircle className="Icon-module_icon__1Jtzj icon_hds-icon__1YqNC Icon-module_s__2WGWe icon_hds-icon--size-s__2Lkik" />
 							</button>
 						</div>
 					)}
@@ -79,6 +75,19 @@ const FileInput = (
 			{helperText && <span className="hds-text-input__helper-text">{helperText}</span>}
 		</div>
 	);
+};
+
+FileInput.propTypes = {
+	className: CustomPropTypes.className,
+	defaultValue: PropTypes.string,
+	errorText: PropTypes.string,
+	helperText: PropTypes.string,
+	invalid: PropTypes.bool,
+	id: PropTypes.string,
+	label: PropTypes.string,
+	name: PropTypes.string,
+	value: PropTypes.string,
+	onChange: PropTypes.func,
 };
 
 export default FileInput;

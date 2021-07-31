@@ -1,10 +1,10 @@
-import EmptyLayout from '../components/layouts/EmptyLayout';
-import {Button, Notification, PasswordInput, TextInput} from 'hds-react';
-import {useFormik} from 'formik';
+import { Button, Notification, PasswordInput, TextInput } from "hds-react";
 import * as Yup from "yup";
-import {useAuth} from '../lib/auth/useAuth';
-import {useState} from 'react';
-import {useRouter} from '../lib/useRouter';
+import { useFormik } from "formik";
+import { useState } from "react";
+import { useAuth } from "lib/auth/useAuth";
+import { useRouter } from "lib/useRouter";
+import EmptyLayout from "components/layouts/EmptyLayout";
 
 const loginSchema = Yup.object().shape({
 	email: Yup.string().email("Email invalide").required("Email requis"),
@@ -12,19 +12,19 @@ const loginSchema = Yup.object().shape({
 });
 
 export default function LoginPage() {
-	const {login} = useAuth();
+	const { login } = useAuth();
 	const [error, setError] = useState();
 	const router = useRouter();
 
 	const formik = useFormik({
-		initialValues: {email: "", password: ""},
+		initialValues: { email: "", password: "" },
 		validationSchema: loginSchema,
 		validateOnChange: false,
-		onSubmit: ({email, password}) => {
+		onSubmit: ({ email, password }) => {
 			setError();
 			login(email, password)
 				.then(() => {
-					router.push("/admin/")
+					router.push("/admin/");
 				})
 				.catch(handleLoginFailed);
 		},
@@ -38,10 +38,7 @@ export default function LoginPage() {
 		<EmptyLayout>
 			<div className="h-screen flex flex-col items-center justify-center">
 				<div className="w-full max-w-md">
-
-					{error && (
-						<Notification type="error" label={error} className="mb-6" />
-					)}
+					{error && <Notification type="error" label={error} className="mb-6" />}
 
 					<form onSubmit={formik.handleSubmit}>
 						<TextInput

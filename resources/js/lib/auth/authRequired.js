@@ -17,6 +17,7 @@ export default function AuthRequired({children}) {
 			router.push("/admin/login");
 		}
 
+		//eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [auth.isInitialized, auth.isAuth, router.pathname]);
 
 	if (!auth.isInitialized) {

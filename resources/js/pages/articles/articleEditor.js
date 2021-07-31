@@ -1,18 +1,18 @@
-import DashboardLayout from '../../components/layouts/DashboardLayout';
-import {Button, IconLinkExternal, TextArea, TextInput} from 'hds-react';
-import {useEffect, useRef, useState} from 'react';
-import {useRouter} from '../../lib/useRouter';
-import apiArticle from '../../lib/api/apiArticle';
-import {useFormik} from 'formik';
-import * as Yup from 'yup';
-import EditorJS from '@editorjs/editorjs';
+import dayjs from "dayjs";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import EditorJS from "@editorjs/editorjs";
 import HeaderTool from "@editorjs/header";
 import EmbedTool from "@editorjs/embed";
-import ImageTool from '@editorjs/image';
-import {getCsrfToken} from '../../lib/api/broker';
-import FileInput from '../../components/FileInput/FileInput';
-import DateTimeInput from '../../components/DateTimeInput/DateTimeInput';
-import dayjs from 'dayjs';
+import ImageTool from "@editorjs/image";
+import { useEffect, useRef, useState } from "react";
+import { Button, IconLinkExternal, TextArea, TextInput } from "hds-react";
+import { useRouter } from "lib/useRouter";
+import apiArticle from "lib/api/apiArticle";
+import { getCsrfToken } from "lib/api/broker";
+import DashboardLayout from "components/layouts/DashboardLayout";
+import FileInput from "components/FileInput/FileInput";
+import DateTimeInput from "components/DateTimeInput/DateTimeInput";
 
 const articleSchema = Yup.object().shape({
 	title: Yup.string().min(5).max(100).required().trim(),
@@ -22,27 +22,10 @@ const articleSchema = Yup.object().shape({
 });
 
 export default function ArticleEditorPage() {
-	const {query} = useRouter();
+	const { query } = useRouter();
 	const [isLoading, setIsLoading] = useState(false);
 	const [article, setArticle] = useState();
-	const editorWrapperRef = useRef();
 	const editor = useRef();
-
-	// Load the article on start
-	useEffect(() => {
-		apiArticle.get(query.id)
-			.then((data) => {
-				setArticle(data);
-				formik.setValues({
-					title: data.title,
-					slug: data.slug,
-					published_at: data.published_at ? dayjs(data.published_at).toDate() : undefined,
-					content: data.content,
-					thumbnail: data.thumbnail,
-				});
-			})
-			.catch(console.error);
-	}, []);
 
 	/*
 	| -------------------------------------------------
@@ -51,12 +34,13 @@ export default function ArticleEditorPage() {
 	 */
 
 	const formik = useFormik({
-		initialValues: {title: "", slug: "", excerpt: null, content: null, published_at: null, thumbnail: undefined},
+		initialValues: { title: "", slug: "", excerpt: null, content: null, published_at: null, thumbnail: undefined },
 		validationSchema: articleSchema,
 		validateOnChange: false,
 		validateOnBlur: true,
 		onSubmit: (data) => {
-			apiArticle.update({id: article.id, ...data})
+			apiArticle
+				.update({ id: article.id, ...data })
 				.then((data) => {
 					setArticle(data);
 					formik.setValues({
@@ -78,6 +62,30 @@ export default function ArticleEditorPage() {
 
 	/*
 	| -------------------------------------------------
+	| Initialization
+	| -------------------------------------------------
+	 */
+
+	// Load the article on start
+	useEffect(() => {
+		apiArticle
+			.get(query.id)
+			.then((data) => {
+				setArticle(data);
+				formik.setValues({
+					title: data.title,
+					slug: data.slug,
+					published_at: data.published_at ? dayjs(data.published_at).toDate() : undefined,
+					content: data.content,
+					thumbnail: data.thumbnail,
+				});
+			})
+			.catch(console.error);
+		//eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [query.id]);
+
+	/*
+	| -------------------------------------------------
 	| Event handlers
 	| -------------------------------------------------
 	 */
@@ -92,7 +100,7 @@ export default function ArticleEditorPage() {
 			//noinspection JSValidateTypes
 			editor.current = new EditorJS({
 				holder: "editorjs",
-				placeholder: 'Écrivez votre article ici...',
+				placeholder: "Écrivez votre article ici...",
 				autofocus: true,
 				minHeight: 32,
 				tools: {
@@ -121,13 +129,8 @@ export default function ArticleEditorPage() {
 		}
 
 		return () => {
-			if (typeof editor.current.destroy === "function") {
+			if (typeof editor.current?.destroy === "function") {
 				editor.current?.destroy();
-			}
-			if (!editorWrapperRef.current.querySelector("#editorjs")) {
-				const newEditorDiv = document.createElement("div");
-				newEditorDiv.id = "editorjs";
-				editorWrapperRef.current.append(newEditorDiv);
 			}
 			editor.current = undefined;
 		};
@@ -146,11 +149,13 @@ export default function ArticleEditorPage() {
 
 	function submitForm() {
 		setIsLoading(true);
-		editor.current.save()
+		editor.current
+			.save()
 			.then((data) => {
 				formik.setFieldValue("content", data);
 				formik.submitForm();
-			}).catch(console.error);
+			})
+			.catch(console.error);
 	}
 
 	/*
@@ -171,14 +176,19 @@ export default function ArticleEditorPage() {
 					<div className="p-4 pb-6 border-2 border-solid border-gray-300">
 						<h2 className="text-xl font-bold">Contenu</h2>
 						<p className="text-gray-500">
-							Le bloc ci-dessous représente le contenu de l'article. Vous pouvez y écrire ce que vous souhaitez,
+							Le bloc ci-dessous représente le contenu de l&apos;article. Vous pouvez y écrire ce que vous souhaitez,
 							ajouter des images et autres médias. Le style affiché dans cet éditeur est proche du rendu final.
 						</p>
 					</div>
-					<div ref={editorWrapperRef} className="relative py-4 mt-6 border-2 border-solid border-gray-300">
-						<div id="editorjs"/>
+					<div className="relative py-4 mt-6 border-2 border-solid border-gray-300">
+						<div id="editorjs" />
 					</div>
-					{formik.errors.content && formik.errors.content.map((msg) => <p className="my-2 text-red-500">{msg}</p>)}
+					{formik.errors.content &&
+						formik.errors.content.map((msg, i) => (
+							<p key={i} className="my-2 text-red-500">
+								{msg}
+							</p>
+						))}
 				</div>
 
 				{/*
@@ -188,18 +198,22 @@ export default function ArticleEditorPage() {
 				*/}
 				<aside className="col-span-1">
 					<div className="p-4 border-2 border-solid border-gray-300">
-
 						{/* See article link */}
 						<div className="text-right">
 							{Boolean(article?.slug) && (
-								<a href={`/actus/${article.slug}`} target="_blank" className="inline-flex items-center">
-									Voir l'article
-									<IconLinkExternal className="ml-2"/>
+								<a
+									href={`/actus/${article.slug}`}
+									target="_blank"
+									className="inline-flex items-center"
+									rel="noreferrer"
+								>
+									Voir l&apos;article
+									<IconLinkExternal className="ml-2" />
 								</a>
 							)}
 						</div>
 
-						<hr className="my-4 border-t-2 border-gray-300"/>
+						<hr className="my-4 border-t-2 border-gray-300" />
 
 						{/* Inputs */}
 						<TextInput
@@ -269,7 +283,9 @@ export default function ArticleEditorPage() {
 
 						{/* Actions */}
 						<div className="mt-8">
-							<Button onClick={submitForm} isLoading={isLoading} loadingText="Sauvegarde en cours...">Sauvegarder</Button>
+							<Button onClick={submitForm} isLoading={isLoading} loadingText="Sauvegarde en cours...">
+								Sauvegarder
+							</Button>
 						</div>
 					</div>
 				</aside>
