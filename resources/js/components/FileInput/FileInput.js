@@ -86,7 +86,7 @@ FileInput.propTypes = {
 	id: PropTypes.string,
 	label: PropTypes.string,
 	name: PropTypes.string,
-	value: PropTypes.string,
+	value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 	onChange: PropTypes.func,
 };
 
