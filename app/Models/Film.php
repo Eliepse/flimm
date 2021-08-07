@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Http\UploadedFile;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * Class Film
@@ -15,28 +19,32 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @package App\Models
  * @property-read int $id
  * @property string $title
+ * @property string|null $title_override
  * @property int $duration
- * @property string $synopsis
- * @property string $description
- * @property string $video_link
- * @property string $imdb_link
+ * @property string|null $synopsis
+ * @property string|null $description
+ * @property string $filmmaker
+ * @property string|null $technical_members
+ * @property string|null $gender
+ * @property string $year
+ * @property string|null $production_name
+ * @property string|null $country
+ * @property string|null $other_technical_infos
+ * @property string|null $website_link
+ * @property string|null $video_link
+ * @property string|null $trailer_link
+ * @property string|null $imdb_id
+ * @property Media|null $thumbnail
  * @property-read Carbon $created_at
  * @property-read Carbon $updated_at
  * @property-read Collection $schedules
  * @property-read Collection $editions
  */
-class Film extends Model
+class Film extends Model implements HasMedia
 {
-	use HasFactory;
+	use HasFactory, InteractsWithMedia;
 
-	protected $fillable = [
-		"title",
-		"duration",
-		"synopsis",
-		"description",
-		"video_link",
-		"imdb_link",
-	];
+	protected $guarded = ["thumbnail"];
 
 
 	public function personalities(): HasMany
@@ -54,5 +62,42 @@ class Film extends Model
 	public function edtions(): HasManyThrough
 	{
 		return $this->hasManyThrough(Edition::class, FilmSchedule::class);
+	}
+
+
+	public function registerMediaCollections(): void
+	{
+		$this
+			->addMediaCollection('thumbnail')
+			->useDisk("media")
+			->singleFile();
+	}
+
+
+	public function getThumbnailAttribute(): ?Media
+	{
+		return $this->getFirstMedia("thumbnail");
+	}
+
+
+	public function saveThumbnail(UploadedFile $thumbnail = null): ?Media
+	{
+		if (is_null($thumbnail)) {
+			$this->clearMediaCollection("thumbnail");
+			return null;
+		}
+
+		return $this->addMedia($thumbnail)->toMediaCollection("thumbnail");
+	}
+
+
+	public function toArray()
+	{
+		return array_merge(
+			parent::toArray(),
+			[
+				"thumbnail" => optional($this->thumbnail)->getUrl(),
+			]
+		);
 	}
 }
