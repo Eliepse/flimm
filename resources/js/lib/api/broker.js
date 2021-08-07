@@ -1,4 +1,4 @@
-import Cookie from '../cookie';
+import Cookie from "../cookie";
 
 export function getCsrfToken() {
 	return decodeURIComponent(Cookie.get("XSRF-TOKEN"));
@@ -11,9 +11,9 @@ export function getCsrfToken() {
 function baseHeaders(headers = {}) {
 	return {
 		"X-XSRF-TOKEN": getCsrfToken(),
-		"Accept": "application/json",
+		Accept: "application/json",
 		"Content-Type": "application/json",
-		...headers,
+		...headers
 	};
 }
 
@@ -46,7 +46,7 @@ function apiRequest(url, method = "GET", params = null, config = {}) {
 
 	// The browser handle the correct content type
 	// for us when handling complicated multi-part form data.
-	if(hasParams && params instanceof FormData) {
+	if (hasParams && params instanceof FormData) {
 		delete requestConfig.headers["Content-Type"];
 	}
 
@@ -75,7 +75,8 @@ function isResponseJsonParsable(response) {
  */
 function handleRequestResponse(response, resolve, reject) {
 	if (!response.ok) {
-		response.json()
+		response
+			.json()
 			.then((data) => reject(data, response))
 			.catch(reject);
 		return;
@@ -83,7 +84,8 @@ function handleRequestResponse(response, resolve, reject) {
 
 	// Handle json compatible responses
 	if (isResponseJsonParsable(response)) {
-		response.json()
+		response
+			.json()
 			.then((data) => resolve(data, response))
 			.catch(reject);
 		return;
@@ -113,14 +115,16 @@ function requestCsrfToken() {
 }
 
 const Api = {
-		get: (url, data = null, config = {}) => apiRequest(url, "GET", data, config),
-		post: (url, data = null, config = {}) => apiRequest(url, "POST", data, config),
-		put: (url, data = null, config = {}) => apiRequest(url, "PUT", data, config),
-		patch: (url, data = null, config = {}) => apiRequest(url, "PATCH", data, config),
-		delete: (url, data = null, config = {}) => apiRequest(url, "DELETE", data, config),
-		requestToken: requestCsrfToken,
-		request: apiRequest,
-	}
-;
-
+	get: (url, data = null, config = {}) => apiRequest(url, "GET", data, config),
+	post: (url, data = null, config = {}) => apiRequest(url, "POST", data, config),
+	postMultipart: (url, data = null, config = {}) => {
+		const mergedConfigs = { ...config, headers: { "Content-Type": "multipart/form-data", ...config.headers } };
+		return apiRequest(url, "POST", data, mergedConfigs);
+	},
+	put: (url, data = null, config = {}) => apiRequest(url, "PUT", data, config),
+	patch: (url, data = null, config = {}) => apiRequest(url, "PATCH", data, config),
+	delete: (url, data = null, config = {}) => apiRequest(url, "DELETE", data, config),
+	requestToken: requestCsrfToken,
+	request: apiRequest
+};
 export default Api;
