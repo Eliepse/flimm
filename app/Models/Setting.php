@@ -46,7 +46,7 @@ class Setting extends Model implements HasMedia
 			return $this->getValueAsMedia();
 		}
 
-		return $this->castAttribute("value", $this->attributes["value"]);
+		return $this->castAttribute("value", $this->attributes["value"] ?? null);
 	}
 
 
