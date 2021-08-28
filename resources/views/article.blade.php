@@ -7,19 +7,19 @@
 ?>
 
 @section("main")
-	<header class="article-header">
+	<header class="page-header">
 		@if($article->thumbnail)
-			<img src="{{ $article->thumbnail->getUrl() }}" class="article-headerImage" alt=""/>
+			<img src="{{ $article->thumbnail->getUrl() }}" class="page-headerImage" alt=""/>
 		@endif
-		<h1 class="article-title">{{ $article->title }}</h1>
+		<h1 class="page-title">{{ $article->title }}</h1>
 		@if(!empty($article->excerpt))
-			<p class="article-excerpt">{{ $article->excerpt }}</p>
+			<p class="page-excerpt">{{ $article->excerpt }}</p>
 		@endif
-		<p class="article-publishDate">
+		<p class="page-publishDate">
 			<time>{{ $article->published_at->format("d.m.y") }}</time>
 		</p>
 	</header>
-	<div class="article-content">
+	<div class="page-content">
 		@foreach($article->content->getBlocks() as $block)
 			@include("common.blocks.block", $block)
 		@endforeach
