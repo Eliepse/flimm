@@ -26,8 +26,9 @@ class Setting extends Model implements HasMedia
 	protected $primaryKey = "name";
 	public $timestamps = false;
 	protected $casts = ["value" => SerializationCast::class, "isMedia" => "bool"];
-	protected $fillable = ["name", "value"];
+	protected $fillable = ["name", "value", "isMedia"];
 	protected $hidden = ["value", "media"];
+	protected $appends = ["isMedia"];
 
 
 	public function registerMediaCollections(): void
@@ -72,9 +73,9 @@ class Setting extends Model implements HasMedia
 	}
 
 
-	public function toArray()
+	public function toArray(): array
 	{
-		return array_merge([
+		return array_merge(parent::toArray(), [
 			"name" => $this->name,
 			"value" => $this->isMedia ? $this->getValueAsMedia()?->getFullUrl() : $this->value,
 		]);
