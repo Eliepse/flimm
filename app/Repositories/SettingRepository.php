@@ -32,6 +32,16 @@ class SettingRepository
 	}
 
 
+	public function isFilled(string $name): bool
+	{
+		if ($setting = $this->cache->get($name)) {
+			return ! is_null($setting->value);
+		}
+
+		return false;
+	}
+
+
 	public function create(string $name, mixed $value): Setting
 	{
 		if ($this->cache->get($name)) {
