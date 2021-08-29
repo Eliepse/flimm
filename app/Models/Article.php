@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\ArticleContent;
+use App\EditorJSAttribute;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,7 +22,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property string $title
  * @property string $slug
  * @property string $excerpt
- * @property ArticleContent|null $content
+ * @property EditorJSAttribute|null $content
  * @property Media|null $thumbnail
  * @property Carbon $published_at
  * @property Carbon $created_at
@@ -42,7 +42,7 @@ class Article extends Model implements HasMedia
 	];
 
 	protected $casts = [
-		"content" => ArticleContent::class,
+		"content" => EditorJSAttribute::class,
 	];
 
 	protected $dates = ["published_at"];

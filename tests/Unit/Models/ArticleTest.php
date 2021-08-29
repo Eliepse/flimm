@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Models;
 
-use App\ArticleContent;
+use App\EditorJSAttribute;
 use App\Models\Article;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,6 +27,6 @@ class ArticleTest extends TestCase
 	{
 		/** @var Article $article */
 		$article = Article::factory()->create();
-		$this->assertInstanceOf(ArticleContent::class, $article->content);
+		$this->assertInstanceOf(EditorJSAttribute::class, $article->content);
 	}
 }

@@ -4,14 +4,14 @@
 namespace App;
 
 
-use App\Casts\ArticleContentCast;
+use App\Casts\EditorJSCast;
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 
-class ArticleContent implements Jsonable, Arrayable, Castable
+class EditorJSAttribute implements Jsonable, Arrayable, Castable
 {
 	private Carbon $time;
 	private array $blocks;
@@ -83,8 +83,8 @@ class ArticleContent implements Jsonable, Arrayable, Castable
 	}
 
 
-	public static function castUsing(array $arguments)
+	public static function castUsing(array $arguments): string
 	{
-		return ArticleContentCast::class;
+		return EditorJSCast::class;
 	}
 }

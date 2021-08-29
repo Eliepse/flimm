@@ -4,12 +4,12 @@
 namespace App\Casts;
 
 
-use App\ArticleContent;
+use App\EditorJSAttribute;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
-class ArticleContentCast implements CastsAttributes
+class EditorJSCast implements CastsAttributes
 {
-	public function get($model, string $key, $value, array $attributes): ?ArticleContent
+	public function get($model, string $key, $value, array $attributes): ?EditorJSAttribute
 	{
 		if(is_null($value)) {
 			return null;
@@ -19,7 +19,7 @@ class ArticleContentCast implements CastsAttributes
 			$value = json_decode($value, true);
 		}
 
-		return new ArticleContent($value);
+		return new EditorJSAttribute($value);
 	}
 
 
@@ -30,10 +30,10 @@ class ArticleContentCast implements CastsAttributes
 		}
 
 		if (is_array($value)) {
-			$value = new ArticleContent($value);
+			$value = new EditorJSAttribute($value);
 		}
 
-		if (! $value instanceof ArticleContent) {
+		if (! $value instanceof EditorJSAttribute) {
 			throw new \InvalidArgumentException('The given value is not an ArticleContent instance.');
 		}
 
