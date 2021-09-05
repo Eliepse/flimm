@@ -1,6 +1,9 @@
+/* eslint-disable no-undef */
+
 const mix = require("laravel-mix");
 const tailwindcss = require("tailwindcss");
 const path = require("path");
+const AntdDayjsWebpackPlugin = require("antd-dayjs-webpack-plugin");
 
 /*
  |--------------------------------------------------------------------------
@@ -25,6 +28,9 @@ mix
 	.extract(["react", "react-dom"])
 	.js("resources/js/index.js", "public/js")
 	.sass("resources/scss/app.scss", "public/css", {})
+	.webpackConfig({
+		plugins: [new AntdDayjsWebpackPlugin()],
+	})
 	.options({
 		postCss: [tailwindcss("./tailwind.config.js")],
 	})
