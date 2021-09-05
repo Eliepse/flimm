@@ -118,7 +118,7 @@ class Article extends Model implements HasMedia
 	}
 
 
-	public function toArray()
+	public function toArray(): array
 	{
 		return array_merge(
 			parent::toArray(),

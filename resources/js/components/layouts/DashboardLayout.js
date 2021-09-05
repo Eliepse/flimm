@@ -14,6 +14,7 @@ const DashboardLayout = ({ children }) => {
 					<Navigation.Item label="Dashboard" as={Link} href="/" />
 					<Navigation.Item label="Articles" as={Link} href="/articles" />
 					<Navigation.Item label="Films" as={Link} href="/films" />
+					<Navigation.Item label="Editions" as={Link} href="/editions" />
 					<Navigation.Item label="Paramètres" as={Link} href="/settings" />
 				</Navigation.Row>
 				<Navigation.Actions>

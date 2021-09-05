@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Edition;
-use App\Models\Film;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,10 +17,10 @@ class CreateEditionsTable extends Migration
 			$table->id();
 			$table->string("title");
 			$table->string("slug")->unique();
-			$table->json("content")->comment("The content has to be in a json format, not html.");
-			$table->date("open_at");
-			$table->date("close_at");
-			$table->dateTime("published_at");
+			$table->text("presentation")->nullable();
+			$table->date("open_at")->nullable();
+			$table->date("close_at")->nullable();
+			$table->dateTime("published_at")->nullable();
 			$table->timestamps();
 		});
 	}

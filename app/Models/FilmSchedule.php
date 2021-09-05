@@ -23,7 +23,7 @@ class FilmSchedule extends Model
 {
 	use HasFactory;
 
-	protected $fillable = ["start_at"];
+	protected $fillable = ["start_at", "film_id", "edition_id"];
 
 	protected $casts = [
 		"start_at" => "datetime",

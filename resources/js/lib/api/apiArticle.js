@@ -1,5 +1,5 @@
-import Api from './broker';
-import dayjs from 'dayjs';
+import Api from "./broker";
+import { dateToApi } from "lib/support/dates";
 
 const basePath = "/articles";
 const dateTimeFormat = "YYYY-MM-DDTHH:mm:ssZZ";
@@ -29,7 +29,7 @@ export function update(article) {
 		params.set("thumbnail", data.thumbnail || "");
 	}
 
-	return Api.post(`${basePath}/${article.id}`, params, {headers: {"Content-Type": "multipart/form-data"}});
+	return Api.post(`${basePath}/${article.id}`, params, { headers: { "Content-Type": "multipart/form-data" } });
 }
 
 export function remove(article) {
@@ -37,18 +37,14 @@ export function remove(article) {
 }
 
 function formatArticleData(article) {
-	const {published_at} = article;
+	const { published_at } = article;
 
 	return {
 		...article,
-		published_at: hasValidPublishedAt(article) ? dayjs(published_at).format(dateTimeFormat) : null,
+		published_at: dateToApi(article.published_at),
 	};
 }
 
-function hasValidPublishedAt(article) {
-	return article.published_at instanceof Date;
-}
-
-const apiArticle = {all, get, create, update, remove};
+const apiArticle = { all, get, create, update, remove };
 
 export default apiArticle;

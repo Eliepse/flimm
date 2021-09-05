@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Http\UploadedFile;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * Class Edition
@@ -16,7 +20,8 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property-read int $id
  * @property  string $title
  * @property  string $slug
- * @property  array $content
+ * @property  string $presentation
+ * @property Media|null $thumbnail
  * @property  Carbon $open_at
  * @property  Carbon $close_at
  * @property  Carbon $published_at
@@ -25,18 +30,45 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property-read Collection $schedules
  * @property-read Collection $films
  */
-class Edition extends Model
+class Edition extends Model implements HasMedia
 {
-	use HasFactory;
+	use HasFactory, InteractsWithMedia;
 
-	protected $fillable = ["title", "slug", "content", "open_at", "close_at", "published_at"];
+	protected $fillable = ["title", "slug", "presentation", "open_at", "close_at", "published_at"];
 
 	protected $casts = [
-		"content" => "array",
 		"open_at" => "date",
 		"close_at" => "date",
 		"published_at" => "datetime",
 	];
+
+
+	public function registerMediaCollections(): void
+	{
+		$this
+			->addMediaCollection('thumbnail')
+			->useDisk("media")
+			->singleFile();
+	}
+
+
+	/** @noinspection PhpUnused */
+	public function getThumbnailAttribute(): ?Media
+	{
+		return $this->getFirstMedia("thumbnail");
+	}
+
+
+	public function saveThumbnail(UploadedFile $thumbnail): Media
+	{
+		return $this->addMedia($thumbnail)->toMediaCollection("thumbnail");
+	}
+
+
+	public function removeThumbnail()
+	{
+		$this->clearMediaCollection("thumbnail");
+	}
 
 
 	public function schedules(): HasMany
@@ -48,5 +80,16 @@ class Edition extends Model
 	public function films(): HasManyThrough
 	{
 		return $this->hasManyThrough(Film::class, FilmSchedule::class);
+	}
+
+
+	public function toArray(): array
+	{
+		return array_merge(
+			parent::toArray(),
+			[
+				"thumbnail" => optional($this->thumbnail)->getUrl(),
+			]
+		);
 	}
 }
