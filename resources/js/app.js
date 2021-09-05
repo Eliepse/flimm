@@ -8,6 +8,7 @@ import SettingsPage from "pages/settings";
 import FilmIndexPage from "pages/films/filmIndex";
 import FilmEditorPage from "pages/films/filmEditor";
 import EditionEditorPage from "pages/editions/editionEditor";
+import EditionIndexPage from "pages/editions/editionIndex";
 import PropTypes from "prop-types";
 import { URL_PREFIX } from "configs/app";
 
@@ -23,6 +24,7 @@ export default function App() {
 					<Route exact path={`${URL_PREFIX}/films`} component={FilmIndexPage} />
 					<Route exact path={`${URL_PREFIX}/films/create`} component={FilmEditorPage} />
 					<Route exact path={`${URL_PREFIX}/films/:id`} component={FilmEditorPage} />
+					<Route exact path={`${URL_PREFIX}/editions`} component={EditionIndexPage} />
 					<Route exact path={`${URL_PREFIX}/editions/create`} component={EditionEditorPage} />
 					<Route exact path={`${URL_PREFIX}/editions/:id`} component={EditionEditorPage} />
 				</Switch>

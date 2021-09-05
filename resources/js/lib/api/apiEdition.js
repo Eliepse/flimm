@@ -4,18 +4,17 @@ import { parseToDaysjs } from "lib/support/forms";
 const basePath = "/editions";
 
 export function all() {
-	return Api.get(basePath);
+	return new Promise((resolve, reject) => {
+		Api.get(basePath)
+			.then((data) => resolve(data.map(parseEdition)))
+			.catch(reject);
+	});
 }
 
 export function get(id) {
 	return new Promise((resolve, reject) => {
 		Api.get(`${basePath}/${id}`)
-			.then((data) => {
-				resolve({
-					...parseToDaysjs(data, ["published_at", "open_at", "close_at", "created_at", "updated_at"]),
-					schedules: data.schedules.map((schedule) => parseToDaysjs(schedule, ["start_at"])),
-				});
-			})
+			.then((data) => resolve(parseEdition(data)))
 			.catch(reject);
 	});
 }
@@ -26,6 +25,15 @@ export function create(edition) {
 
 export function update({ id, ...edition }) {
 	return Api.postMultipart(`${basePath}/${id}`, prepareEditionData(edition));
+}
+
+function parseEdition(data) {
+	const schedules = (data.schedules || []).map((schedule) => parseToDaysjs(schedule, ["start_at"]));
+
+	return {
+		...parseToDaysjs(data, ["published_at", "open_at", "close_at", "created_at", "updated_at"]),
+		schedules,
+	};
 }
 
 const apiArticle = { all, get, create, update };
