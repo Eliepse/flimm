@@ -1,4 +1,6 @@
 import Cookie from "../cookie";
+import { dateToApi, isDate } from "lib/support/dates";
+import dayjs from "dayjs";
 
 export function getCsrfToken() {
 	return decodeURIComponent(Cookie.get("XSRF-TOKEN"));
@@ -13,7 +15,7 @@ function baseHeaders(headers = {}) {
 		"X-XSRF-TOKEN": getCsrfToken(),
 		Accept: "application/json",
 		"Content-Type": "application/json",
-		...headers
+		...headers,
 	};
 }
 
@@ -114,6 +116,65 @@ function requestCsrfToken() {
 	});
 }
 
+/**
+ * Convert any empty value to an empty string.
+ *
+ * @param {Object} data
+ * @returns {Object}
+ */
+export function formatEmptyValue(data) {
+	return Object.fromEntries(Object.entries(data).map(([k, v]) => [k, v || ""]));
+}
+
+/**
+ * Format any date object of the given object.
+ *
+ * @param {Object} data
+ * @returns {Object}
+ */
+export function formatDatesValues(data) {
+	return Object.fromEntries(Object.entries(data).map(([k, v]) => [k, isDate(v) ? dateToApi(v) : v]));
+}
+
+export function formatObjectValues(data) {
+	function objectToArrayFields(obj, prefix) {
+		const fields = {};
+
+		Object.entries(obj).forEach(([k, v]) => {
+			const key = `${prefix}[${k}]`;
+			const value = v || "";
+
+			if (dayjs.isDayjs(value)) {
+				fields[key] = dateToApi(value.toDate());
+			} else if (value instanceof Date) {
+				fields[key] = dateToApi(value);
+			} else if (typeof value === "object") {
+				Object.assign(fields, objectToArrayFields(value, key));
+			} else {
+				fields[key] = value;
+			}
+		});
+
+		return fields;
+	}
+
+	const fieldsToAppend = {};
+	const fieldToFilters = [];
+
+	Object.entries(data).forEach(([k, v]) => {
+		if (typeof v !== "object") {
+			return v;
+		}
+
+		fieldToFilters.push(k);
+		Object.assign(fieldsToAppend, objectToArrayFields(v, k));
+	});
+
+	const filteredFields = Object.fromEntries(Object.entries(data).filter(([k]) => !fieldToFilters.includes(k)));
+
+	return Object.assign({}, filteredFields, fieldsToAppend);
+}
+
 const Api = {
 	get: (url, data = null, config = {}) => apiRequest(url, "GET", data, config),
 	post: (url, data = null, config = {}) => apiRequest(url, "POST", data, config),
@@ -125,6 +186,7 @@ const Api = {
 	patch: (url, data = null, config = {}) => apiRequest(url, "PATCH", data, config),
 	delete: (url, data = null, config = {}) => apiRequest(url, "DELETE", data, config),
 	requestToken: requestCsrfToken,
-	request: apiRequest
+	request: apiRequest,
 };
+
 export default Api;
