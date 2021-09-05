@@ -144,7 +144,9 @@ export function formatObjectValues(data) {
 			const key = `${prefix}[${k}]`;
 			const value = v || "";
 
-			if (dayjs.isDayjs(value)) {
+			if (value instanceof File) {
+				fields[key] = value;
+			} else if (dayjs.isDayjs(value)) {
 				fields[key] = dateToApi(value.toDate());
 			} else if (value instanceof Date) {
 				fields[key] = dateToApi(value);
@@ -162,8 +164,8 @@ export function formatObjectValues(data) {
 	const fieldToFilters = [];
 
 	Object.entries(data).forEach(([k, v]) => {
-		if (typeof v !== "object") {
-			return v;
+		if (typeof v !== "object" || v instanceof File) {
+			return v || "";
 		}
 
 		fieldToFilters.push(k);
