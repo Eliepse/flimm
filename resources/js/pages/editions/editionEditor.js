@@ -156,7 +156,7 @@ const EditionEditorPage = () => {
 						<Form.Item
 							valuePropName="fileList"
 							getValueFromEvent={handleUploadChanged}
-							{...formikItemProps(formik, "thumbnail", HELP_TEXTS)}
+							{...formikItemProps(formik, "thumbnail", HELP_TEXTS, false)}
 						>
 							<Upload.Dragger
 								defaultFileList={apiData.thumbnail ? [{ url: apiData.thumbnail }] : []}

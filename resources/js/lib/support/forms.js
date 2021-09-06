@@ -26,13 +26,13 @@ export function formikProps(formik, name) {
 	};
 }
 
-export function formikItemProps(formik, name, helpTexts) {
+export function formikItemProps(formik, name, helpTexts, withFeedbacks = false) {
 	return {
 		name,
 		onChange: formik.handleChange,
 		help: formik.errors[name],
 		extra: helpTexts[name],
-		hasFeedback: true,
+		hasFeedback: withFeedbacks && Boolean(formik.errors[name]),
 		validateStatus: formik.errors[name] ? "error" : undefined,
 	};
 }
