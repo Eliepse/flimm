@@ -73,13 +73,13 @@ class Edition extends Model implements HasMedia
 
 	public function schedules(): HasMany
 	{
-		return $this->hasMany(FilmSchedule::class);
+		return $this->hasMany(Schedule::class);
 	}
 
 
 	public function films(): HasManyThrough
 	{
-		return $this->hasManyThrough(Film::class, FilmSchedule::class);
+		return $this->hasManyThrough(Film::class, Schedule::class);
 	}
 
 

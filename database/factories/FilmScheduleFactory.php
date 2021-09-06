@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\FilmSchedule;
+use App\Models\Schedule;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -13,7 +13,7 @@ class FilmScheduleFactory extends Factory
 	 *
 	 * @var string
 	 */
-	protected $model = FilmSchedule::class;
+	protected $model = Schedule::class;
 
 
 	/**

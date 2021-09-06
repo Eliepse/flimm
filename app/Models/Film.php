@@ -55,13 +55,13 @@ class Film extends Model implements HasMedia
 
 	public function schedules(): HasMany
 	{
-		return $this->hasMany(FilmSchedule::class);
+		return $this->hasMany(Schedule::class);
 	}
 
 
 	public function edtions(): HasManyThrough
 	{
-		return $this->hasManyThrough(Edition::class, FilmSchedule::class);
+		return $this->hasManyThrough(Edition::class, Schedule::class);
 	}
 
 
@@ -91,7 +91,7 @@ class Film extends Model implements HasMedia
 	}
 
 
-	public function toArray()
+	public function toArray(): array
 	{
 		return array_merge(
 			parent::toArray(),

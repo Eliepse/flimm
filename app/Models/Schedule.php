@@ -6,9 +6,10 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Class FilmSchedule
+ * Class Schedule
  *
  * @package App\Models
  * @property-read int $id
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read Carbon $created_at
  * @property-read Carbon $updated_at
  */
-class FilmSchedule extends Model
+class Schedule extends Model
 {
 	use HasFactory;
 
@@ -36,8 +37,8 @@ class FilmSchedule extends Model
 	}
 
 
-	public function film(): BelongsTo
+	public function film(): HasMany
 	{
-		return $this->belongsTo(Film::class);
+		return $this->hasMany(Film::class);
 	}
 }

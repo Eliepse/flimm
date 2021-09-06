@@ -2,6 +2,7 @@
 
 use App\Models\Edition;
 use App\Models\Film;
+use App\Models\Schedule;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,13 +16,18 @@ class CreateFilmSchedulesTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('film_schedules', function (Blueprint $table) {
+		Schema::create('schedules', function (Blueprint $table) {
 			$table->id();
+			$table->string("title");
 			$table->foreignIdFor(Edition::class);
-			$table->foreignIdFor(Film::class);
 			$table->json("content")->nullable();
 			$table->dateTime("start_at");
 			$table->timestamps();
+		});
+
+		Schema::create("edition_film", function (Blueprint $table) {
+			$table->foreignIdFor(Schedule::class);
+			$table->foreignIdFor(Film::class);
 		});
 	}
 
@@ -33,6 +39,7 @@ class CreateFilmSchedulesTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('film_schedules');
+		Schema::dropIfExists('schedules');
+		Schema::dropIfExists('edition_film');
 	}
 }
