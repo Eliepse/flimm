@@ -13,6 +13,7 @@ import { getCsrfToken } from "lib/api/broker";
 import DashboardLayout from "components/layouts/DashboardLayout";
 import FileInput from "components/FileInput/FileInput";
 import DateTimeInput from "components/DateTimeInput/DateTimeInput";
+import { notification } from "antd";
 
 const articleSchema = Yup.object().shape({
 	title: Yup.string().min(5).max(100).required().trim(),
@@ -43,6 +44,7 @@ export default function ArticleEditorPage() {
 				.update({ id: article.id, ...data })
 				.then((data) => {
 					setArticle(data);
+					notification.success({ message: "Article mis à jour" });
 					formik.setValues({
 						title: data.title,
 						slug: data.slug,

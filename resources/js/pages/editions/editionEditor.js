@@ -1,7 +1,7 @@
 import DashboardLayout from "components/layouts/DashboardLayout";
 import { Button } from "hds-react";
 import { formikItemProps, normalizedUploadedFiles, parseDayjsToDate, parseToSingleFile } from "lib/support/forms";
-import { DatePicker, Divider, Form, Input, Upload } from "antd";
+import { DatePicker, Divider, Form, Input, notification, Upload } from "antd";
 import { FileImageTwoTone } from "@ant-design/icons";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -44,7 +44,7 @@ const EditionEditorPage = () => {
 	const { query, ...router } = useRouter();
 	const [form] = Form.useForm();
 	const isNew = query.id === undefined;
-	const [films, setFilms] = useState([]);
+	//const [films, setFilms] = useState([]);
 	const [apiData, setApiData] = useState({});
 	const [customSlug, setCustomSlug] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
@@ -70,7 +70,7 @@ const EditionEditorPage = () => {
 	 */
 
 	useEffect(() => {
-		apiFilm.all().then(setFilms);
+		//apiFilm.all().then(setFilms);
 
 		if (isNew) {
 			setIsLoading(false);
@@ -108,7 +108,10 @@ const EditionEditorPage = () => {
 
 				// Redirect to the edition mode on success
 				if (isNew) {
+					notification.success({ message: "Édition créée" });
 					router.pushAdmin(`/editions/${data.id}`);
+				} else {
+					notification.success({ message: "Édition mise à jour" });
 				}
 			})
 			.catch((err) => {

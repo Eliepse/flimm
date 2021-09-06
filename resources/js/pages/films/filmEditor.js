@@ -7,6 +7,7 @@ import DashboardLayout from "components/layouts/DashboardLayout";
 import { Button, NumberInput, TextArea, TextInput } from "hds-react";
 import { formikProps } from "lib/support/forms";
 import FileInput from "components/FileInput/FileInput";
+import { notification } from "antd";
 
 const filmSchema = Yup.object().shape({
 	title: Yup.string().min(1).max(150).required().trim(),
@@ -74,7 +75,7 @@ const FilmEditorPage = () => {
 					.create(formikData)
 					.then((res) => {
 						formik.setValues(res);
-
+						notification.success({ message: "Film créé" });
 						// Redirect to the edition mode on success
 						router.pushAdmin(`/films/${res.id}`);
 					})
@@ -85,7 +86,10 @@ const FilmEditorPage = () => {
 
 			apiFilm
 				.update({ id: query.id, ...formikData })
-				.then((res) => formik.setValues(res))
+				.then((res) => {
+					formik.setValues(res);
+					notification.success({ message: "Film mis à jour" });
+				})
 				.catch(console.error)
 				.finally(() => setIsLoading(false));
 		},
