@@ -1,4 +1,4 @@
-import Api from './broker';
+import Api from "./broker";
 
 const basePath = "/settings";
 
@@ -10,9 +10,9 @@ export function upsert(setting) {
 	const params = new FormData();
 	params.set("value", setting.value || "");
 
-	return Api.post(`${basePath}/${setting.name}`, params, {headers: {"Content-Type": "multipart/form-data"}});
+	return Api.post(`${basePath}/${setting.name}`, params, { headers: { "Content-Type": "multipart/form-data" } });
 }
 
-const apiArticle = {all, upsert};
+const apiArticle = { all, upsert };
 
 export default apiArticle;

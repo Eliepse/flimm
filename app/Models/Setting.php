@@ -34,7 +34,7 @@ class Setting extends Model implements HasMedia
 	public function registerMediaCollections(): void
 	{
 		$this
-			->addMediaCollection('settings')
+			->addMediaCollection('value')
 			->useDisk("media")
 			->singleFile();
 	}
@@ -59,7 +59,7 @@ class Setting extends Model implements HasMedia
 
 	private function getValueAsMedia(): ?Media
 	{
-		return $this->getFirstMedia("settings");
+		return $this->getFirstMedia("value");
 	}
 
 
@@ -69,7 +69,13 @@ class Setting extends Model implements HasMedia
 			throw new \Exception("The setting '$this->name' does not accept image.");
 		}
 
-		return $this->addMedia($media)->toMediaCollection("settings");
+		return $this->addMedia($media)->toMediaCollection("value");
+	}
+
+
+	public function removeMedia()
+	{
+		$this->clearMediaCollection("value");
 	}
 
 

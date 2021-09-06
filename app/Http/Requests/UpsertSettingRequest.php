@@ -28,7 +28,7 @@ class UpsertSettingRequest extends FormRequest
 		$this->setting = $this->getSetting();
 
 		return [
-			"value" => ["nullable", $this->isMedia() ? "file" : "required"],
+			"value" => ["present", "nullable", $this->isMedia() ? "file" : ""],
 		];
 	}
 

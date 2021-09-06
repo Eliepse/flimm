@@ -2,7 +2,7 @@ import FileInput from "../FileInput/FileInput";
 import {Button, TextArea, TextInput} from "hds-react";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import apiSettings from "../../lib/api/apiSettings";
+import apiSettings from "lib/api/apiSettings";
 
 const Setting = ({ label, name, variant = "text", initialValue }) => {
 	const [loading, setLoading] = useState(false);

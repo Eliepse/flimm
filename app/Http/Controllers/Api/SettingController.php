@@ -29,7 +29,11 @@ class SettingController extends Controller
 		$setting->value = $request->value;
 
 		if ($setting->isMedia) {
-			$setting->saveMedia($request->file("value"));
+			if ($request->hasFile("value")) {
+				$setting->saveMedia($request->file("value"));
+			} else {
+				$setting->removeMedia();
+			}
 		}
 
 		$setting->save();
