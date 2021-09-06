@@ -192,13 +192,13 @@ const EditionEditorPage = () => {
 						A single button to add a film (through a modal), then all the schedules
 						are ordered by datetime, and grouped by day. :)
 						*/}
-						<Form.Item label="Scéances" className="mb-6" {...formikItemProps(formik, "schedules", HELP_TEXTS)}>
-							<FilmSchedulesInput
-								films={films}
-								open_at={form.getFieldValue("open_at")}
-								close_at={form.getFieldValue("close_at")}
-							/>
-						</Form.Item>
+						{/*<Form.Item label="Scéances" className="mb-6" {...formikItemProps(formik, "schedules", HELP_TEXTS)}>*/}
+						{/*	<FilmSchedulesInput*/}
+						{/*		films={films}*/}
+						{/*		open_at={form.getFieldValue("open_at")}*/}
+						{/*		close_at={form.getFieldValue("close_at")}*/}
+						{/*	/>*/}
+						{/*</Form.Item>*/}
 					</div>
 
 					{/*
