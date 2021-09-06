@@ -21,7 +21,7 @@ const filmSchema = Yup.object().shape({
 		.matches(/[0-9]{4}/)
 		.required(),
 	production_name: Yup.string().nullable(),
-	country: Yup.number().nullable(),
+	country: Yup.string().nullable(),
 	other_technical_infos: Yup.string().nullable(),
 	website_link: Yup.string().url().nullable(),
 	video_link: Yup.string().url().nullable(),
