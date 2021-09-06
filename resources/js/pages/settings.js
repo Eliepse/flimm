@@ -56,6 +56,11 @@ export default function SettingsPage() {
 					name="homepage.featuredImage.altText"
 					initialValue={initalData["homepage.featuredImage.altText"]}
 				/>
+				<Setting
+					label="Lien de l'image mise en avant"
+					name="homepage.featuredImage.link"
+					initialValue={initalData["homepage.featuredImage.link"]}
+				/>
 			</section>
 
 			<section className={styles.section}>

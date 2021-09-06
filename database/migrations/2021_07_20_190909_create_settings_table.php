@@ -29,6 +29,7 @@ class CreateSettingsTable extends Migration
 			["name" => "header.text", "value" => "21 - 24.10.2021\nDOC - Paris"],
 			["name" => "homepage.featuredImage", "isMedia" => true],
 			["name" => "homepage.featuredImage.altText"],
+			["name" => "homepage.featuredImage.link"],
 		]);
 	}
 
