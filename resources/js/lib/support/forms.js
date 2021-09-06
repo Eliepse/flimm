@@ -75,7 +75,7 @@ export function parseDayjsToDate(data) {
  */
 export function parseToSingleFile(data, fieldsName) {
 	function extractFile(value) {
-		return value.originFileObj || value;
+		return value?.originFileObj || value;
 	}
 
 	return Object.fromEntries(

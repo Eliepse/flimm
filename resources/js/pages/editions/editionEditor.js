@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import slug from "slug";
 import apiEdition from "lib/api/apiEdition";
 import apiFilm from "lib/api/apiFilm";
-import FilmSchedulesInput from "components/FilmSchedulesInput";
 
 const schema = Yup.object().shape({
 	title: Yup.string().min(4).max(150).required().trim(),
@@ -135,8 +134,7 @@ const EditionEditorPage = () => {
 
 	function handleFormSubmit() {
 		const fields = form.getFieldsValue();
-		formik.setValues(parseToSingleFile(parseDayjsToDate(fields), ["thumbnail"]));
-		formik.submitForm();
+		formik.setValues(parseToSingleFile(parseDayjsToDate(fields), ["thumbnail"])).finally(formik.submitForm);
 	}
 
 	/*
