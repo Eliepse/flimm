@@ -43,6 +43,8 @@ mix
 		postCss: [tailwindcss("./tailwind.config.js")],
 	});
 
-if (!mix.inProduction()) {
+if (mix.inProduction()) {
+	mix.version();
+} else {
 	mix.disableNotifications();
 }
