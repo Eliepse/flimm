@@ -19,6 +19,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @package App\Models
  * @property-read int $id
  * @property string $title
+ * @property string $slug
  * @property string|null $title_override
  * @property int $duration
  * @property string|null $synopsis

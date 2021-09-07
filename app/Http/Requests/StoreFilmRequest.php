@@ -14,8 +14,9 @@ class StoreFilmRequest extends FormRequest
 	public function rules(): array
 	{
 		return [
-			"title" => ["required", "string", "nullable"],
+			"title" => ["required", "string"],
 			"title_override" => ["string", "nullable"],
+			"slug" => ["required", "string"],
 			"duration" => ["required", "integer"],
 			"synopsis" => ["string", "nullable"],
 			"description" => ["string", "nullable"],

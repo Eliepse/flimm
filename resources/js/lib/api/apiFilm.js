@@ -25,6 +25,7 @@ function prepareFilmData(data) {
 
 	params.set("title", data.title || "");
 	params.set("title_override", data.title_override || "");
+	params.set("slug", data.slug || "");
 	params.set("duration", data.duration || "");
 	params.set("synopsis", data.synopsis || "");
 	params.set("description", data.description || "");

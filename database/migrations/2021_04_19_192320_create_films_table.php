@@ -16,6 +16,7 @@ class CreateFilmsTable extends Migration
 		Schema::create('films', function (Blueprint $table) {
 			$table->id();
 			$table->string("title");
+			$table->string("slug")->unique();
 			$table->string("title_override")->nullable();
 			$table->unsignedSmallInteger("duration");
 			$table->text("synopsis")->nullable();

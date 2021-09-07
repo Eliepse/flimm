@@ -16,6 +16,7 @@ class FilmSeeder extends Seeder
 	{
 		(new Film([
 			'title' => "LA GUERRE DES CENTIMES",
+			'slug' => "la-guerre-des-centimes",
 			'duration' => 37,
 			'filmmaker' => "Nader Samir Ayach",
 			'year' => 2019,
@@ -23,6 +24,7 @@ class FilmSeeder extends Seeder
 
 		(new Film([
 			'title' => "VIE ET MORT D’OSCAR PEREZ",
+			'slug' => "vie-et-mort-doscar-perez",
 			'duration' => 46,
 			'filmmaker' => "Romain Champalaune",
 			'year' => 2018,
@@ -30,6 +32,7 @@ class FilmSeeder extends Seeder
 
 		(new Film([
 			'title' => "HISTOIRE DE LA RÉVOLUTION",
+			'slug' => "histoire-de-la-revolution",
 			'duration' => 30,
 			'filmmaker' => "Maxime Martinot",
 			'year' => 2019,
@@ -37,6 +40,7 @@ class FilmSeeder extends Seeder
 
 		(new Film([
 			'title' => "LA FORÊT DE L’ESPACE",
+			'slug' => "la-foret-de-lespace",
 			'duration' => 30,
 			'filmmaker' => "Victor Missud",
 			'year' => 2019,

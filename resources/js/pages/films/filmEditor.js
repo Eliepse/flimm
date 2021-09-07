@@ -8,9 +8,14 @@ import { Button, NumberInput, TextArea, TextInput } from "hds-react";
 import { formikProps } from "lib/support/forms";
 import FileInput from "components/FileInput/FileInput";
 import { notification } from "antd";
+import slug from "slug";
 
 const filmSchema = Yup.object().shape({
 	title: Yup.string().min(1).max(150).required().trim(),
+	slug: Yup.string()
+		.min(4, "Trop court")
+		.matches(/[a-zA-Z0-9-]+/)
+		.required(),
 	title_override: Yup.string().nullable(),
 	duration: Yup.number().integer().min(1).required(),
 	synopsis: Yup.string().nullable(),
@@ -32,6 +37,7 @@ const filmSchema = Yup.object().shape({
 
 const defaultData = {
 	title: "",
+	slug: "",
 	title_override: "",
 	duration: 0,
 	synopsis: "",
@@ -54,6 +60,7 @@ const FilmEditorPage = () => {
 	const { query, ...router } = useRouter();
 	const isNew = query.id === undefined;
 	const [isLoading, setIsLoading] = useState(true);
+	const [customSlug, setCustomSlug] = useState(false);
 
 	/*
 	| -------------------------------------------------
@@ -111,6 +118,7 @@ const FilmEditorPage = () => {
 			.get(query.id)
 			.then((data) => {
 				setIsLoading(false);
+				setCustomSlug(slug(data.title) !== data.slug);
 				formik.setValues(data);
 			})
 			.catch(console.error);
@@ -126,6 +134,19 @@ const FilmEditorPage = () => {
 	/** @param {InputEvent} event */
 	function handleFileChange(event) {
 		formik.setFieldValue("thumbnail", event.target.files[0]);
+	}
+
+	function handleSlugChange(event) {
+		setCustomSlug(true);
+		formik.setFieldValue("slug", slug(event.target.value, { trim: false }));
+	}
+
+	function handleTitleChange(event) {
+		if (!customSlug) {
+			formik.setFieldValue("slug", slug(event.target.value, { trim: false }));
+		}
+
+		formik.setFieldValue("title", event.target.value);
 	}
 
 	/*
@@ -151,6 +172,16 @@ const FilmEditorPage = () => {
 						className="mb-6"
 						required
 						{...formikProps(formik, "title")}
+						onChange={handleTitleChange}
+					/>
+
+					<TextInput
+						type="text"
+						label="Slug"
+						className="mb-6"
+						required
+						{...formikProps(formik, "slug")}
+						onChange={handleSlugChange}
 					/>
 
 					<TextInput
