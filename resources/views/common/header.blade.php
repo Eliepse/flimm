@@ -5,6 +5,7 @@ use App\Repositories\SettingRepository;
 /**
  * @var SettingRepository $settings
  */
+$settings = app(SettingRepository::class);
 ?>
 <header class="flex py-2 px-6 justify-between border-b-2 border-black leading-tight font-bold">
 	<div>
