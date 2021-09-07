@@ -15,9 +15,13 @@
 		@if(!empty($film->synopsis))
 			<p class="page-excerpt">{{ $film->synopsis }}</p>
 		@endif
-		{{--		<p class="article-publishDate">--}}
-		{{--			<time>{{ $film->published_at->format("d.m.y") }}</time>--}}
-		{{--		</p>--}}
+		@if($film->trailer_link)
+			<a href="{{ $film->trailer_link }}" rel="noreferrer nofollow" target="_blank">
+				<div class="inline-block mt-4 px-3 py-2 bg-black text-white hover:underline">
+					Voir la bande annonce
+				</div>
+			</a>
+		@endif
 	</header>
 	<div class="page-content font-bold leading-tight">
 
