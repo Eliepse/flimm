@@ -68,12 +68,12 @@ export default function SettingsPage() {
 				<Setting
 					label="Facebook"
 					name="social.facebook"
-					initialValue={initalData["social.facebook"]}
+					initialValue={initalData["socials.facebook"]}
 				/>
 				<Setting
 					label="Instagram"
 					name="social.instagram"
-					initialValue={initalData["social.instagram"]}
+					initialValue={initalData["socials.instagram"]}
 				/>
 			</section>
 		</DashboardLayout>
