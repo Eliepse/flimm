@@ -144,6 +144,8 @@ export function formatObjectValues(data) {
 			const key = `${prefix}[${k}]`;
 			const value = v || "";
 
+			console.debug(k, v, value instanceof File);
+
 			if (value instanceof File) {
 				fields[key] = value;
 			} else if (dayjs.isDayjs(value)) {

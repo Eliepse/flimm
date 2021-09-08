@@ -52,12 +52,19 @@ class EditionController extends Controller
 
 	private function handleEditionFiles(FormRequest $request, Edition $edition)
 	{
+		// Thumbnail
 		if ($request->hasFile("thumbnail")) {
 			$edition->saveThumbnail($request->file("thumbnail"));
 		} else if ($request->has("thumbnail") && is_null($request->get("thumbnail"))) {
 			$edition->removeThumbnail();
 		}
 
+		// Program
+		if ($request->hasFile("program")) {
+			$edition->saveProgram($request->file("program"));
+		} else if ($request->has("program") && is_null($request->get("program"))) {
+			$edition->removeProgram();
+		}
 	}
 
 

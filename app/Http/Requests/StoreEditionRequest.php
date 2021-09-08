@@ -18,6 +18,7 @@ class StoreEditionRequest extends FormRequest
 			"slug" => ["nullable", "string", "between:3,64", "unique:App\Models\Edition,slug"],
 			"presentation" => ["string", "nullable"],
 			"thumbnail" => ["image", "nullable"],
+			"program" => ["file", "nullable"],
 			"published_at" => ["nullable", "date_format:Y-m-d\TH:i:sO"],
 			"open_at" => ["required_with:published_at", "nullable", "date_format:Y-m-d\TH:i:sO"],
 			"close_at" => ["required_with:published_at", "nullable", "date_format:Y-m-d\TH:i:sO"],

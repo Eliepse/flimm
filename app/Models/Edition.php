@@ -23,6 +23,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property  string $slug
  * @property  string $presentation
  * @property Media|null $thumbnail
+ * @property Media|null $program
  * @property  Carbon $open_at
  * @property  Carbon $close_at
  * @property  Carbon $published_at
@@ -57,6 +58,11 @@ class Edition extends Model implements HasMedia
 			->addMediaCollection('thumbnail')
 			->useDisk("media")
 			->singleFile();
+
+		$this
+			->addMediaCollection('program')
+			->useDisk("media")
+			->singleFile();
 	}
 
 
@@ -67,15 +73,34 @@ class Edition extends Model implements HasMedia
 	}
 
 
+	/** @noinspection PhpUnused */
+	public function getProgramAttribute(): ?Media
+	{
+		return $this->getFirstMedia("program");
+	}
+
+
 	public function saveThumbnail(UploadedFile $thumbnail): Media
 	{
 		return $this->addMedia($thumbnail)->toMediaCollection("thumbnail");
 	}
 
 
+	public function saveProgram(UploadedFile $program): Media
+	{
+		return $this->addMedia($program)->toMediaCollection("program");
+	}
+
+
 	public function removeThumbnail()
 	{
 		$this->clearMediaCollection("thumbnail");
+	}
+
+
+	public function removeProgram()
+	{
+		$this->clearMediaCollection("program");
 	}
 
 
@@ -93,11 +118,22 @@ class Edition extends Model implements HasMedia
 
 	public function toArray(): array
 	{
-		return array_merge(
-			parent::toArray(),
-			[
-				"thumbnail" => optional($this->thumbnail)->getUrl(),
-			]
-		);
+		$appends = [];
+
+		if ($program = $this->program) {
+			$appends["program"] = [
+				"name" => $program->file_name,
+				"url" => $program->getUrl(),
+			];
+		}
+
+		if ($thumbnail = $this->thumbnail) {
+			$appends["thumbnail"] = [
+				"name" => $thumbnail->file_name,
+				"url" => $thumbnail->getUrl(),
+			];
+		}
+
+		return array_merge(parent::toArray(), $appends);
 	}
 }

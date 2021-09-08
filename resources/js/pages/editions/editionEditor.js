@@ -1,15 +1,13 @@
 import DashboardLayout from "components/layouts/DashboardLayout";
-import { Button } from "hds-react";
 import { formikItemProps, normalizedUploadedFiles, parseDayjsToDate, parseToSingleFile } from "lib/support/forms";
-import { DatePicker, Divider, Form, Input, notification, Upload } from "antd";
-import { FileImageTwoTone } from "@ant-design/icons";
+import { Button, DatePicker, Divider, Form, Input, notification, Upload } from "antd";
+import { FileImageTwoTone, UploadOutlined } from "@ant-design/icons";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "lib/useRouter";
 import { useEffect, useState } from "react";
 import slug from "slug";
 import apiEdition from "lib/api/apiEdition";
-import apiFilm from "lib/api/apiFilm";
 
 const schema = Yup.object().shape({
 	title: Yup.string().min(4).max(150).required().trim(),
@@ -81,7 +79,7 @@ const EditionEditorPage = () => {
 			.get(query.id)
 			.then((data) => {
 				setIsLoading(false);
-				const cleanData = normalizedUploadedFiles(data, ["thumbnail"]);
+				const cleanData = normalizedUploadedFiles(data, ["thumbnail", "program"]);
 				form.setFieldsValue(cleanData);
 				formik.setValues(cleanData);
 				setCustomSlug(slug(cleanData.title) !== cleanData.slug);
@@ -135,9 +133,15 @@ const EditionEditorPage = () => {
 		return Array.isArray(e) ? e : e && e.fileList;
 	}
 
+	function handleSingleFileUploadChange(e) {
+		const list = handleUploadChanged(e);
+		const file = list[1] || list[0];
+		return file ? [file] : [];
+	}
+
 	function handleFormSubmit() {
 		const fields = form.getFieldsValue();
-		formik.setValues(parseToSingleFile(parseDayjsToDate(fields), ["thumbnail"])).finally(formik.submitForm);
+		formik.setValues(parseToSingleFile(parseDayjsToDate(fields), ["thumbnail", "program"])).finally(formik.submitForm);
 	}
 
 	/*
@@ -158,7 +162,7 @@ const EditionEditorPage = () => {
 					<div className="col-span-2 px-4">
 						<Form.Item
 							valuePropName="fileList"
-							getValueFromEvent={handleUploadChanged}
+							getValueFromEvent={handleSingleFileUploadChange}
 							{...formikItemProps(formik, "thumbnail", HELP_TEXTS, false)}
 						>
 							<Upload.Dragger
@@ -210,6 +214,21 @@ const EditionEditorPage = () => {
 					<aside className="col-span-1">
 						<div className="p-4 border-2 border-solid border-gray-300">
 							<Form.Item
+								label="Programme"
+								valuePropName="fileList"
+								getValueFromEvent={handleSingleFileUploadChange}
+								{...formikItemProps(formik, "program", HELP_TEXTS, false)}
+							>
+								<Upload
+									defaultFileList={apiData.program ? [{ url: apiData.program }] : []}
+									beforeUpload={() => false}
+									listType="text"
+								>
+									<Button icon={<UploadOutlined />}>Upload</Button>
+								</Upload>
+							</Form.Item>
+
+							<Form.Item
 								label="Rendre publique le"
 								className="mb-6"
 								{...formikItemProps(formik, "published_at", HELP_TEXTS)}
@@ -237,8 +256,8 @@ const EditionEditorPage = () => {
 
 							{/* Actions */}
 							<div className="mt-8">
-								<Button onClick={handleFormSubmit} isLoading={isLoading} loadingText="Sauvegarde en cours...">
-									Sauvegarder
+								<Button size="large" onClick={handleFormSubmit} loading={isLoading}>
+									{isLoading ? "Sauvegarde en cours..." : "Sauvegarder"}
 								</Button>
 							</div>
 						</div>

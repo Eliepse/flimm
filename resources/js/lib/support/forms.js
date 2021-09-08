@@ -123,19 +123,15 @@ export function normalizedUploadedFiles(fields, names) {
 	let index = 0;
 	return Object.fromEntries(
 		Object.entries(fields).map(([k, v]) => {
-			if (!names.includes(k)) {
+			if (!names.includes(k) || typeof v !== "object") {
 				return [k, v];
 			}
 
 			// If the value is not a string, then it might not be the file url
-			if (typeof v === "string") {
-				index--;
+			index--;
 
-				const file = { uid: index, name: "thumbnail", status: "done", url: v };
-				return [k, [file]];
-			}
-
-			return [k, []];
+			const file = { uid: index, name: v.name, status: "done", url: v.url };
+			return [k, [file]];
 		})
 	);
 }
