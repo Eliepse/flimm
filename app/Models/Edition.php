@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,6 +30,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property-read  Carbon $updated_at
  * @property-read Collection $schedules
  * @property-read Collection $films
+ * @method static Builder published()
  */
 class Edition extends Model implements HasMedia
 {
@@ -41,6 +43,12 @@ class Edition extends Model implements HasMedia
 		"close_at" => "date",
 		"published_at" => "datetime",
 	];
+
+
+	public function scopePublished(Builder $query): Builder
+	{
+		return $query->whereDate("published_at", "<=", Carbon::now());
+	}
 
 
 	public function registerMediaCollections(): void
