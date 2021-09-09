@@ -67,12 +67,12 @@ export default function SettingsPage() {
 				<h2 className={styles.sectionTitle}>Réseaux</h2>
 				<Setting
 					label="Facebook"
-					name="social.facebook"
+					name="socials.facebook"
 					initialValue={initalData["socials.facebook"]}
 				/>
 				<Setting
 					label="Instagram"
-					name="social.instagram"
+					name="socials.instagram"
 					initialValue={initalData["socials.instagram"]}
 				/>
 			</section>
