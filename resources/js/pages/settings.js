@@ -75,6 +75,11 @@ export default function SettingsPage() {
 					name="socials.instagram"
 					initialValue={initalData["socials.instagram"]}
 				/>
+				<Setting
+					label="Lien vers la newsletter"
+					name="newsletter.link"
+					initialValue={initalData["newsletter.link"]}
+				/>
 			</section>
 		</DashboardLayout>
 	);

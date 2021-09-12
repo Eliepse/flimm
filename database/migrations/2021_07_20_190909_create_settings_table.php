@@ -26,6 +26,7 @@ class CreateSettingsTable extends Migration
 		app(SettingRepository::class)->createMany([
 			["name" => "socials.facebook", "value" => null],
 			["name" => "socials.instagram", "value" => null],
+			["name" => "newsletter.link", "value" => null],
 			["name" => "header.text", "value" => "21 - 24.10.2021\nDOC - Paris"],
 			["name" => "homepage.featuredImage", "isMedia" => true],
 			["name" => "homepage.featuredImage.altText"],

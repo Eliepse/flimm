@@ -29,5 +29,13 @@ $settings = app(SettingRepository::class);
 				</a>
 			</li>
 		@endif
+
+		@if($settings->isFilled("newsletter.link"))
+			<li class="ml-4">
+				<a href="{{ $settings->get("newsletter.link")->value }}" rel="noreferrer nofollow">
+					newsletter
+				</a>
+			</li>
+		@endif
 	</ul>
 </header>
