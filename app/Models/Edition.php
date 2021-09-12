@@ -24,6 +24,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property  string $presentation
  * @property Media|null $thumbnail
  * @property Media|null $program
+ * @property  string $teaser_link
  * @property  Carbon $open_at
  * @property  Carbon $close_at
  * @property  Carbon $published_at
@@ -37,7 +38,7 @@ class Edition extends Model implements HasMedia
 {
 	use HasFactory, InteractsWithMedia;
 
-	protected $fillable = ["title", "slug", "presentation", "open_at", "close_at", "published_at"];
+	protected $fillable = ["title", "slug", "presentation",  "teaser_link", "open_at", "close_at", "published_at"];
 
 	protected $casts = [
 		"open_at" => "date",

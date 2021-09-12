@@ -19,6 +19,7 @@ class StoreEditionRequest extends FormRequest
 			"presentation" => ["string", "nullable"],
 			"thumbnail" => ["image", "nullable"],
 			"program" => ["file", "nullable"],
+			"teaser_link" => ["url", "nullable"],
 			"published_at" => ["nullable", "date_format:Y-m-d\TH:i:sO"],
 			"open_at" => ["required_with:published_at", "nullable", "date_format:Y-m-d\TH:i:sO"],
 			"close_at" => ["required_with:published_at", "nullable", "date_format:Y-m-d\TH:i:sO"],

@@ -230,10 +230,16 @@ const EditionEditorPage = () => {
 							</Form.Item>
 
 							<Form.Item
-								label="Rendre publique le"
+								label="Lien du teaser"
 								className="mb-6"
-								{...formikItemProps(formik, "published_at", HELP_TEXTS)}
+								{...formikItemProps(formik, "teaser_link", HELP_TEXTS)}
 							>
+								<Input />
+							</Form.Item>
+
+							<Divider />
+
+							<Form.Item label="Publier le" className="mb-6" {...formikItemProps(formik, "published_at", HELP_TEXTS)}>
 								<DatePicker showTime />
 							</Form.Item>
 
