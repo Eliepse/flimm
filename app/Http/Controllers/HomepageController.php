@@ -12,7 +12,7 @@ class HomepageController
 	{
 		$actus = Article::published()
 			->orderBy("published_at", "desc")
-			->limit(3)
+			->limit(6)
 			->get(["id", "title", "slug", "published_at"]);
 
 		return view("welcome", ["actus" => $actus, "settings" => $settings]);

@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\Article;use App\Repositories\SettingRepository;use Illuminate\Database\Eloquent\Collection;
+use App\Models\Article;use App\Repositories\SettingRepository;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @var Collection|Article[] $actus
