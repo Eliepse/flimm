@@ -60,7 +60,7 @@ const FilmEditorPage = () => {
 	const { query, ...router } = useRouter();
 	const isNew = query.id === undefined;
 	const [isLoading, setIsLoading] = useState(true);
-	const [customSlug, setCustomSlug] = useState(false);
+	const [autoFilledSlug, setAutoFilledSlug] = useState(isNew);
 
 	/*
 	| -------------------------------------------------
@@ -95,6 +95,8 @@ const FilmEditorPage = () => {
 				.update({ id: query.id, ...formikData })
 				.then((res) => {
 					formik.setValues(res);
+					// Slug has to be manually changed if already in database
+					setAutoFilledSlug(false);
 					notification.success({ message: "Film mis à jour" });
 				})
 				.catch(console.error)
@@ -118,7 +120,7 @@ const FilmEditorPage = () => {
 			.get(query.id)
 			.then((data) => {
 				setIsLoading(false);
-				setCustomSlug(slug(data.title) !== data.slug);
+				setAutoFilledSlug(slug(data.title) !== data.slug);
 				formik.setValues(data);
 			})
 			.catch(console.error);
@@ -137,12 +139,12 @@ const FilmEditorPage = () => {
 	}
 
 	function handleSlugChange(event) {
-		setCustomSlug(true);
+		setAutoFilledSlug(false);
 		formik.setFieldValue("slug", slug(event.target.value, { trim: false }));
 	}
 
 	function handleTitleChange(event) {
-		if (!customSlug) {
+		if (autoFilledSlug) {
 			formik.setFieldValue("slug", slug(event.target.value, { trim: false }));
 		}
 

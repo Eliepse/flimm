@@ -44,7 +44,7 @@ const EditionEditorPage = () => {
 	const isNew = query.id === undefined;
 	//const [films, setFilms] = useState([]);
 	const [apiData, setApiData] = useState({});
-	const [customSlug, setCustomSlug] = useState(false);
+	const [autoFilledSlug, setAutoFilledSlug] = useState(isNew);
 	const [isLoading, setIsLoading] = useState(true);
 
 	/*
@@ -82,7 +82,8 @@ const EditionEditorPage = () => {
 				const cleanData = normalizedUploadedFiles(data, ["thumbnail", "program"]);
 				form.setFieldsValue(cleanData);
 				formik.setValues(cleanData);
-				setCustomSlug(slug(cleanData.title) !== cleanData.slug);
+				// Slug has to be manually changed if article already in database
+				setAutoFilledSlug(false);
 				setApiData(data);
 			})
 			.catch(console.error);
@@ -119,10 +120,10 @@ const EditionEditorPage = () => {
 	}
 
 	function handleFormChanged(changedValues) {
-		if (!customSlug && Object.prototype.hasOwnProperty.call(changedValues, "title")) {
+		if (autoFilledSlug && Object.prototype.hasOwnProperty.call(changedValues, "title")) {
 			form.setFieldsValue({ slug: slug(changedValues.title) });
 		} else if (Object.prototype.hasOwnProperty.call(changedValues, "slug")) {
-			setCustomSlug(true);
+			setAutoFilledSlug(false);
 			form.setFieldsValue({ slug: slug(changedValues.slug, { trim: false }) });
 		}
 
