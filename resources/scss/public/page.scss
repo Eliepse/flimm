@@ -11,6 +11,16 @@
 	@apply mx-auto uppercase max-w-xl mb-2;
 }
 
+.page-links-list {
+	li a {
+		@apply font-bold no-underline;
+	}
+
+	li a:hover {
+		@apply underline;
+	}
+}
+
 .page-excerpt {
 	@apply mx-auto font-bold max-w-lg text-center;
 }

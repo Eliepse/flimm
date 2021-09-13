@@ -24,6 +24,9 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property  string $presentation
  * @property Media|null $thumbnail
  * @property Media|null $program
+ * @property Media|null $poster
+ * @property Media|null $brochure
+ * @property Media|null $flyer
  * @property  string $teaser_link
  * @property  Carbon $open_at
  * @property  Carbon $close_at
@@ -38,7 +41,7 @@ class Edition extends Model implements HasMedia
 {
 	use HasFactory, InteractsWithMedia;
 
-	protected $fillable = ["title", "slug", "presentation",  "teaser_link", "open_at", "close_at", "published_at"];
+	protected $fillable = ["title", "slug", "presentation", "teaser_link", "open_at", "close_at", "published_at"];
 
 	protected $casts = [
 		"open_at" => "date",
@@ -52,18 +55,16 @@ class Edition extends Model implements HasMedia
 		return $query->whereDate("published_at", "<=", Carbon::now());
 	}
 
+	/*
+	 * ----------------
+	 * Getters
+	 * ----------------
+	 */
 
-	public function registerMediaCollections(): void
+	/** @noinspection PhpUnused */
+	public function getProgramAttribute(): ?Media
 	{
-		$this
-			->addMediaCollection('thumbnail')
-			->useDisk("media")
-			->singleFile();
-
-		$this
-			->addMediaCollection('program')
-			->useDisk("media")
-			->singleFile();
+		return $this->getFirstMedia("program");
 	}
 
 
@@ -75,9 +76,39 @@ class Edition extends Model implements HasMedia
 
 
 	/** @noinspection PhpUnused */
-	public function getProgramAttribute(): ?Media
+	public function getPosterAttribute(): ?Media
 	{
-		return $this->getFirstMedia("program");
+		return $this->getFirstMedia("poster");
+	}
+
+
+	/** @noinspection PhpUnused */
+	public function getBrochureAttribute(): ?Media
+	{
+		return $this->getFirstMedia("brochure");
+	}
+
+
+	/** @noinspection PhpUnused */
+	public function getFlyerAttribute(): ?Media
+	{
+		return $this->getFirstMedia("flyer");
+	}
+
+
+	/*
+	 * ----------------
+	 * Medias
+	 * ----------------
+	 */
+
+	public function registerMediaCollections(): void
+	{
+		$this->addMediaCollection('thumbnail')->useDisk("media")->singleFile();
+		$this->addMediaCollection('program')->useDisk("media")->singleFile();
+		$this->addMediaCollection('poster')->useDisk("media")->singleFile();
+		$this->addMediaCollection('brochure')->useDisk("media")->singleFile();
+		$this->addMediaCollection('flyer')->useDisk("media")->singleFile();
 	}
 
 
@@ -93,6 +124,24 @@ class Edition extends Model implements HasMedia
 	}
 
 
+	public function savePoster(UploadedFile $program): Media
+	{
+		return $this->addMedia($program)->toMediaCollection("poster");
+	}
+
+
+	public function saveBrochure(UploadedFile $program): Media
+	{
+		return $this->addMedia($program)->toMediaCollection("brochure");
+	}
+
+
+	public function saveFlyer(UploadedFile $program): Media
+	{
+		return $this->addMedia($program)->toMediaCollection("flyer");
+	}
+
+
 	public function removeThumbnail()
 	{
 		$this->clearMediaCollection("thumbnail");
@@ -103,6 +152,31 @@ class Edition extends Model implements HasMedia
 	{
 		$this->clearMediaCollection("program");
 	}
+
+
+	public function removePoster()
+	{
+		$this->clearMediaCollection("poster");
+	}
+
+
+	public function removeBrochure()
+	{
+		$this->clearMediaCollection("brochure");
+	}
+
+
+	public function removeFlyer()
+	{
+		$this->clearMediaCollection("flyer");
+	}
+
+
+	/*
+	 * ----------------
+	 * Relations
+	 * ----------------
+	 */
 
 
 	public function schedules(): HasMany
@@ -117,23 +191,33 @@ class Edition extends Model implements HasMedia
 	}
 
 
+	/*
+	 * ----------------
+	 * Misc
+	 * ----------------
+	 */
+
 	public function toArray(): array
 	{
 		$appends = [];
 
-		if ($program = $this->program) {
-			$appends["program"] = [
-				"name" => $program->file_name,
-				"url" => $program->getUrl(),
+		function appendExistingFile(&$appends, $name, $value)
+		{
+			if (! $value) {
+				return;
+			}
+
+			$appends[$name] = [
+				"name" => $value->file_name,
+				"url" => $value->getUrl(),
 			];
 		}
 
-		if ($thumbnail = $this->thumbnail) {
-			$appends["thumbnail"] = [
-				"name" => $thumbnail->file_name,
-				"url" => $thumbnail->getUrl(),
-			];
-		}
+		appendExistingFile($appends, "thumbnail", $this->thumbnail);
+		appendExistingFile($appends, "program", $this->program);
+		appendExistingFile($appends, "poster", $this->poster);
+		appendExistingFile($appends, "brochure", $this->brochure);
+		appendExistingFile($appends, "flyer", $this->flyer);
 
 		return array_merge(parent::toArray(), $appends);
 	}

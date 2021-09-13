@@ -81,7 +81,7 @@ const EditionEditorPage = () => {
 			.get(query.id)
 			.then((data) => {
 				setIsLoading(false);
-				const cleanData = normalizedUploadedFiles(data, ["thumbnail", "program"]);
+				const cleanData = normalizedUploadedFiles(data, ["thumbnail", "program", "poster", "brochure", "flyer"]);
 				antForm.setFieldsValue(cleanData);
 				formik.setValues(cleanData);
 				// Slug has to be manually changed if article already in database
@@ -134,7 +134,7 @@ const EditionEditorPage = () => {
 
 	function handleFormSubmit() {
 		const fields = antForm.getFieldsValue();
-		formik.setValues(parseToSingleFile(parseDayjsToDate(fields), ["thumbnail", "program"])).finally(formik.submitForm);
+		formik.setValues(parseToSingleFile(parseDayjsToDate(fields), ["thumbnail", "program", "poster", "brochure", "flyer"])).finally(formik.submitForm);
 	}
 
 	/*
@@ -199,6 +199,36 @@ const EditionEditorPage = () => {
 								</Upload>
 							</Form.Item>
 
+							<Form.Item label="L'affiche" valuePropName="fileList" {...uploadItemProps("poster")}>
+								<Upload
+									defaultFileList={apiData.poster ? [{ url: apiData.poster }] : []}
+									beforeUpload={() => false}
+									listType="text"
+								>
+									<Button icon={<UploadOutlined />}>Upload</Button>
+								</Upload>
+							</Form.Item>
+
+							<Form.Item label="La brochure" valuePropName="fileList" {...uploadItemProps("brochure")}>
+								<Upload
+									defaultFileList={apiData.brochure ? [{ url: apiData.brochure }] : []}
+									beforeUpload={() => false}
+									listType="text"
+								>
+									<Button icon={<UploadOutlined />}>Upload</Button>
+								</Upload>
+							</Form.Item>
+
+							<Form.Item label="Le flyer" valuePropName="fileList" {...uploadItemProps("flyer")}>
+								<Upload
+									defaultFileList={apiData.flyer ? [{ url: apiData.flyer }] : []}
+									beforeUpload={() => false}
+									listType="text"
+								>
+									<Button icon={<UploadOutlined />}>Upload</Button>
+								</Upload>
+							</Form.Item>
+
 							<Form.Item label="Lien du teaser" className="mb-6" {...itemProps("teaser_link")}>
 								<Input />
 							</Form.Item>
@@ -217,7 +247,7 @@ const EditionEditorPage = () => {
 								<DatePicker />
 							</Form.Item>
 
-							<hr className="my-4 border-t-2 border-gray-300" />
+							<Divider />
 
 							{/* Actions */}
 							<div className="mt-8">

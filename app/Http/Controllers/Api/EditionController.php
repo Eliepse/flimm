@@ -65,33 +65,26 @@ class EditionController extends Controller
 		} else if ($request->has("program") && is_null($request->get("program"))) {
 			$edition->removeProgram();
 		}
+
+		// Poster
+		if ($request->hasFile("poster")) {
+			$edition->savePoster($request->file("poster"));
+		} else if ($request->has("poster") && is_null($request->get("poster"))) {
+			$edition->removeProgram();
+		}
+
+		// Brochure
+		if ($request->hasFile("brochure")) {
+			$edition->saveBrochure($request->file("brochure"));
+		} else if ($request->has("brochure") && is_null($request->get("brochure"))) {
+			$edition->removeProgram();
+		}
+
+		// Flyer
+		if ($request->hasFile("flyer")) {
+			$edition->saveFlyer($request->file("flyer"));
+		} else if ($request->has("flyer") && is_null($request->get("flyer"))) {
+			$edition->removeProgram();
+		}
 	}
-
-
-//	private function handleEditionSchedules(\Illuminate\Support\Collection $schedules, Edition $edition)
-//	{
-//		$storedSchedules = $edition->schedules()->get(["id"]);
-//
-//		// Delete removed schedules
-//		$staleSchedules = $storedSchedules->whereNotIn("id", $schedules->pluck("id"), true);
-//		Schedule::query()->whereIn("id", $staleSchedules->pluck("id"))->delete();
-//
-//		// Add new schedules
-//		$edition->schedules()->createMany($schedules->whereNull("id"));
-//
-//		// Update existing schedules
-//		// Commented since no schedule change is avaible for now client side
-////		$schedules
-////			->whereNotNull("id")
-////			->each(function ($schedule) use ($storedSchedules) {
-////				/** @var FilmSchedule|null $storedSchedule */
-////				$storedSchedule = $storedSchedules->firstWhere("id", $schedule["id"]);
-////
-////				if (! $storedSchedule) {
-////					return;
-////				}
-////
-////				$storedSchedule->update($schedule);
-////			});
-//	}
 }
