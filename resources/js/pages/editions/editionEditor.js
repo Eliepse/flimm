@@ -1,5 +1,5 @@
 import DashboardLayout from "components/layouts/DashboardLayout";
-import { formikItemProps, normalizedUploadedFiles, parseDayjsToDate, parseToSingleFile } from "lib/support/forms";
+import { normalizedUploadedFiles, parseDayjsToDate, parseToSingleFile } from "lib/support/forms";
 import { Button, DatePicker, Divider, Form, Input, notification, Upload } from "antd";
 import { FileImageTwoTone, UploadOutlined } from "@ant-design/icons";
 import { useFormik } from "formik";
@@ -8,6 +8,7 @@ import { useRouter } from "lib/useRouter";
 import { useEffect, useState } from "react";
 import slug from "slug";
 import apiEdition from "lib/api/apiEdition";
+import useFormDefaults from "lib/hooks/useFormDefaults";
 
 const schema = Yup.object().shape({
 	title: Yup.string().min(4).max(150).required().trim(),
@@ -40,7 +41,6 @@ const HELP_TEXTS = {
 
 const EditionEditorPage = () => {
 	const { query, ...router } = useRouter();
-	const [form] = Form.useForm();
 	const isNew = query.id === undefined;
 	//const [films, setFilms] = useState([]);
 	const [apiData, setApiData] = useState({});
@@ -61,6 +61,8 @@ const EditionEditorPage = () => {
 		onSubmit: handleFormikSubmit,
 	});
 
+	const { antForm, itemProps, uploadItemProps } = useFormDefaults(formik, defaultData, HELP_TEXTS);
+
 	/*
 	| -------------------------------------------------
 	| Initialization
@@ -80,7 +82,7 @@ const EditionEditorPage = () => {
 			.then((data) => {
 				setIsLoading(false);
 				const cleanData = normalizedUploadedFiles(data, ["thumbnail", "program"]);
-				form.setFieldsValue(cleanData);
+				antForm.setFieldsValue(cleanData);
 				formik.setValues(cleanData);
 				// Slug has to be manually changed if article already in database
 				setAutoFilledSlug(false);
@@ -121,27 +123,17 @@ const EditionEditorPage = () => {
 
 	function handleFormChanged(changedValues) {
 		if (autoFilledSlug && Object.prototype.hasOwnProperty.call(changedValues, "title")) {
-			form.setFieldsValue({ slug: slug(changedValues.title) });
+			antForm.setFieldsValue({ slug: slug(changedValues.title) });
 		} else if (Object.prototype.hasOwnProperty.call(changedValues, "slug")) {
 			setAutoFilledSlug(false);
-			form.setFieldsValue({ slug: slug(changedValues.slug, { trim: false }) });
+			antForm.setFieldsValue({ slug: slug(changedValues.slug, { trim: false }) });
 		}
 
 		Object.entries(parseDayjsToDate(changedValues)).forEach(([name, value]) => formik.setFieldValue(name, value));
 	}
 
-	function handleUploadChanged(e) {
-		return Array.isArray(e) ? e : e && e.fileList;
-	}
-
-	function handleSingleFileUploadChange(e) {
-		const list = handleUploadChanged(e);
-		const file = list[1] || list[0];
-		return file ? [file] : [];
-	}
-
 	function handleFormSubmit() {
-		const fields = form.getFieldsValue();
+		const fields = antForm.getFieldsValue();
 		formik.setValues(parseToSingleFile(parseDayjsToDate(fields), ["thumbnail", "program"])).finally(formik.submitForm);
 	}
 
@@ -153,7 +145,7 @@ const EditionEditorPage = () => {
 
 	return (
 		<DashboardLayout>
-			<Form layout="vertical" form={form} onValuesChange={handleFormChanged}>
+			<Form layout="vertical" form={antForm} onValuesChange={handleFormChanged}>
 				<div className="grid grid-cols-3">
 					{/*
 					| -------------------------------------------------
@@ -161,11 +153,7 @@ const EditionEditorPage = () => {
 					| -------------------------------------------------
 					*/}
 					<div className="col-span-2 px-4">
-						<Form.Item
-							valuePropName="fileList"
-							getValueFromEvent={handleSingleFileUploadChange}
-							{...formikItemProps(formik, "thumbnail", HELP_TEXTS, false)}
-						>
+						<Form.Item valuePropName="fileList" {...uploadItemProps("thumbnail")}>
 							<Upload.Dragger
 								defaultFileList={apiData.thumbnail ? [{ url: apiData.thumbnail }] : []}
 								accept=".jpg,.jpeg,.png,.gif"
@@ -179,32 +167,19 @@ const EditionEditorPage = () => {
 							</Upload.Dragger>
 						</Form.Item>
 
-						<Form.Item label="Titre" className="mb-6" {...formikItemProps(formik, "title", HELP_TEXTS)}>
+						<Form.Item label="Titre" className="mb-6" {...itemProps("title")}>
 							<Input />
 						</Form.Item>
 
-						<Form.Item label="Slug" className="mb-6" {...formikItemProps(formik, "slug", HELP_TEXTS)}>
+						<Form.Item label="Slug" className="mb-6" {...itemProps("slug")}>
 							<Input />
 						</Form.Item>
 
-						<Form.Item label="Présentation" className="mb-6" {...formikItemProps(formik, "presentation", HELP_TEXTS)}>
+						<Form.Item label="Présentation" className="mb-6" {...itemProps("presentation")}>
 							<Input.TextArea />
 						</Form.Item>
 
 						<Divider className="mb-6" />
-
-						{/*
-						Here, instead of a basic film list, a list of film schedules!
-						A single button to add a film (through a modal), then all the schedules
-						are ordered by datetime, and grouped by day. :)
-						*/}
-						{/*<Form.Item label="Scéances" className="mb-6" {...formikItemProps(formik, "schedules", HELP_TEXTS)}>*/}
-						{/*	<FilmSchedulesInput*/}
-						{/*		films={films}*/}
-						{/*		open_at={form.getFieldValue("open_at")}*/}
-						{/*		close_at={form.getFieldValue("close_at")}*/}
-						{/*	/>*/}
-						{/*</Form.Item>*/}
 					</div>
 
 					{/*
@@ -214,12 +189,7 @@ const EditionEditorPage = () => {
 					*/}
 					<aside className="col-span-1">
 						<div className="p-4 border-2 border-solid border-gray-300">
-							<Form.Item
-								label="Programme"
-								valuePropName="fileList"
-								getValueFromEvent={handleSingleFileUploadChange}
-								{...formikItemProps(formik, "program", HELP_TEXTS, false)}
-							>
+							<Form.Item label="Programme" valuePropName="fileList" {...uploadItemProps("program")}>
 								<Upload
 									defaultFileList={apiData.program ? [{ url: apiData.program }] : []}
 									beforeUpload={() => false}
@@ -229,33 +199,21 @@ const EditionEditorPage = () => {
 								</Upload>
 							</Form.Item>
 
-							<Form.Item
-								label="Lien du teaser"
-								className="mb-6"
-								{...formikItemProps(formik, "teaser_link", HELP_TEXTS)}
-							>
+							<Form.Item label="Lien du teaser" className="mb-6" {...itemProps("teaser_link")}>
 								<Input />
 							</Form.Item>
 
 							<Divider />
 
-							<Form.Item label="Publier le" className="mb-6" {...formikItemProps(formik, "published_at", HELP_TEXTS)}>
+							<Form.Item label="Publier le" className="mb-6" {...itemProps("published_at")}>
 								<DatePicker showTime />
 							</Form.Item>
 
-							<Form.Item
-								label="Ouverture de l'édition"
-								className="mb-6"
-								{...formikItemProps(formik, "open_at", HELP_TEXTS)}
-							>
+							<Form.Item label="Ouverture de l'édition" className="mb-6" {...itemProps("open_at")}>
 								<DatePicker />
 							</Form.Item>
 
-							<Form.Item
-								label="Fermeture de l'édition"
-								className="mb-6"
-								{...formikItemProps(formik, "close_at", HELP_TEXTS)}
-							>
+							<Form.Item label="Fermeture de l'édition" className="mb-6" {...itemProps("close_at")}>
 								<DatePicker />
 							</Form.Item>
 
@@ -263,7 +221,7 @@ const EditionEditorPage = () => {
 
 							{/* Actions */}
 							<div className="mt-8">
-								<Button size="large" onClick={handleFormSubmit} loading={isLoading}>
+								<Button size="large" type="primary" block onClick={handleFormSubmit} loading={isLoading}>
 									{isLoading ? "Sauvegarde en cours..." : "Sauvegarder"}
 								</Button>
 							</div>
