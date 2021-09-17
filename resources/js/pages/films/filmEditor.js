@@ -19,7 +19,7 @@ const filmSchema = Yup.object().shape({
 	title_override: Yup.string().nullable(),
 	duration: Yup.number().integer().min(1).required(),
 	synopsis: Yup.string().nullable(),
-	description: Yup.string().nullable(),
+	teaser: Yup.string().nullable(),
 	filmmaker: Yup.string().required(),
 	technical_members: Yup.string().nullable(),
 	gender: Yup.string().nullable(),
@@ -41,7 +41,7 @@ const defaultData = {
 	title_override: "",
 	duration: 0,
 	synopsis: "",
-	description: "",
+	teaser: "",
 	filmmaker: "",
 	technical_members: "",
 	gender: "",
@@ -197,10 +197,10 @@ const FilmEditorPage = () => {
 					<TextArea label="Synopsis" className="mb-6" {...formikProps(formik, "synopsis")} />
 
 					<TextArea
-						label="Description"
-						helperText="Description additionelle du FLiMM"
+						label="Accroche"
+						helperText="Accroche courte par le FLiMM"
 						className="mb-6"
-						{...formikProps(formik, "description")}
+						{...formikProps(formik, "teaser")}
 					/>
 
 					<TextInput

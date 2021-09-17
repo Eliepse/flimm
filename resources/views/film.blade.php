@@ -11,10 +11,13 @@
 		@if($film->thumbnail)
 			<img src="{{ $film->thumbnail->getUrl() }}" class="page-headerImage" alt="" />
 		@endif
+
 		<h1 class="page-title">{{ $film->title }}</h1>
-		@if(!empty($film->synopsis))
-			<p class="page-excerpt">{{ $film->synopsis }}</p>
+
+		@if(!empty($film->teaser))
+			<p class="page-excerpt">{{ $film->teaser }}</p>
 		@endif
+
 		@if($film->trailer_link)
 			<a href="{{ $film->trailer_link }}" rel="noreferrer nofollow" target="_blank">
 				<div class="inline-block mt-4 px-3 py-2 bg-black text-white hover:underline">
@@ -35,8 +38,8 @@
 				@endif
 			</div>
 
-			@if($film->description)
-				<p>{{ $film->description }}</p>
+			@if(!empty($film->synopsis))
+				<p>{{ $film->synopsis }}</p>
 			@endif
 		</div>
 

@@ -19,7 +19,7 @@ class StoreFilmRequest extends FormRequest
 			"slug" => ["required", "string"],
 			"duration" => ["required", "integer"],
 			"synopsis" => ["string", "nullable"],
-			"description" => ["string", "nullable"],
+			"teaser" => ["string", "nullable"],
 			"filmmaker" => ["required", "string"],
 			"technical_members" => ["string", "nullable"],
 			"gender" => ["string", "nullable"],
