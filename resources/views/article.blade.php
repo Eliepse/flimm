@@ -16,7 +16,7 @@
 			<p class="page-excerpt">{{ $article->excerpt }}</p>
 		@endif
 		<p class="page-publishDate">
-			<time>{{ $article->published_at->format("d.m.y") }}</time>
+			<time>Publié le {{ $article->published_at->format("d.m.y") }}</time>
 		</p>
 	</header>
 	<div class="page-content">
