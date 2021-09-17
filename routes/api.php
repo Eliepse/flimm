@@ -42,4 +42,5 @@ Route::middleware('auth:sanctum')->group(function () {
 	// Editions
 	Route::resource("editions", EditionController::class)->only(["index", "store", "show"]);
 	Route::post("editions/{edition}", [EditionController::class, "update"]);
+	Route::post("/editions/{edition}/media", [EditionController::class, "saveContentMedia"]);
 });

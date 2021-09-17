@@ -49,11 +49,13 @@
 		</ul>
 
 	</header>
-	<div class="page-content font-bold leading-tight">
+	<div class="page-content leading-tight">
 		<div class="max-w-3xl">
 
 			@if($edition->presentation)
-				<p class="mb-12">{{ $edition->presentation }}</p>
+				@foreach($edition->presentation->getBlocks() as $block)
+					@include("common.blocks.block", $block)
+				@endforeach
 			@endif
 
 		</div>

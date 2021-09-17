@@ -16,7 +16,10 @@ class StoreEditionRequest extends FormRequest
 		return [
 			"title" => ["required", "string", "nullable"],
 			"slug" => ["nullable", "string", "between:3,64", "unique:App\Models\Edition,slug"],
-			"presentation" => ["string", "nullable"],
+			"presentation" => ["nullable"],
+			"presentation.time" => ["required", "int"],
+			"presentation.blocks" => ["required", "array"],
+			"presentation.version" => ["required", "string"],
 			"thumbnail" => ["image", "nullable"],
 			"program" => ["file", "nullable"],
 			"poster" => ["file", "nullable"],

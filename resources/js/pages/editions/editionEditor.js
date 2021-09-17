@@ -5,10 +5,15 @@ import { FileImageTwoTone, UploadOutlined } from "@ant-design/icons";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "lib/useRouter";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import slug from "slug";
 import apiEdition from "lib/api/apiEdition";
 import useFormDefaults from "lib/hooks/useFormDefaults";
+import EditorJs from "react-editor-js";
+import HeaderTool from "@editorjs/header";
+import EmbedTool from "@editorjs/embed";
+import ImageTool from "@editorjs/image";
+import { getCsrfToken } from "lib/api/broker";
 
 const schema = Yup.object().shape({
 	title: Yup.string().min(4).max(150).required().trim(),
@@ -20,6 +25,7 @@ const schema = Yup.object().shape({
 	close_at: Yup.date().nullable(),
 	published_at: Yup.date().nullable(),
 	thumbnail: Yup.object().nullable(),
+	presentation: Yup.object(),
 });
 
 const defaultData = {
@@ -28,6 +34,7 @@ const defaultData = {
 	open_at: null,
 	close_at: null,
 	published_at: null,
+	presentation: {},
 };
 
 const HELP_TEXTS = {
@@ -39,13 +46,36 @@ const HELP_TEXTS = {
 	thumbnail: "Glissez/déposez une image ou cliquez pour en sélectionner une.",
 };
 
+const TOOLS = {
+	header: {
+		class: HeaderTool,
+		config: {
+			levels: [2, 3, 4],
+			defaultLevel: 2,
+		},
+	},
+	embed: EmbedTool,
+};
+
 const EditionEditorPage = () => {
 	const { query, ...router } = useRouter();
 	const isNew = query.id === undefined;
-	//const [films, setFilms] = useState([]);
 	const [apiData, setApiData] = useState({});
 	const [autoFilledSlug, setAutoFilledSlug] = useState(isNew);
 	const [isLoading, setIsLoading] = useState(true);
+
+	const editor = useMemo(() => {
+		if (!query.id || !apiData?.presentation) {
+			return <p>Vous devez d&apos;abord enregistrer l&apos;édition avant de pouvoir éditer le contenu.</p>;
+		}
+
+		return (
+			<AntEditorJS
+				imageToolEndpoint={`${location.protocol}//${location.host}/api/editions/${query.id}/media`}
+				value={apiData.presentation}
+			/>
+		);
+	}, [apiData.presentation, query.id]);
 
 	/*
 	| -------------------------------------------------
@@ -61,7 +91,8 @@ const EditionEditorPage = () => {
 		onSubmit: handleFormikSubmit,
 	});
 
-	const { antForm, itemProps, uploadItemProps } = useFormDefaults(formik, defaultData, HELP_TEXTS);
+	const { antForm, itemProps, uploadItemProps, editorJSProps } = useFormDefaults(formik, defaultData, HELP_TEXTS);
+	const richEditorProps = useMemo(() => editorJSProps("presentation"), []);
 
 	/*
 	| -------------------------------------------------
@@ -134,7 +165,9 @@ const EditionEditorPage = () => {
 
 	function handleFormSubmit() {
 		const fields = antForm.getFieldsValue();
-		formik.setValues(parseToSingleFile(parseDayjsToDate(fields), ["thumbnail", "program", "poster", "brochure", "flyer"])).finally(formik.submitForm);
+		formik
+			.setValues(parseToSingleFile(parseDayjsToDate(fields), ["thumbnail", "program", "poster", "brochure", "flyer"]))
+			.finally(formik.submitForm);
 	}
 
 	/*
@@ -175,11 +208,11 @@ const EditionEditorPage = () => {
 							<Input />
 						</Form.Item>
 
-						<Form.Item label="Présentation" className="mb-6" {...itemProps("presentation")}>
-							<Input.TextArea />
-						</Form.Item>
-
 						<Divider className="mb-6" />
+
+						<Form.Item label="Présentation" className="mb-6" {...itemProps("presentation")}>
+							{editor}
+						</Form.Item>
 					</div>
 
 					{/*
@@ -261,6 +294,27 @@ const EditionEditorPage = () => {
 			</Form>
 		</DashboardLayout>
 	);
+};
+
+const AntEditorJS = ({ value, onChange, imageToolEndpoint, ...rest }) => {
+	const tools = {
+		...TOOLS,
+		image: {
+			class: ImageTool,
+			config: {
+				endpoints: { byFile: imageToolEndpoint },
+				additionalRequestHeaders: {
+					"X-XSRF-TOKEN": getCsrfToken(),
+				},
+			},
+		},
+	};
+
+	function handleChange(editor, data) {
+		onChange(data);
+	}
+
+	return <EditorJs data={value || {}} tools={tools} onChange={handleChange} {...rest} />;
 };
 
 export default EditionEditorPage;

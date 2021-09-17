@@ -8,6 +8,8 @@ use App\Http\Requests\UpdateEditionRequest;
 use App\Models\Edition;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class EditionController extends Controller
 {
@@ -47,6 +49,25 @@ class EditionController extends Controller
 //		$edition->loadMissing(["schedules:id,film_id,edition_id,start_at"]);
 
 		return $edition;
+	}
+
+
+	public function saveContentMedia(Request $request, Edition $edition): JsonResponse
+	{
+		try {
+			$media = $edition->saveContentImage("image");
+		} catch (\Exception $e) {
+			return response()->json(["success" => 0], 201);
+		}
+
+		return response()->json([
+			"success" => 1,
+			"file" => [
+				"url" => $media->getFullUrl(),
+				"uuid" => $media->uuid,
+				// ... and any additional fields you want to store, such as width, height, color, extension, etc
+			],
+		], 201);
 	}
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\EditorJSCast;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -47,6 +49,7 @@ class Edition extends Model implements HasMedia
 		"open_at" => "date",
 		"close_at" => "date",
 		"published_at" => "datetime",
+		"presentation" => EditorJSCast::class,
 	];
 
 
@@ -109,6 +112,40 @@ class Edition extends Model implements HasMedia
 		$this->addMediaCollection('poster')->useDisk("media")->singleFile();
 		$this->addMediaCollection('brochure')->useDisk("media")->singleFile();
 		$this->addMediaCollection('flyer')->useDisk("media")->singleFile();
+		$this->addMediaCollection("content")->useDisk("media");
+	}
+
+
+	public function saveContentImage(string $key): Media
+	{
+		return $this->addMediaFromRequest($key)
+			->usingName(Str::random())
+			->sanitizingFileName(fn($fileName) => Str::random(24) . "." . pathinfo($fileName, PATHINFO_EXTENSION))
+			->toMediaCollection("content");
+	}
+
+
+	public function getContentImages(): \Illuminate\Support\Collection
+	{
+		return collect($this->getMedia("content")->all());
+	}
+
+
+	public function clearStaleContentImages()
+	{
+		// We get the uuid of images present in the content
+		$uuids = $this->content->getBlocksByType("image")->pluck("data.file.uuid")->toArray();
+		$images = $this->getContentImages();
+
+		// Then we get all stored images that we want to keep
+		$validImages = $images->filter(fn($media) => in_array($media->uuid, $uuids, true));
+		$this->clearMediaCollectionExcept("content", $validImages);
+	}
+
+
+	public function clearAllContentImages()
+	{
+		$this->clearMediaCollection("content");
 	}
 
 
@@ -201,23 +238,40 @@ class Edition extends Model implements HasMedia
 	{
 		$appends = [];
 
-		function appendExistingFile(&$appends, $name, $value)
-		{
-			if (! $value) {
-				return;
-			}
-
-			$appends[$name] = [
-				"name" => $value->file_name,
-				"url" => $value->getUrl(),
+		if ($this->thumbnail) {
+			$appends["thumbnail"] = [
+				"name" => $this->thumbnail->file_name,
+				"url" => $this->thumbnail->getUrl(),
 			];
 		}
 
-		appendExistingFile($appends, "thumbnail", $this->thumbnail);
-		appendExistingFile($appends, "program", $this->program);
-		appendExistingFile($appends, "poster", $this->poster);
-		appendExistingFile($appends, "brochure", $this->brochure);
-		appendExistingFile($appends, "flyer", $this->flyer);
+		if ($this->program) {
+			$appends["program"] = [
+				"name" => $this->program->file_name,
+				"url" => $this->program->getUrl(),
+			];
+		}
+
+		if ($this->poster) {
+			$appends["poster"] = [
+				"name" => $this->poster->file_name,
+				"url" => $this->poster->getUrl(),
+			];
+		}
+
+		if ($this->brochure) {
+			$appends["brochure"] = [
+				"name" => $this->brochure->file_name,
+				"url" => $this->brochure->getUrl(),
+			];
+		}
+
+		if ($this->flyer) {
+			$appends["flyer"] = [
+				"name" => $this->flyer->file_name,
+				"url" => $this->flyer->getUrl(),
+			];
+		}
 
 		return array_merge(parent::toArray(), $appends);
 	}
