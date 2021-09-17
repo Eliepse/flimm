@@ -32,7 +32,7 @@
 			<div class="mb-12">
 				{{ $film->filmmaker }}
 				<hr class="w-8 border-t-2 border-black my-2" />
-				{{ join(", ", [$film->gender, $film->year, "$film->duration'"]) }}<br />
+				{{ join(", ", array_filter([$film->gender, $film->year, "$film->duration'", $film->country])) }}<br />
 				@if($film->production_name)
 					({{ $film->production_name }})
 				@endif
@@ -40,6 +40,11 @@
 
 			@if(!empty($film->synopsis))
 				<p>{{ $film->synopsis }}</p>
+			@endif
+
+			@if(!empty($film->other_technical_infos))
+				<hr class="max-w-xs my-6 border-t-2 border-black" />
+				<p>{{ $film->other_technical_infos }}</p>
 			@endif
 		</div>
 
