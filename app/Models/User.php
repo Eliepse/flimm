@@ -10,7 +10,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Model
+/**
+ * Class User
+ *
+ * @package App\Models
+ * @property-read int $id
+ * @property string $email
+ * @property string $firstname
+ * @property string $lastname
+ * @property string $role
+ * @property string $password
+ * @property string $remember_token
+ */
+class User extends Model implements \Illuminate\Contracts\Auth\Authenticatable
 {
 	use HasFactory, Notifiable, Authenticatable, Authorizable, CanResetPassword, MustVerifyEmail;
 

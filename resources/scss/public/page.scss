@@ -1,0 +1,34 @@
+.page-header {
+	@apply p-8 border-b-2 border-black text-center;
+}
+
+.page-headerImage {
+	@apply mx-auto mb-6 w-auto max-w-full;
+	max-height: 26rem;
+}
+
+.page-title {
+	@apply mx-auto uppercase max-w-xl mb-2;
+}
+
+.page-links-list {
+	li a {
+		@apply font-bold no-underline;
+	}
+
+	li a:hover {
+		@apply underline;
+	}
+}
+
+.page-excerpt {
+	@apply mx-auto font-bold max-w-lg text-center;
+}
+
+.page-publishDate {
+	@apply text-center text-sm;
+}
+
+.page-content {
+	@apply px-4 py-2;
+}

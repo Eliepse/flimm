@@ -1,0 +1,20 @@
+.actus-list {
+	@apply flex items-start flex-wrap;
+}
+
+.actus-listItem {
+	@apply inline-block mb-8 w-full;
+	max-width: 18rem;
+
+	> a:not(:hover) {
+		@apply no-underline;
+	}
+}
+
+.actu-thumbnail {
+	@apply h-40 bg-gray-200 bg-center bg-cover mb-2;
+}
+
+.actu-title {
+	@apply text-lg font-bold leading-tight pl-2 pr-4;
+}
