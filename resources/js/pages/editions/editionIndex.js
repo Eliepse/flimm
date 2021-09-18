@@ -1,6 +1,6 @@
 import DashboardLayout from "components/layouts/DashboardLayout";
 import { useEffect, useState } from "react";
-import { Button, Card } from "hds-react";
+import { Button, Card, IconLinkExternal } from "hds-react";
 import { Link } from "app";
 import apiEdition from "lib/api/apiEdition";
 
@@ -37,6 +37,10 @@ const EditionIndexPage = () => {
 							<Link to={`/editions/${edition.id}`}>
 								<Button>Edit</Button>
 							</Link>
+							<a href={`/editions/${edition.slug}`} target="_blank" className="mt-4 flex items-center" rel="noreferrer">
+								Voir la page
+								<IconLinkExternal className="ml-2" />
+							</a>
 						</Card>
 					</li>
 				))}

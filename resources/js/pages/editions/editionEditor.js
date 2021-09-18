@@ -14,6 +14,7 @@ import HeaderTool from "@editorjs/header";
 import EmbedTool from "@editorjs/embed";
 import ImageTool from "@editorjs/image";
 import { getCsrfToken } from "lib/api/broker";
+import { IconLinkExternal } from "hds-react";
 
 const schema = Yup.object().shape({
 	title: Yup.string().min(4).max(150).required().trim(),
@@ -60,22 +61,22 @@ const TOOLS = {
 const EditionEditorPage = () => {
 	const { query, ...router } = useRouter();
 	const isNew = query.id === undefined;
-	const [apiData, setApiData] = useState({});
+	const [edition, setEdition] = useState({});
 	const [autoFilledSlug, setAutoFilledSlug] = useState(isNew);
 	const [isLoading, setIsLoading] = useState(true);
 
 	const editor = useMemo(() => {
-		if (!query.id || !apiData?.presentation) {
+		if (!query.id || !edition?.presentation) {
 			return <p>Vous devez d&apos;abord enregistrer l&apos;édition avant de pouvoir éditer le contenu.</p>;
 		}
 
 		return (
 			<AntEditorJS
 				imageToolEndpoint={`${location.protocol}//${location.host}/api/editions/${query.id}/media`}
-				value={apiData.presentation}
+				value={edition.presentation}
 			/>
 		);
-	}, [apiData.presentation, query.id]);
+	}, [edition.presentation, query.id]);
 
 	/*
 	| -------------------------------------------------
@@ -117,7 +118,7 @@ const EditionEditorPage = () => {
 				formik.setValues(cleanData);
 				// Slug has to be manually changed if article already in database
 				setAutoFilledSlug(false);
-				setApiData(data);
+				setEdition(data);
 			})
 			.catch(console.error);
 		//eslint-disable-next-line react-hooks/exhaustive-deps
@@ -188,7 +189,7 @@ const EditionEditorPage = () => {
 					<div className="col-span-2 px-4">
 						<Form.Item valuePropName="fileList" {...uploadItemProps("thumbnail")}>
 							<Upload.Dragger
-								defaultFileList={apiData.thumbnail ? [{ url: apiData.thumbnail }] : []}
+								defaultFileList={edition.thumbnail ? [{ url: edition.thumbnail }] : []}
 								accept=".jpg,.jpeg,.png,.gif"
 								beforeUpload={() => false}
 								listType="picture-card"
@@ -224,7 +225,7 @@ const EditionEditorPage = () => {
 						<div className="p-4 border-2 border-solid border-gray-300">
 							<Form.Item label="Programme" valuePropName="fileList" {...uploadItemProps("program")}>
 								<Upload
-									defaultFileList={apiData.program ? [{ url: apiData.program }] : []}
+									defaultFileList={edition.program ? [{ url: edition.program }] : []}
 									beforeUpload={() => false}
 									listType="text"
 								>
@@ -234,7 +235,7 @@ const EditionEditorPage = () => {
 
 							<Form.Item label="L'affiche" valuePropName="fileList" {...uploadItemProps("poster")}>
 								<Upload
-									defaultFileList={apiData.poster ? [{ url: apiData.poster }] : []}
+									defaultFileList={edition.poster ? [{ url: edition.poster }] : []}
 									beforeUpload={() => false}
 									listType="text"
 								>
@@ -244,7 +245,7 @@ const EditionEditorPage = () => {
 
 							<Form.Item label="La brochure" valuePropName="fileList" {...uploadItemProps("brochure")}>
 								<Upload
-									defaultFileList={apiData.brochure ? [{ url: apiData.brochure }] : []}
+									defaultFileList={edition.brochure ? [{ url: edition.brochure }] : []}
 									beforeUpload={() => false}
 									listType="text"
 								>
@@ -254,7 +255,7 @@ const EditionEditorPage = () => {
 
 							<Form.Item label="Le flyer" valuePropName="fileList" {...uploadItemProps("flyer")}>
 								<Upload
-									defaultFileList={apiData.flyer ? [{ url: apiData.flyer }] : []}
+									defaultFileList={edition.flyer ? [{ url: edition.flyer }] : []}
 									beforeUpload={() => false}
 									listType="text"
 								>
@@ -287,6 +288,17 @@ const EditionEditorPage = () => {
 								<Button size="large" type="primary" block onClick={handleFormSubmit} loading={isLoading}>
 									{isLoading ? "Sauvegarde en cours..." : "Sauvegarder"}
 								</Button>
+								{edition.slug && (
+									<a
+										href={`/editions/${edition.slug}`}
+										target="_blank"
+										className="mt-4 flex items-center"
+										rel="noreferrer"
+									>
+										Voir la page
+										<IconLinkExternal className="ml-2" />
+									</a>
+								)}
 							</div>
 						</div>
 					</aside>
