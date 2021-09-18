@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Edition;
 use App\Repositories\SettingRepository;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -32,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
 			return "<?php echo nl2br(e($expression)) ?>";
 		});
 
-		View::share("editions_list", Edition::published()->get(["title", "slug"]));
+		// Skip on console because the database is not yet migrated on first installation
+		View::share("editions_list", App::runningInConsole() ? [] : Edition::published()->get(["title", "slug"]));
 	}
 }
