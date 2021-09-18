@@ -21,7 +21,7 @@ class EditionController extends Controller
 
 	public function show(Edition $edition): Edition
 	{
-		$edition->loadMissing(["schedules:id,film_id,edition_id,start_at"]);
+//		$edition->loadMissing(["schedules:id,film_id,edition_id,start_at"]);
 		return $edition;
 	}
 

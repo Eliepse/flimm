@@ -1,7 +1,7 @@
 import DashboardLayout from "components/layouts/DashboardLayout";
 import { useEffect, useState } from "react";
 import apiFilm from "lib/api/apiFilm";
-import { Button, Card } from "hds-react";
+import { Button, Card, IconLinkExternal } from "hds-react";
 import { Link } from "app";
 
 const FilmIndexPage = () => {
@@ -37,6 +37,10 @@ const FilmIndexPage = () => {
 							<Link to={`/films/${film.id}`}>
 								<Button>Edit</Button>
 							</Link>
+							<a href={`/films/${film.slug}`} target="_blank" className="mt-4 flex items-center" rel="noreferrer">
+								Voir la page
+								<IconLinkExternal className="ml-2" />
+							</a>
 						</Card>
 					</li>
 				))}

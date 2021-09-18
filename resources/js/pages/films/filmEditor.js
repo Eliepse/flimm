@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import apiFilm from "lib/api/apiFilm";
 import { useRouter } from "lib/useRouter";
 import DashboardLayout from "components/layouts/DashboardLayout";
-import { Button, NumberInput, TextArea, TextInput } from "hds-react";
+import { Button, IconLinkExternal, NumberInput, TextArea, TextInput } from "hds-react";
 import { formikProps } from "lib/support/forms";
 import FileInput from "components/FileInput/FileInput";
 import { notification } from "antd";
@@ -61,6 +61,7 @@ const FilmEditorPage = () => {
 	const isNew = query.id === undefined;
 	const [isLoading, setIsLoading] = useState(true);
 	const [autoFilledSlug, setAutoFilledSlug] = useState(isNew);
+	const [film, setFilm] = useState({});
 
 	/*
 	| -------------------------------------------------
@@ -82,6 +83,7 @@ const FilmEditorPage = () => {
 					.create(formikData)
 					.then((res) => {
 						formik.setValues(res);
+						setFilm(res);
 						notification.success({ message: "Film créé" });
 						// Redirect to the edition mode on success
 						router.pushAdmin(`/films/${res.id}`);
@@ -95,6 +97,7 @@ const FilmEditorPage = () => {
 				.update({ id: query.id, ...formikData })
 				.then((res) => {
 					formik.setValues(res);
+					setFilm(res);
 					// Slug has to be manually changed if already in database
 					setAutoFilledSlug(false);
 					notification.success({ message: "Film mis à jour" });
@@ -122,6 +125,7 @@ const FilmEditorPage = () => {
 				setIsLoading(false);
 				setAutoFilledSlug(slug(data.title) !== data.slug);
 				formik.setValues(data);
+				setFilm(data);
 			})
 			.catch(console.error);
 		//eslint-disable-next-line react-hooks/exhaustive-deps
@@ -252,10 +256,21 @@ const FilmEditorPage = () => {
 						<hr className="my-4 border-t-2 border-gray-300" />
 
 						{/* Actions */}
-						<div className="mt-8">
+						<div className="mt-8 flex items-center">
 							<Button onClick={formik.submitForm} isLoading={isLoading} loadingText="Sauvegarde en cours...">
 								Sauvegarder
 							</Button>
+							{film.slug && (
+								<a
+									href={`/films/${film.slug}`}
+									target="_blank"
+									className="ml-4 inline-flex items-center"
+									rel="noreferrer"
+								>
+									Voir la page
+									<IconLinkExternal className="ml-2" />
+								</a>
+							)}
 						</div>
 					</div>
 				</aside>
