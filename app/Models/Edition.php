@@ -35,8 +35,6 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property  Carbon $published_at
  * @property-read  Carbon $created_at
  * @property-read  Carbon $updated_at
- * @property-read Collection $schedules
- * @property-read Collection $films
  * @method static Builder published()
  */
 class Edition extends Model implements HasMedia
@@ -214,18 +212,6 @@ class Edition extends Model implements HasMedia
 	 * Relations
 	 * ----------------
 	 */
-
-
-	public function schedules(): HasMany
-	{
-		return $this->hasMany(Schedule::class);
-	}
-
-
-	public function films(): HasManyThrough
-	{
-		return $this->hasManyThrough(Film::class, Schedule::class);
-	}
 
 
 	/*
