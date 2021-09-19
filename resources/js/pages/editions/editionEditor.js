@@ -66,7 +66,7 @@ const EditionEditorPage = () => {
 	const [isLoading, setIsLoading] = useState(true);
 
 	const editor = useMemo(() => {
-		if (!query.id || !edition?.presentation) {
+		if (!query.id) {
 			return <p>Vous devez d&apos;abord enregistrer l&apos;édition avant de pouvoir éditer le contenu.</p>;
 		}
 
