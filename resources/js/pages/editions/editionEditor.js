@@ -26,7 +26,7 @@ const schema = Yup.object().shape({
 	close_at: Yup.date().nullable(),
 	published_at: Yup.date().nullable(),
 	thumbnail: Yup.object().nullable(),
-	presentation: Yup.object(),
+	presentation: Yup.object().nullable(),
 });
 
 const defaultData = {
