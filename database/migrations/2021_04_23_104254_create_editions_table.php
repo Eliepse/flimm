@@ -17,7 +17,7 @@ class CreateEditionsTable extends Migration
 			$table->id();
 			$table->string("title");
 			$table->string("slug")->unique();
-			$table->text("presentation")->nullable();
+			$table->json("presentation")->nullable();
 			$table->string("teaser_link")->nullable();
 			$table->date("open_at")->nullable();
 			$table->date("close_at")->nullable();
