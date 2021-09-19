@@ -24,6 +24,10 @@ class UpdateEditionRequest extends StoreEditionRequest
 				"between:3,64",
 				Rule::unique("editions", "slug")->ignoreModel($this->edition, "slug"),
 			],
+			"presentation" => ["nullable"],
+			"presentation.time" => ["required", "int"],
+			"presentation.blocks" => ["required", "array"],
+			"presentation.version" => ["required", "string"],
 		]);
 	}
 }
