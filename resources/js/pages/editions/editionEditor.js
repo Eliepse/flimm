@@ -26,7 +26,7 @@ const schema = Yup.object().shape({
 	close_at: Yup.date().nullable(),
 	published_at: Yup.date().nullable(),
 	thumbnail: Yup.object().nullable(),
-	presentation: Yup.object(),
+	presentation: Yup.object().nullable(),
 });
 
 const defaultData = {
@@ -66,7 +66,7 @@ const EditionEditorPage = () => {
 	const [isLoading, setIsLoading] = useState(true);
 
 	const editor = useMemo(() => {
-		if (!query.id || !edition?.presentation) {
+		if (!query.id) {
 			return <p>Vous devez d&apos;abord enregistrer l&apos;édition avant de pouvoir éditer le contenu.</p>;
 		}
 
