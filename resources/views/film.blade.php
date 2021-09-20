@@ -45,6 +45,7 @@
 			@if(!empty($film->other_technical_infos))
 				<hr class="max-w-xs my-6 border-t-2 border-black" />
 				<p>{{ $film->other_technical_infos }}</p>
+				<p>{{ $film->imdb_id }}</p>
 			@endif
 		</div>
 
