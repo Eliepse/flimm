@@ -24,9 +24,7 @@
 
 <script src="{{ mix("/js/public.js") }}"></script>
 
-@production
-	<?= env("TRACKING_SCRIPT") ?>
-@endproduction
+{!! env("TRACKING_SCRIPT") !!}
 
 </body>
 </html>
