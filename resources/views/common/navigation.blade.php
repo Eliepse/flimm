@@ -16,5 +16,8 @@
 		<li>
 			<a href="{{ route("actus") }}">Actus</a>
 		</li>
+		<li>
+			<a href="{{ route("about") }}">À Propos</a>
+		</li>
 	</ul>
 </nav>
