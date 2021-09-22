@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', HomepageController::class);
+Route::view("/a-propos", "about");
 Route::view('/admin/{any?}', 'admin')->where("any", ".*");
 Route::get('/actus', [ArticleController::class, "index"])->name("actus");
 Route::get('/actus/{article:slug}', [ArticleController::class, "show"])->name("article");
