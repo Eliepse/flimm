@@ -20,7 +20,7 @@ class ContentSecurityPolicyMiddleware
 	{
 		/** @var Response $response */
 		$response = $next($request);
-		$response->header("Content-Security-Policy", "default-src 'self' " . env("CSP_DEFAULT_SRC", ""));
+		$response->headers->set("Content-Security-Policy", "default-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.gstatic.com " . env("CSP_DEFAULT_SRC", "") . "; child-src 'none';");
 		return $response;
 	}
 }
