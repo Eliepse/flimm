@@ -15,7 +15,7 @@ class ContentSecurityPolicyMiddleware
 	{
 		/** @var Response $response */
 		$response = $next($request);
-		$response->headers->set("Content-Security-Policy", "default-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.gstatic.com " . env("CSP_DEFAULT_SRC", "") . "; child-src https:';");
+		$response->headers->set("Content-Security-Policy", "default-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.gstatic.com " . env("CSP_DEFAULT_SRC", "") . "; frame-src https:;");
 		return $response;
 	}
 }
