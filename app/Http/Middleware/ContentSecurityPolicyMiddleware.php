@@ -10,17 +10,12 @@ class ContentSecurityPolicyMiddleware
 {
 	/**
 	 * Handle an incoming request.
-	 *
-	 * @param \Illuminate\Http\Request $request
-	 * @param \Closure $next
-	 *
-	 * @return mixed
 	 */
-	public function handle(Request $request, Closure $next)
+	public function handle(Request $request, Closure $next): Response
 	{
 		/** @var Response $response */
 		$response = $next($request);
-		$response->headers->set("Content-Security-Policy", "default-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.gstatic.com " . env("CSP_DEFAULT_SRC", "") . "; child-src 'none';");
+		$response->headers->set("Content-Security-Policy", "default-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.gstatic.com " . env("CSP_DEFAULT_SRC", "") . "; child-src https:';");
 		return $response;
 	}
 }

@@ -23,7 +23,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property string|null $title_override
  * @property int $duration
  * @property string|null $synopsis
- * @property string|null $teaser
+ * @property string|null $description
  * @property string $filmmaker
  * @property string|null $technical_members
  * @property string|null $gender

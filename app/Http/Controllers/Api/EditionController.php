@@ -91,21 +91,21 @@ class EditionController extends Controller
 		if ($request->hasFile("poster")) {
 			$edition->savePoster($request->file("poster"));
 		} else if ($request->has("poster") && is_null($request->get("poster"))) {
-			$edition->removeProgram();
+			$edition->removePoster();
 		}
 
 		// Brochure
 		if ($request->hasFile("brochure")) {
 			$edition->saveBrochure($request->file("brochure"));
 		} else if ($request->has("brochure") && is_null($request->get("brochure"))) {
-			$edition->removeProgram();
+			$edition->removeBrochure();
 		}
 
 		// Flyer
 		if ($request->hasFile("flyer")) {
 			$edition->saveFlyer($request->file("flyer"));
 		} else if ($request->has("flyer") && is_null($request->get("flyer"))) {
-			$edition->removeProgram();
+			$edition->removeFlyer();
 		}
 	}
 }
