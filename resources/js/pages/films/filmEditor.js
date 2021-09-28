@@ -19,7 +19,7 @@ const filmSchema = Yup.object().shape({
 	title_override: Yup.string().nullable(),
 	duration: Yup.number().integer().min(1).required(),
 	synopsis: Yup.string().nullable(),
-	teaser: Yup.string().nullable(),
+	description: Yup.string().nullable(),
 	filmmaker: Yup.string().required(),
 	technical_members: Yup.string().nullable(),
 	gender: Yup.string().nullable(),
@@ -41,7 +41,7 @@ const defaultData = {
 	title_override: "",
 	duration: 0,
 	synopsis: "",
-	teaser: "",
+	description: "",
 	filmmaker: "",
 	technical_members: "",
 	gender: "",
@@ -204,7 +204,7 @@ const FilmEditorPage = () => {
 						label="Accroche"
 						helperText="Accroche courte par le FLiMM"
 						className="mb-6"
-						{...formikProps(formik, "teaser")}
+						{...formikProps(formik, "description")}
 					/>
 
 					<TextInput

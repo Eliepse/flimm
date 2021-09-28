@@ -1,6 +1,6 @@
 import DashboardLayout from "components/layouts/DashboardLayout";
 import { normalizedUploadedFiles, parseDayjsToDate, parseToSingleFile } from "lib/support/forms";
-import { Button, DatePicker, Divider, Form, Input, notification, Upload } from "antd";
+import { Button, DatePicker, Divider, Form, Input, notification, Skeleton, Upload } from "antd";
 import { FileImageTwoTone, UploadOutlined } from "@ant-design/icons";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -66,8 +66,15 @@ const EditionEditorPage = () => {
 	const [isLoading, setIsLoading] = useState(true);
 
 	const editor = useMemo(() => {
+		// Do not render the editor on the creation state
+		// because no model is available to store imported images
 		if (!query.id) {
 			return <p>Vous devez d&apos;abord enregistrer l&apos;édition avant de pouvoir éditer le contenu.</p>;
+		}
+
+		// Do not render the editor until the data is ready
+		if (edition.presentation === undefined) {
+			return <Skeleton active />;
 		}
 
 		return (
