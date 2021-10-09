@@ -30,7 +30,9 @@ const DashboardLayout = ({ children }) => {
 			<div className="border-b border-solid border-gray-200">
 				<div className="max-w-6xl mx-auto flex items-center justify-between">
 					{/* Title */}
-					<div className="font-bold text-xl mr-6">FLiMM</div>
+					<a href="/">
+						<div className="flex items-center font-bold text-xl leading-none mr-6">FLiMM</div>
+					</a>
 
 					{/* Menu */}
 					<Menu mode="horizontal" className="border-0" onClick={handleMenuClick} selectedKeys={[activeMenu.path]}>
