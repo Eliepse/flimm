@@ -1,10 +1,12 @@
 import axios from "axios";
 
 // Dayjs
-
 import dayjs from "dayjs";
+import "dayjs/locale/fr";
 import isBetween from "dayjs/plugin/isBetween";
+
 dayjs.extend(isBetween);
+dayjs.locale("fr");
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests

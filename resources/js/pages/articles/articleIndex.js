@@ -1,21 +1,46 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import slug from "slug";
-import { Link } from "app";
-import dayjs from "dayjs";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { Button, Card, Dialog, IconDocument, IconLinkExternal, TextInput } from "hds-react";
+import { Dialog, IconDocument, TextInput } from "hds-react";
+import { Button, Table, Tag } from "antd";
 import apiArticle from "lib/api/apiArticle";
 import { useRouter } from "lib/useRouter";
 import DashboardLayout from "components/layouts/DashboardLayout";
+import { EditOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
+import { Link } from "app";
 
 const newArticleSchema = Yup.object().shape({
 	title: Yup.string().min(3).max(250).required(),
 	slug: Yup.string().min(3, "Trop court").max(64).required(),
 });
 
-export default function ArticleIndexPage() {
+const COLUMNS = [
+	{
+		title: "title",
+		dataIndex: "title",
+		key: "title",
+	},
+	{
+		title: "status",
+		key: "status",
+		render: (article) => <StatusCell article={article} />,
+	},
+	{
+		title: "Dernière modification",
+		dataIndex: "updated_at",
+		key: "updated_at",
+		render: (date) => date?.format("L LT"),
+	},
+	{
+		key: "actions",
+		width: 200,
+		render: (article) => <ActionsCell article={article} />,
+	},
+];
+
+const ArticleIndexPage = () => {
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [articles, setArticles] = useState([]);
 
@@ -28,43 +53,22 @@ export default function ArticleIndexPage() {
 
 	return (
 		<DashboardLayout>
-			<div className="flex justify-between items-center mb-6">
+			<div className="flex justify-between items-center">
 				<h1>Articles</h1>
 				<div>
-					<Button type="primary" onClick={() => setDialogOpen(true)}>
+					<Button icon={<PlusOutlined />} type="primary" onClick={() => setDialogOpen(true)}>
 						Nouveau
 					</Button>
 				</div>
 			</div>
-			<div>
-				<ul>
-					{articles.map((article) => (
-						<li key={article.id}>
-							<Card heading={article.title} border className="mb-4">
-								<div className="flex items-center justify-between">
-									<div className="flex items-center">
-										<Link to={`/articles/${article.id}`}>
-											<Button variant="secondary" theme="black" className="mr-4">
-												Editer
-											</Button>
-										</Link>
-										<a
-											href={`/actus/${article.slug}`}
-											target="_blank"
-											className="inline-flex items-center"
-											rel="noreferrer"
-										>
-											Voir l&apos;article
-											<IconLinkExternal className="ml-2" />
-										</a>
-									</div>
-									<div>{Boolean(article?.published_at) && dayjs(article.published_at).format("D MMMM YYYY")}</div>
-								</div>
-							</Card>
-						</li>
-					))}
-				</ul>
-			</div>
+			<Table
+				dataSource={articles.map((article) => ({
+					...article,
+					key: article.id,
+				}))}
+				columns={COLUMNS}
+				pagination={false}
+			/>
 			<Dialog id="new-article" isOpen={dialogOpen} aria-labelledby="">
 				<Dialog.Header id="new-article-title" title="Nouvel article" iconLeft={<IconDocument aria-hidden />} />
 				<Dialog.Content>
@@ -77,7 +81,7 @@ export default function ArticleIndexPage() {
 			</Dialog>
 		</DashboardLayout>
 	);
-}
+};
 
 const CreateArticleForm = ({ onClose }) => {
 	const router = useRouter();
@@ -163,3 +167,42 @@ const CreateArticleForm = ({ onClose }) => {
 CreateArticleForm.propTypes = {
 	onClose: PropTypes.func,
 };
+
+const ActionsCell = ({ article }) => (
+	<>
+		<Link key="edit" to={`/articles/${article.id}`}>
+			<Button size="small" type="primary" icon={<EditOutlined />} className="mr-2">
+				Editer
+			</Button>
+		</Link>
+		<Button
+			key="view"
+			size="small"
+			type="link"
+			href={`/articles/${article.slug}`}
+			rel="noreferrer"
+			target="_blank"
+			icon={<EyeOutlined />}
+		>
+			Afficher
+		</Button>
+	</>
+);
+
+ActionsCell.propTypes = {
+	article: PropTypes.object,
+};
+
+const StatusCell = ({ article }) => {
+	if (article.published_at) {
+		return <Tag color="green">Publié</Tag>;
+	}
+
+	return <Tag>Brouillon</Tag>;
+};
+
+StatusCell.propTypes = {
+	article: PropTypes.object,
+};
+
+export default ArticleIndexPage;

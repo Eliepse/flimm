@@ -1,15 +1,25 @@
 import Api from "./broker";
 import { dateToApi } from "lib/support/dates";
+import { parseToDaysjs } from "lib/support/forms";
 
 const basePath = "/articles";
-const dateTimeFormat = "YYYY-MM-DDTHH:mm:ssZZ";
+
+//const dateTimeFormat = "YYYY-MM-DDTHH:mm:ssZZ";
 
 export function all() {
-	return Api.get(basePath);
+	return new Promise((resolve, reject) => {
+		Api.get(basePath)
+			.then((data) => resolve(data.map(parseArticle)))
+			.catch(reject);
+	});
 }
 
 export function get(id) {
-	return Api.get(`${basePath}/${id}`);
+	return new Promise((resolve, reject) => {
+		Api.get(`${basePath}/${id}`)
+			.then((data) => resolve(parseArticle(data)))
+			.catch(reject);
+	});
 }
 
 export function create(article) {
@@ -37,12 +47,14 @@ export function remove(article) {
 }
 
 function formatArticleData(article) {
-	const { published_at } = article;
-
 	return {
 		...article,
 		published_at: dateToApi(article.published_at),
 	};
+}
+
+function parseArticle(data) {
+	return parseToDaysjs(data, ["published_at", "created_at", "updated_at"]);
 }
 
 const apiArticle = { all, get, create, update, remove };
