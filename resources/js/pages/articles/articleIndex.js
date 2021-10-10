@@ -1,20 +1,12 @@
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import slug from "slug";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { Dialog, IconDocument, TextInput } from "hds-react";
-import { Button, Table, Tag } from "antd";
+import { Button, Form, Input, Modal, Table, Tag } from "antd";
 import apiArticle from "lib/api/apiArticle";
 import { useRouter } from "lib/useRouter";
 import DashboardLayout from "components/layouts/DashboardLayout";
-import { EditOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
+import { EditOutlined, EyeOutlined, FileTextOutlined, PlusOutlined } from "@ant-design/icons";
 import { Link } from "app";
-
-const newArticleSchema = Yup.object().shape({
-	title: Yup.string().min(3).max(250).required(),
-	slug: Yup.string().min(3, "Trop court").max(64).required(),
-});
 
 const COLUMNS = [
 	{
@@ -69,103 +61,71 @@ const ArticleIndexPage = () => {
 				columns={COLUMNS}
 				pagination={false}
 			/>
-			<Dialog id="new-article" isOpen={dialogOpen} aria-labelledby="">
-				<Dialog.Header id="new-article-title" title="Nouvel article" iconLeft={<IconDocument aria-hidden />} />
-				<Dialog.Content>
-					<p className="mb-8">
-						Vous vous apprettez à créer un nouvel article. Veuillez d&apos;abord renseigner quelques informations de
-						base.
-					</p>
-					<CreateArticleForm onClose={() => setDialogOpen(false)} />
-				</Dialog.Content>
-			</Dialog>
+			<CreateArticleForm visible={dialogOpen} onClose={() => setDialogOpen(false)} />
 		</DashboardLayout>
 	);
 };
 
-const CreateArticleForm = ({ onClose }) => {
+const CreateArticleForm = ({ visible, onClose }) => {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
+	const [isAutoSlug, setIsAutoSlug] = useState(true);
+	const [form] = Form.useForm();
 
-	const formik = useFormik({
-		initialValues: { title: "", slug: "" },
-		validationSchema: newArticleSchema,
-		validateOnChange: false,
-		onSubmit: ({ title, slug }) => {
-			setLoading(true);
-			apiArticle
-				.create({ title, slug })
-				.then((data) => {
-					setLoading(false);
-					router.pushAdmin(`/articles/${data.id}`);
-				})
-				.catch((err) => {
-					console.error(err);
-					setLoading(false);
-				});
-		},
-	});
+	// Reset the auto-slug onClose
+	useEffect(() => {
+		if (visible === false) {
+			setIsAutoSlug(true);
+		}
+	}, [visible]);
 
-	/** @param {InputEvent} event */
-	function handleFormChange(event) {
-		const name = event.target.name;
-		let value = event.target.value;
+	function handleValuesChanged(changedValue) {
+		const changedNames = Object.keys(changedValue);
+		if (changedNames.includes("title") && isAutoSlug) {
+			form.setFields([{ name: "slug", value: slug(changedValue.title) }]);
+		} else if (changedNames.includes("slug")) {
+			form.setFields([{ name: "slug", value: slug(changedValue.slug) }]);
+			setIsAutoSlug(false);
+		}
+	}
 
-		if (name === "title") {
-			// Auto-fill slug only if the slug has not been manually modified
-			if (slug(formik.values.title) === formik.values.slug) {
-				formik.setFieldValue("slug", slug(value));
-			}
-		} else if (name === "slug") {
-			value = slug(value);
+	function handleSubmit(values) {
+		if (loading) {
+			return;
 		}
 
-		formik.handleChange({ ...event, target: { name, value } });
+		setLoading(true);
+		apiArticle
+			.create(values)
+			.then((data) => router.pushAdmin(`/articles/${data.id}`))
+			.catch((err) => console.error(err))
+			.finally(() => setLoading(false));
 	}
 
 	return (
-		<form onSubmit={formik.handleSubmit}>
-			<TextInput
-				type="text"
-				id="title"
-				name="title"
-				label="Titre"
-				className="mb-6"
-				required
-				onChange={handleFormChange}
-				value={formik.values.title}
-				errorText={formik.errors.title}
-				invalid={formik.errors.title}
-			/>
-
-			<TextInput
-				type="text"
-				id="slug"
-				name="slug"
-				label="Slug"
-				helperText="Text affiché dans le lien pour identifier l'article"
-				className="mb-6"
-				required
-				onChange={handleFormChange}
-				value={formik.values.slug}
-				errorText={formik.errors.slug}
-				invalid={formik.errors.slug}
-			/>
-
-			<div className="mb-6">
-				<Button theme="black" variant="secondary" className="mr-4" onClick={onClose} disabled={loading}>
-					Annuler
-				</Button>
-				<Button type="submit" isLoading={loading} loadingText="Création...">
-					Créer
-				</Button>
-			</div>
-		</form>
+		<Modal visible={visible} onCancel={onClose} onOk={form.submit} okText={loading ? "Création..." : "Créer"}>
+			<h2 className="text-lg font-bold mb-4">
+				<FileTextOutlined className="mr-2" />
+				Nouvel article
+			</h2>
+			<p className="text-gray-600 mb-8">
+				Vous vous apprettez à créer un nouvel article. Veuillez d&apos;abord renseigner quelques informations de base.
+			</p>
+			<Form form={form} onValuesChange={handleValuesChanged} onFinish={handleSubmit} layout="vertical">
+				<Form.Item label="Titre" name="title" rules={[{ required: true }]}>
+					<Input required disabled={loading} />
+				</Form.Item>
+				<Form.Item label="Slug" name="slug" rules={[{ required: true }]}>
+					<Input required disabled={loading} />
+				</Form.Item>
+			</Form>
+		</Modal>
 	);
 };
 
 CreateArticleForm.propTypes = {
-	onClose: PropTypes.func,
+	visible: PropTypes.bool,
+	onClose: PropTypes.func.isRequired,
 };
 
 const ActionsCell = ({ article }) => (
