@@ -7,7 +7,7 @@ import {authContext} from './authProvider';
  *  isAuth: boolean,
  *  apiToken: null|Object,
  *  isInitialized: boolean,
- *  login: function(),
+ *  login: function(String, String),
  *  user: null|Object
  *}}
  */

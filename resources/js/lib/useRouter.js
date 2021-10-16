@@ -30,6 +30,7 @@ export function useRouter() {
 			match,
 			location,
 			history,
+			goHome: () => history.push(URL_PREFIX),
 			pushAdmin: (url) => history.push(URL_PREFIX + url),
 		};
 	}, [params, match, location, history]);

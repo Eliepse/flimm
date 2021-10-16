@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 export const authContext = createContext({
 	user: null,
 	apiToken: null,
-	login: () => {},
+	login: (email, password) => {},
 	logout: () => {},
 });
 
