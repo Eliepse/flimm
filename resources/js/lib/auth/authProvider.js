@@ -1,11 +1,13 @@
 import { createContext, useEffect, useMemo, useState } from "react";
 import Api, { getCsrfToken } from "../api/broker";
-import { LoadingSpinner } from "hds-react";
 import PropTypes from "prop-types";
+import { Spin } from "antd";
 
+//noinspection JSUnusedLocalSymbols
 export const authContext = createContext({
 	user: null,
 	apiToken: null,
+	//eslint-disable-next-line no-unused-vars
 	login: (email, password) => {},
 	logout: () => {},
 });
@@ -91,7 +93,7 @@ export const AuthProvider = ({ children }) => {
 	if (initializing) {
 		return (
 			<div className="h-screen flex justify-center items-center">
-				<LoadingSpinner size="large" />
+				<Spin size="large" />
 			</div>
 		);
 	}
