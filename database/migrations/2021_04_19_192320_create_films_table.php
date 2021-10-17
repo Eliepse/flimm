@@ -20,7 +20,7 @@ class CreateFilmsTable extends Migration
 			$table->string("title_override")->nullable();
 			$table->unsignedSmallInteger("duration");
 			$table->text("synopsis")->nullable();
-			$table->text("teaser")->nullable();
+			$table->text("description")->nullable();
 			$table->string("filmmaker");
 			$table->string("technical_members")->nullable();
 			$table->string("gender")->nullable();
