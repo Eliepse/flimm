@@ -1,51 +1,16 @@
 import DashboardLayout from "components/layouts/DashboardLayout";
-import { normalizedUploadedFiles, parseDayjsToDate, parseToSingleFile } from "lib/support/forms";
-import { Button, DatePicker, Divider, Form, Input, notification, Skeleton, Upload } from "antd";
-import { FileImageTwoTone, UploadOutlined } from "@ant-design/icons";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import { Button, DatePicker, Divider, Form, Input, message, Skeleton, Upload } from "antd";
+import { FileImageTwoTone, GlobalOutlined, UploadOutlined } from "@ant-design/icons";
 import { useRouter } from "lib/useRouter";
 import { useEffect, useMemo, useState } from "react";
-import slug from "slug";
 import apiEdition from "lib/api/apiEdition";
-import useFormDefaults from "lib/hooks/useFormDefaults";
-import EditorJs from "react-editor-js";
 import HeaderTool from "@editorjs/header";
 import EmbedTool from "@editorjs/embed";
 import ImageTool from "@editorjs/image";
+import { normalizeOnUploadChanges } from "lib/support/forms";
+import slug from "slug";
 import { getCsrfToken } from "lib/api/broker";
-import { IconLinkExternal } from "hds-react";
-
-const schema = Yup.object().shape({
-	title: Yup.string().min(4).max(150).required().trim(),
-	slug: Yup.string()
-		.min(4, "Trop court")
-		.matches(/[a-zA-Z0-9-]+/)
-		.required(),
-	open_at: Yup.date().nullable(),
-	close_at: Yup.date().nullable(),
-	published_at: Yup.date().nullable(),
-	thumbnail: Yup.object().nullable(),
-	presentation: Yup.object().nullable(),
-});
-
-const defaultData = {
-	title: "",
-	slug: "",
-	open_at: null,
-	close_at: null,
-	published_at: null,
-	presentation: {},
-};
-
-const HELP_TEXTS = {
-	title: "Le titre original du film",
-	slug:
-		"Text affiché dans le lien pour identifier l'article. Attention, si l'article " +
-		"a déjà été publié, les visiteurs ne pourront plus retrouver l'article si cette valeur " +
-		"change (le précédent lien ne sera plus valide).",
-	thumbnail: "Glissez/déposez une image ou cliquez pour en sélectionner une.",
-};
+import EditorJs from "react-editor-js";
 
 const TOOLS = {
 	header: {
@@ -64,7 +29,8 @@ const EditionEditorPage = () => {
 	const [edition, setEdition] = useState({});
 	const [autoFilledSlug, setAutoFilledSlug] = useState(isNew);
 	const [isLoading, setIsLoading] = useState(true);
-
+	const [form] = Form.useForm();
+	//
 	const editor = useMemo(() => {
 		// Do not render the editor on the creation state
 		// because no model is available to store imported images
@@ -91,16 +57,9 @@ const EditionEditorPage = () => {
 	| -------------------------------------------------
 	 */
 
-	const formik = useFormik({
-		initialValues: defaultData,
-		validationSchema: schema,
-		validateOnChange: false,
-		validateOnBlur: true,
-		onSubmit: handleFormikSubmit,
-	});
-
-	const { antForm, itemProps, uploadItemProps, editorJSProps } = useFormDefaults(formik, defaultData, HELP_TEXTS);
-	const richEditorProps = useMemo(() => editorJSProps("presentation"), []);
+	//const { antForm, itemProps, uploadItemProps, editorJSProps } = useFormDefaults(formik, defaultData, HELP_TEXTS);
+	//const richEditorProps = useMemo(() => editorJSProps("presentation"), []);
+	//const richEditorProps = null;
 
 	/*
 	| -------------------------------------------------
@@ -109,8 +68,6 @@ const EditionEditorPage = () => {
 	 */
 
 	useEffect(() => {
-		//apiFilm.all().then(setFilms);
-
 		if (isNew) {
 			setIsLoading(false);
 			return;
@@ -119,15 +76,21 @@ const EditionEditorPage = () => {
 		apiEdition
 			.get(query.id)
 			.then((data) => {
-				setIsLoading(false);
-				const cleanData = normalizedUploadedFiles(data, ["thumbnail", "program", "poster", "brochure", "flyer"]);
-				antForm.setFieldsValue(cleanData);
-				formik.setValues(cleanData);
+				form.setFieldsValue({
+					...data,
+					thumbnail: data.thumbnail ? [data.thumbnail] : [],
+					program: data.program ? [data.program] : [],
+					poster: data.poster ? [data.poster] : [],
+					brochure: data.brochure ? [data.brochure] : [],
+					flyer: data.flyer ? [data.flyer] : [],
+				});
+
 				// Slug has to be manually changed if article already in database
 				setAutoFilledSlug(false);
 				setEdition(data);
 			})
-			.catch(console.error);
+			.catch(console.error)
+			.finally(() => setIsLoading(false));
 		//eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -137,45 +100,47 @@ const EditionEditorPage = () => {
 	| -------------------------------------------------
 	 */
 
-	function handleFormikSubmit(fields) {
+	function handleSubmit(values) {
 		setIsLoading(true);
 
-		const request = isNew ? apiEdition.create(fields) : apiEdition.update({ id: query.id, ...fields });
+		const request = isNew ? apiEdition.create(values) : apiEdition.update({ id: query.id, ...values });
 
 		request
 			.then((data) => {
-				formik.setValues(data);
-
 				// Redirect to the edition mode on success
 				if (isNew) {
-					notification.success({ message: "Édition créée" });
+					message.success("Édition créée");
 					router.pushAdmin(`/editions/${data.id}`);
 				} else {
-					notification.success({ message: "Édition mise à jour" });
+					message.success("Édition mise à jour");
+					setIsLoading(false);
 				}
 			})
-			.catch((err) => {
-				formik.setErrors(err.errors);
-			})
-			.finally(() => setIsLoading(false));
+			.catch(console.error);
 	}
 
-	function handleFormChanged(changedValues) {
-		if (autoFilledSlug && Object.prototype.hasOwnProperty.call(changedValues, "title")) {
-			antForm.setFieldsValue({ slug: slug(changedValues.title) });
-		} else if (Object.prototype.hasOwnProperty.call(changedValues, "slug")) {
+	/*
+	| -------------------------------------------------
+	| Inputs Middlewares
+	| -------------------------------------------------
+	 */
+
+	/** @param {InputEvent} event */
+	function slugMiddleware(event) {
+		if (autoFilledSlug) {
 			setAutoFilledSlug(false);
-			antForm.setFieldsValue({ slug: slug(changedValues.slug, { trim: false }) });
 		}
 
-		Object.entries(parseDayjsToDate(changedValues)).forEach(([name, value]) => formik.setFieldValue(name, value));
+		return slug(event.target.value, { trim: false });
 	}
 
-	function handleFormSubmit() {
-		const fields = antForm.getFieldsValue();
-		formik
-			.setValues(parseToSingleFile(parseDayjsToDate(fields), ["thumbnail", "program", "poster", "brochure", "flyer"]))
-			.finally(formik.submitForm);
+	/** @param {InputEvent} event */
+	function titleMiddleware(event) {
+		if (autoFilledSlug) {
+			form.setFieldsValue({ slug: slug(event.target.value, { trim: false }) });
+		}
+
+		return event.target.value;
 	}
 
 	/*
@@ -186,130 +151,145 @@ const EditionEditorPage = () => {
 
 	return (
 		<DashboardLayout>
-			<Form layout="vertical" form={antForm} onValuesChange={handleFormChanged}>
-				<div className="grid grid-cols-3">
-					{/*
+			<Form layout="vertical" form={form} className="grid grid-cols-3" onFinish={handleSubmit}>
+				{/*
 					| -------------------------------------------------
 					| Main fields
 					| -------------------------------------------------
 					*/}
-					<div className="col-span-2 px-4">
-						<Form.Item valuePropName="fileList" {...uploadItemProps("thumbnail")}>
-							<Upload.Dragger
-								defaultFileList={edition.thumbnail ? [{ url: edition.thumbnail }] : []}
-								accept=".jpg,.jpeg,.png,.gif"
-								beforeUpload={() => false}
-								listType="picture-card"
-							>
-								<p className="ant-upload-drag-icon">
-									<FileImageTwoTone />
-								</p>
-								<p className="ant-upload-text">Visuel principal</p>
-							</Upload.Dragger>
-						</Form.Item>
+				<div className="col-span-2 px-4">
+					<Form.Item
+						valuePropName="fileList"
+						extra="Glissez/déposez une image ou cliquez pour en sélectionner une."
+						getValueFromEvent={normalizeOnUploadChanges}
+						name="thumbnail"
+						rules={[{ required: true }]}
+					>
+						<Upload.Dragger
+							beforeUpload={() => false}
+							listType="picture-card"
+							accept=".jpg,.jpeg,.png,.gif"
+							maxCount={1}
+						>
+							<p className="ant-upload-drag-icon">
+								<FileImageTwoTone />
+							</p>
+							<p className="ant-upload-text">Visuel principal</p>
+						</Upload.Dragger>
+					</Form.Item>
 
-						<Form.Item label="Titre" className="mb-6" {...itemProps("title")}>
-							<Input />
-						</Form.Item>
+					<Form.Item
+						label="Titre"
+						getValueFromEvent={titleMiddleware}
+						extra="Le titre original du film"
+						className="mb-6"
+						name="title"
+						rules={[{ required: true }]}
+					>
+						<Input />
+					</Form.Item>
 
-						<Form.Item label="Slug" className="mb-6" {...itemProps("slug")}>
-							<Input />
-						</Form.Item>
+					<Form.Item
+						label="Slug"
+						getValueFromEvent={slugMiddleware}
+						className="mb-6"
+						name="slug"
+						rules={[{ required: true }]}
+					>
+						<Input addonBefore={`${location.origin}/editions/`} pattern="[0-9a-zA-Z-]+" />
+					</Form.Item>
 
-						<Divider className="mb-6" />
+					<Divider className="mb-6" />
 
-						<Form.Item label="Présentation" className="mb-6" {...itemProps("presentation")}>
-							{editor}
-						</Form.Item>
-					</div>
+					<Form.Item label="Présentation" className="mb-6" name="presentation">
+						{editor}
+					</Form.Item>
+				</div>
 
-					{/*
+				{/*
 					| -------------------------------------------------
 					| Secondary fields
 					| -------------------------------------------------
 					*/}
-					<aside className="col-span-1">
-						<div className="p-4 border-2 border-solid border-gray-300">
-							<Form.Item label="Programme" valuePropName="fileList" {...uploadItemProps("program")}>
-								<Upload
-									defaultFileList={edition.program ? [{ url: edition.program }] : []}
-									beforeUpload={() => false}
-									listType="text"
-								>
-									<Button icon={<UploadOutlined />}>Upload</Button>
-								</Upload>
-							</Form.Item>
+				<aside className="col-span-1">
+					<div className="p-4 border-2 border-solid border-gray-300">
+						<Form.Item
+							label="Programme"
+							valuePropName="fileList"
+							getValueFromEvent={normalizeOnUploadChanges}
+							name="program"
+						>
+							<Upload beforeUpload={() => false} listType="text" maxCount={1}>
+								<Button icon={<UploadOutlined />}>Upload</Button>
+							</Upload>
+						</Form.Item>
 
-							<Form.Item label="L'affiche" valuePropName="fileList" {...uploadItemProps("poster")}>
-								<Upload
-									defaultFileList={edition.poster ? [{ url: edition.poster }] : []}
-									beforeUpload={() => false}
-									listType="text"
-								>
-									<Button icon={<UploadOutlined />}>Upload</Button>
-								</Upload>
-							</Form.Item>
+						<Form.Item
+							label="L'affiche"
+							valuePropName="fileList"
+							getValueFromEvent={normalizeOnUploadChanges}
+							name="poster"
+						>
+							<Upload beforeUpload={() => false} listType="text" maxCount={1}>
+								<Button icon={<UploadOutlined />}>Upload</Button>
+							</Upload>
+						</Form.Item>
 
-							<Form.Item label="La brochure" valuePropName="fileList" {...uploadItemProps("brochure")}>
-								<Upload
-									defaultFileList={edition.brochure ? [{ url: edition.brochure }] : []}
-									beforeUpload={() => false}
-									listType="text"
-								>
-									<Button icon={<UploadOutlined />}>Upload</Button>
-								</Upload>
-							</Form.Item>
+						<Form.Item
+							label="La brochure"
+							valuePropName="fileList"
+							getValueFromEvent={normalizeOnUploadChanges}
+							name="brochure"
+						>
+							<Upload beforeUpload={() => false} listType="text" maxCount={1}>
+								<Button icon={<UploadOutlined />}>Upload</Button>
+							</Upload>
+						</Form.Item>
 
-							<Form.Item label="Le flyer" valuePropName="fileList" {...uploadItemProps("flyer")}>
-								<Upload
-									defaultFileList={edition.flyer ? [{ url: edition.flyer }] : []}
-									beforeUpload={() => false}
-									listType="text"
-								>
-									<Button icon={<UploadOutlined />}>Upload</Button>
-								</Upload>
-							</Form.Item>
+						<Form.Item
+							label="Le flyer"
+							valuePropName="fileList"
+							getValueFromEvent={normalizeOnUploadChanges}
+							name="flyer"
+						>
+							<Upload beforeUpload={() => false} listType="text" maxCount={1}>
+								<Button icon={<UploadOutlined />}>Upload</Button>
+							</Upload>
+						</Form.Item>
 
-							<Form.Item label="Lien du teaser" className="mb-6" {...itemProps("teaser_link")}>
-								<Input />
-							</Form.Item>
+						<Form.Item label="Lien du teaser" className="mb-6" name="teaser_link">
+							<Input />
+						</Form.Item>
 
-							<Divider />
+						<Divider />
 
-							<Form.Item label="Publier le" className="mb-6" {...itemProps("published_at")}>
-								<DatePicker showTime />
-							</Form.Item>
+						<Form.Item label="Publier le" className="mb-6" name="published_at">
+							<DatePicker showTime />
+						</Form.Item>
 
-							<Form.Item label="Ouverture de l'édition" className="mb-6" {...itemProps("open_at")}>
-								<DatePicker />
-							</Form.Item>
+						<Form.Item label="Ouverture de l'édition" className="mb-6" name="open_at">
+							<DatePicker />
+						</Form.Item>
 
-							<Form.Item label="Fermeture de l'édition" className="mb-6" {...itemProps("close_at")}>
-								<DatePicker />
-							</Form.Item>
+						<Form.Item label="Fermeture de l'édition" className="mb-6" name="close_at">
+							<DatePicker />
+						</Form.Item>
 
-							<Divider />
+						<Divider />
 
-							{/* Actions */}
-							<div className="mt-8">
-								<Button size="large" type="primary" block onClick={handleFormSubmit} loading={isLoading}>
-									{isLoading ? "Sauvegarde en cours..." : "Sauvegarder"}
+						{/* Actions */}
+						<div className="mt-8">
+							<Button type="primary" htmlType="submit" loading={isLoading}>
+								{isLoading ? "Sauvegarde en cours..." : "Sauvegarder"}
+							</Button>
+							{edition.slug && (
+								<Button icon={<GlobalOutlined />} href={`/editions/${edition.slug}`} target="_blank" rel="noreferrer">
+									Voir la page
 								</Button>
-								{edition.slug && (
-									<a
-										href={`/editions/${edition.slug}`}
-										target="_blank"
-										className="mt-4 flex items-center"
-										rel="noreferrer"
-									>
-										Voir la page
-										<IconLinkExternal className="ml-2" />
-									</a>
-								)}
-							</div>
+							)}
 						</div>
-					</aside>
-				</div>
+					</div>
+				</aside>
 			</Form>
 		</DashboardLayout>
 	);
@@ -323,7 +303,7 @@ const AntEditorJS = ({ value, onChange, imageToolEndpoint, ...rest }) => {
 			config: {
 				endpoints: { byFile: imageToolEndpoint },
 				additionalRequestHeaders: {
-					"X-XSRF-TOKEN": getCsrfToken(),
+					" X-XSRF-TOKEN": getCsrfToken(),
 				},
 			},
 		},

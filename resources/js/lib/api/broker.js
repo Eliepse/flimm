@@ -133,7 +133,9 @@ export function formatEmptyValue(data) {
  * @returns {Object}
  */
 export function formatDatesValues(data) {
-	return Object.fromEntries(Object.entries(data).map(([k, v]) => [k, isDate(v) ? dateToApi(v) : v]));
+	return Object.fromEntries(
+		Object.entries(data).map(([k, v]) => [k, isDate(v) || dayjs.isDayjs(v) ? dateToApi(v) : v])
+	);
 }
 
 export function formatObjectValues(data) {
@@ -143,8 +145,6 @@ export function formatObjectValues(data) {
 		Object.entries(obj).forEach(([k, v]) => {
 			const key = `${prefix}[${k}]`;
 			const value = v || "";
-
-			console.debug(k, v, value instanceof File);
 
 			if (value instanceof File) {
 				fields[key] = value;
@@ -177,6 +177,47 @@ export function formatObjectValues(data) {
 	const filteredFields = Object.fromEntries(Object.entries(data).filter(([k]) => !fieldToFilters.includes(k)));
 
 	return Object.assign({}, filteredFields, fieldsToAppend);
+}
+
+/**
+ * Format singles files value by only keeping the origin File
+ * to upload, and remove key/value pair when the field has not
+ * been changed, and should not be processed by the backend.
+ *
+ * @param {Object} data
+ * @param {String[]} fields
+ * @returns {Object}
+ */
+export function formatAndFilterSingleFilesValues(data, fields) {
+	const filteredData = Object.entries(data).filter(([name, value]) => {
+		if (!fields.includes(name)) {
+			return true;
+		}
+
+		if (!Array.isArray(value)) {
+			return false;
+		}
+
+		// Remove the fields if not changed (not a new File object).
+		return value[0]?.originFileObj;
+	});
+
+	//noinspection JSCheckFunctionSignatures
+	return Object.fromEntries(
+		filteredData.map(([name, value]) => {
+			if (!fields.includes(name)) {
+				return [name, value];
+			}
+
+			// The file need to be cleared
+			if (!Array.isArray(value) || value.length === 0) {
+				return [name, ""];
+			}
+
+			// New file has to be uploaded
+			return [name, value[0].originFileObj];
+		})
+	);
 }
 
 const Api = {
