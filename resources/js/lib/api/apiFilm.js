@@ -41,8 +41,12 @@ function prepareFilmData(data) {
 	params.set("trailer_link", data.trailer_link || "");
 	params.set("imdb_id", data.imdb_id || "");
 
-	if (typeof data.thumbnail !== "string") {
-		params.set("thumbnail", data.thumbnail || "");
+	const thumbnail = Array.isArray(data.thumbnail) ? data.thumbnail : [];
+
+	if (thumbnail.length === 0) {
+		params.set("thumbnail", "");
+	} else if (thumbnail[0]?.originFileObj) {
+		params.set("thumbnail", thumbnail[0]?.originFileObj);
 	}
 
 	return params;

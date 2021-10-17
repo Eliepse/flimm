@@ -1,60 +1,19 @@
 import { useEffect, useState } from "react";
-import * as Yup from "yup";
-import { useFormik } from "formik";
 import apiFilm from "lib/api/apiFilm";
 import { useRouter } from "lib/useRouter";
 import DashboardLayout from "components/layouts/DashboardLayout";
-import { Button, IconLinkExternal, NumberInput, TextArea, TextInput } from "hds-react";
-import { formikProps } from "lib/support/forms";
-import FileInput from "components/FileInput/FileInput";
-import { notification } from "antd";
+import { Button, Form, Input, message, Upload } from "antd";
+import { GlobalOutlined, UploadOutlined } from "@ant-design/icons";
+import { normalizeOnUploadChanges } from "lib/support/forms";
 import slug from "slug";
 
-const filmSchema = Yup.object().shape({
-	title: Yup.string().min(1).max(150).required().trim(),
-	slug: Yup.string()
-		.min(4, "Trop court")
-		.matches(/[a-zA-Z0-9-]+/)
-		.required(),
-	title_override: Yup.string().nullable(),
-	duration: Yup.number().integer().min(1).required(),
-	synopsis: Yup.string().nullable(),
-	description: Yup.string().nullable(),
-	filmmaker: Yup.string().required(),
-	technical_members: Yup.string().nullable(),
-	gender: Yup.string().nullable(),
-	year: Yup.string()
-		.matches(/[0-9]{4}/)
-		.required(),
-	production_name: Yup.string().nullable(),
-	country: Yup.string().nullable(),
-	other_technical_infos: Yup.string().nullable(),
-	website_link: Yup.string().url().nullable(),
-	video_link: Yup.string().url().nullable(),
-	trailer_link: Yup.string().url().nullable(),
-	imdb_id: Yup.string().nullable(),
-});
+function normalizeThumbnailForInput(thumbnail) {
+	if (!thumbnail) {
+		return [];
+	}
 
-const defaultData = {
-	title: "",
-	slug: "",
-	title_override: "",
-	duration: 0,
-	synopsis: "",
-	description: "",
-	filmmaker: "",
-	technical_members: "",
-	gender: "",
-	year: "",
-	production_name: "",
-	country: "",
-	other_technical_infos: "",
-	website_link: "",
-	video_link: "",
-	trailer_link: "",
-	imdb_id: "",
-	thumbnail: "",
-};
+	return [{ status: "done", thumbUrl: thumbnail, uid: thumbnail }];
+}
 
 const FilmEditorPage = () => {
 	const { query, ...router } = useRouter();
@@ -62,50 +21,7 @@ const FilmEditorPage = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [autoFilledSlug, setAutoFilledSlug] = useState(isNew);
 	const [film, setFilm] = useState({});
-
-	/*
-	| -------------------------------------------------
-	| Formik
-	| -------------------------------------------------
-	 */
-
-	const formik = useFormik({
-		initialValues: defaultData,
-		validationSchema: filmSchema,
-		validateOnChange: false,
-		validateOnBlur: true,
-		onSubmit: (formikData) => {
-			setIsLoading(true);
-
-			// Store new article
-			if (isNew) {
-				apiFilm
-					.create(formikData)
-					.then((res) => {
-						formik.setValues(res);
-						setFilm(res);
-						notification.success({ message: "Film créé" });
-						// Redirect to the edition mode on success
-						router.pushAdmin(`/films/${res.id}`);
-					})
-					.catch(console.error)
-					.finally(() => setIsLoading(false));
-				return;
-			}
-
-			apiFilm
-				.update({ id: query.id, ...formikData })
-				.then((res) => {
-					formik.setValues(res);
-					setFilm(res);
-					// Slug has to be manually changed if already in database
-					setAutoFilledSlug(false);
-					notification.success({ message: "Film mis à jour" });
-				})
-				.catch(console.error)
-				.finally(() => setIsLoading(false));
-		},
-	});
+	const [form] = Form.useForm();
 
 	/*
 	| -------------------------------------------------
@@ -122,37 +38,90 @@ const FilmEditorPage = () => {
 		apiFilm
 			.get(query.id)
 			.then((data) => {
-				setIsLoading(false);
-				setAutoFilledSlug(slug(data.title) !== data.slug);
-				formik.setValues(data);
+				setAutoFilledSlug(false);
+				form.setFieldsValue({
+					...data,
+					thumbnail: normalizeThumbnailForInput(data.thumbnail),
+				});
 				setFilm(data);
 			})
-			.catch(console.error);
+			.catch(console.error)
+			.finally(() => setIsLoading(false));
 		//eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	/*
 	| -------------------------------------------------
-	| Events handlers
+	| Submit
+	| -------------------------------------------------
+	 */
+
+	function handleSubmit(values) {
+		setIsLoading(true);
+
+		// Store new article
+		if (isNew) {
+			apiFilm
+				.create(values)
+				.then((res) => {
+					//noinspection JSIgnoredPromiseFromCall
+					message.success("Film créé");
+
+					// Redirect to the edition mode on success
+					router.pushAdmin(`/films/${res.id}`);
+				})
+				.catch((e) => {
+					console.error(e);
+					setIsLoading(false);
+				});
+			return;
+		}
+
+		apiFilm
+			.update({ id: query.id, ...values })
+			.then((res) => {
+				setFilm(res);
+
+				form.setFieldsValue({
+					...res,
+					thumbnail: normalizeThumbnailForInput(res.thumbnail),
+				});
+
+				// Slug has to be manually changed if already in database
+				setAutoFilledSlug(false);
+
+				//noinspection JSIgnoredPromiseFromCall
+				message.success("Film mis à jour");
+			})
+			.catch(console.error)
+			.finally(() => {
+				setAutoFilledSlug(false);
+				setIsLoading(false);
+			});
+	}
+
+	/*
+	| -------------------------------------------------
+	| Inputs Middlewares
 	| -------------------------------------------------
 	 */
 
 	/** @param {InputEvent} event */
-	function handleFileChange(event) {
-		formik.setFieldValue("thumbnail", event.target.files[0]);
-	}
-
-	function handleSlugChange(event) {
-		setAutoFilledSlug(false);
-		formik.setFieldValue("slug", slug(event.target.value, { trim: false }));
-	}
-
-	function handleTitleChange(event) {
+	function slugMiddleware(event) {
 		if (autoFilledSlug) {
-			formik.setFieldValue("slug", slug(event.target.value, { trim: false }));
+			setAutoFilledSlug(false);
 		}
 
-		formik.setFieldValue("title", event.target.value);
+		return slug(event.target.value, { trim: false });
+	}
+
+	/** @param {InputEvent} event */
+	function titleMiddleware(event) {
+		if (autoFilledSlug) {
+			form.setFieldsValue({ slug: slug(event.target.value, { trim: false }) });
+		}
+
+		return event.target.value;
 	}
 
 	/*
@@ -163,66 +132,59 @@ const FilmEditorPage = () => {
 
 	return (
 		<DashboardLayout>
-			<div className="grid grid-cols-3">
-				{/*
+			<Form form={form} initialValues={film} onFinish={handleSubmit} layout="vertical" className="grid grid-cols-3">
+				<div className="col-span-2 px-4">
+					{/*
 				| -------------------------------------------------
 				| Content editor
 				| -------------------------------------------------
 				*/}
-				<div className="col-span-2 px-4">
-					{/* Inputs */}
-					<TextInput
-						type="text"
+					<Form.Item
 						label="Titre"
-						helperText="Le titre original du film"
-						className="mb-6"
-						required
-						{...formikProps(formik, "title")}
-						onChange={handleTitleChange}
-					/>
+						name="title"
+						extra="Le titre original du film"
+						getValueFromEvent={titleMiddleware}
+						rules={[{ required: true }]}
+					>
+						<Input />
+					</Form.Item>
 
-					<TextInput
-						type="text"
-						label="Slug"
-						className="mb-6"
-						required
-						{...formikProps(formik, "slug")}
-						onChange={handleSlugChange}
-					/>
+					<Form.Item label="Slug" name="slug" getValueFromEvent={slugMiddleware} rules={[{ required: true }]}>
+						<Input addonBefore={`${location.origin}/films/`} pattern="[0-9a-zA-Z-]+" />
+					</Form.Item>
 
-					<TextInput
-						type="text"
-						label="Titre de remplacement"
-						helperText="Par exemple, une traduction"
-						className="mb-6"
-						{...formikProps(formik, "title_override")}
-					/>
+					<Form.Item label="Titre de remplacement" name="title_override" extra="Par exemple, une traduction">
+						<Input />
+					</Form.Item>
 
-					<TextArea label="Synopsis" className="mb-6" {...formikProps(formik, "synopsis")} />
+					<Form.Item label="Synopsis" name="synopsis">
+						<Input.TextArea maxLength={1000} showCount />
+					</Form.Item>
 
-					<TextArea
-						label="Accroche"
-						helperText="Accroche courte par le FLiMM"
-						className="mb-6"
-						{...formikProps(formik, "description")}
-					/>
+					<Form.Item label="Accroche" name="description" extra="Accroche courte par le FLiMM">
+						<Input.TextArea maxLength={1000} showCount />
+					</Form.Item>
 
-					<TextInput
-						type="text"
-						label="Autres informations techniques"
-						className="mb-6"
-						{...formikProps(formik, "other_technical_infos")}
-					/>
+					<Form.Item label="Autres informations techniques" name="other_technical_infos">
+						<Input.TextArea maxLength={1000} showCount />
+					</Form.Item>
 
-					<TextInput type="text" label="Siteweb" className="mb-6" {...formikProps(formik, "website_link")} />
+					<Form.Item label="Siteweb" name="website_link">
+						<Input type="url" />
+					</Form.Item>
 
-					<TextInput type="text" label="Lien du trailer" className="mb-6" {...formikProps(formik, "trailer_link")} />
+					<Form.Item label="Lien du trailer" name="trailer_link">
+						<Input type="url" />
+					</Form.Item>
 
-					<TextInput type="text" label="Lien du film" className="mb-6" {...formikProps(formik, "video_link")} />
+					<Form.Item label="Lien du film" name="video_link">
+						<Input type="url" />
+					</Form.Item>
 
-					<TextInput type="text" label="Référence IMDB" className="mb-6" {...formikProps(formik, "imdb_id")} />
+					<Form.Item label="Référence IMDB" name="imdb_id">
+						<Input />
+					</Form.Item>
 				</div>
-
 				{/*
 				| -------------------------------------------------
 				| Other fields (title, metadata, ...)
@@ -230,51 +192,58 @@ const FilmEditorPage = () => {
 				*/}
 				<aside className="col-span-1">
 					<div className="p-4 border-2 border-solid border-gray-300">
-						<NumberInput label="Durée du film" className="mb-6" {...formikProps(formik, "duration")} required />
+						<Form.Item label="Durée du film" name="duration" rules={[{ required: true }]}>
+							<Input min={0} pattern="[0-9]+" addonAfter="min" />
+						</Form.Item>
 
-						<TextInput type="text" label="Année de sortie" className="mb-6" {...formikProps(formik, "year")} />
+						<Form.Item label="Année de sortie" name="year" rules={[{ required: true }]}>
+							<Input min={0} pattern="[0-9]{4}" />
+						</Form.Item>
 
-						<TextInput type="text" label="Réalisateur" className="mb-6" {...formikProps(formik, "filmmaker")} />
+						<Form.Item label="Réalisateur" name="filmmaker" rules={[{ required: true }]}>
+							<Input />
+						</Form.Item>
 
-						<TextInput type="text" label="Genre du film" className="mb-6" {...formikProps(formik, "gender")} />
+						<Form.Item label="Genre du film" name="gender">
+							<Input />
+						</Form.Item>
 
-						<TextInput type="text" label="Production" className="mb-6" {...formikProps(formik, "production_name")} />
+						<Form.Item label="Production" name="production_name">
+							<Input />
+						</Form.Item>
 
-						<TextInput type="text" label="Pays" className="mb-6" {...formikProps(formik, "country")} />
+						<Form.Item label="Pays" name="country">
+							<Input />
+						</Form.Item>
 
-						<FileInput
-							id="thumbnail"
-							name="thumbnail"
+						<Form.Item
 							label="Visuel principal"
-							value={formik.values.thumbnail}
-							errorText={formik.errors.thumbnail}
-							invalid={formik.errors.thumbnail}
-							onChange={handleFileChange}
-							required
-						/>
+							name="thumbnail"
+							valuePropName="fileList"
+							getValueFromEvent={normalizeOnUploadChanges}
+							rules={[{ required: true }]}
+						>
+							<Upload maxCount={1} beforeUpload={() => false} listType="picture">
+								<Button icon={<UploadOutlined />}>Upload</Button>
+							</Upload>
+						</Form.Item>
 
 						<hr className="my-4 border-t-2 border-gray-300" />
 
 						{/* Actions */}
 						<div className="mt-8 flex items-center">
-							<Button onClick={formik.submitForm} isLoading={isLoading} loadingText="Sauvegarde en cours...">
-								Sauvegarder
+							<Button type="primary" htmlType="submit" loading={isLoading}>
+								{isLoading ? "Sauvegarde en cours..." : "Sauvegarder"}
 							</Button>
 							{film.slug && (
-								<a
-									href={`/films/${film.slug}`}
-									target="_blank"
-									className="ml-4 inline-flex items-center"
-									rel="noreferrer"
-								>
+								<Button href={`/films/${film.slug}`} rel="noreferrer" type="link" icon={<GlobalOutlined />}>
 									Voir la page
-									<IconLinkExternal className="ml-2" />
-								</a>
+								</Button>
 							)}
 						</div>
 					</div>
 				</aside>
-			</div>
+			</Form>
 		</DashboardLayout>
 	);
 };
