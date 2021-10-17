@@ -23,12 +23,16 @@ const TOOLS = {
 	embed: EmbedTool,
 };
 
+const STATUS_INIT = "initializing";
+const STATUS_IDLE = "idle";
+const STATUS_SAVING = "saving";
+
 const EditionEditorPage = () => {
 	const { query, ...router } = useRouter();
 	const isNew = query.id === undefined;
 	const [edition, setEdition] = useState({});
 	const [autoFilledSlug, setAutoFilledSlug] = useState(isNew);
-	const [isLoading, setIsLoading] = useState(true);
+	const [status, setStatus] = useState(STATUS_INIT);
 	const [form] = Form.useForm();
 	//
 	const editor = useMemo(() => {
@@ -69,7 +73,7 @@ const EditionEditorPage = () => {
 
 	useEffect(() => {
 		if (isNew) {
-			setIsLoading(false);
+			setStatus(STATUS_IDLE);
 			return;
 		}
 
@@ -90,7 +94,7 @@ const EditionEditorPage = () => {
 				setEdition(data);
 			})
 			.catch(console.error)
-			.finally(() => setIsLoading(false));
+			.finally(() => setStatus(STATUS_IDLE));
 		//eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -101,7 +105,7 @@ const EditionEditorPage = () => {
 	 */
 
 	function handleSubmit(values) {
-		setIsLoading(true);
+		setStatus(STATUS_SAVING);
 
 		const request = isNew ? apiEdition.create(values) : apiEdition.update({ id: query.id, ...values });
 
@@ -113,7 +117,7 @@ const EditionEditorPage = () => {
 					router.pushAdmin(`/editions/${data.id}`);
 				} else {
 					message.success("Édition mise à jour");
-					setIsLoading(false);
+					setStatus(STATUS_IDLE);
 				}
 			})
 			.catch(console.error);
@@ -148,6 +152,21 @@ const EditionEditorPage = () => {
 	| Render
 	| -------------------------------------------------
 	 */
+
+	if (STATUS_INIT === status) {
+		return (
+			<DashboardLayout>
+				<div className="grid grid-cols-3">
+					<div className="col-span-2 px-4">
+						<Skeleton active />
+					</div>
+					<aside className="col-span-1">
+						<Skeleton active />
+					</aside>
+				</div>
+			</DashboardLayout>
+		);
+	}
 
 	return (
 		<DashboardLayout>
@@ -279,8 +298,8 @@ const EditionEditorPage = () => {
 
 						{/* Actions */}
 						<div className="mt-8">
-							<Button type="primary" htmlType="submit" loading={isLoading}>
-								{isLoading ? "Sauvegarde en cours..." : "Sauvegarder"}
+							<Button type="primary" htmlType="submit" className="mr-4" loading={STATUS_SAVING === status}>
+								{STATUS_SAVING === status ? "Sauvegarde en cours..." : "Sauvegarder"}
 							</Button>
 							{edition.slug && (
 								<Button icon={<GlobalOutlined />} href={`/editions/${edition.slug}`} target="_blank" rel="noreferrer">
