@@ -34,7 +34,7 @@ const EditionEditorPage = () => {
 	const [autoFilledSlug, setAutoFilledSlug] = useState(isNew);
 	const [status, setStatus] = useState(STATUS_INIT);
 	const [form] = Form.useForm();
-	//
+
 	const editor = useMemo(() => {
 		// Do not render the editor on the creation state
 		// because no model is available to store imported images
@@ -54,16 +54,6 @@ const EditionEditorPage = () => {
 			/>
 		);
 	}, [edition.presentation, query.id]);
-
-	/*
-	| -------------------------------------------------
-	| Formik
-	| -------------------------------------------------
-	 */
-
-	//const { antForm, itemProps, uploadItemProps, editorJSProps } = useFormDefaults(formik, defaultData, HELP_TEXTS);
-	//const richEditorProps = useMemo(() => editorJSProps("presentation"), []);
-	//const richEditorProps = null;
 
 	/*
 	| -------------------------------------------------

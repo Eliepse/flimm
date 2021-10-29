@@ -1,66 +1,38 @@
-import dayjs from "dayjs";
-import * as Yup from "yup";
-import { useFormik } from "formik";
 import EditorJS from "@editorjs/editorjs";
 import HeaderTool from "@editorjs/header";
 import EmbedTool from "@editorjs/embed";
 import ImageTool from "@editorjs/image";
 import { useEffect, useRef, useState } from "react";
-import { Button, IconLinkExternal, TextArea, TextInput } from "hds-react";
 import { useRouter } from "lib/useRouter";
 import apiArticle from "lib/api/apiArticle";
 import { getCsrfToken } from "lib/api/broker";
 import DashboardLayout from "components/layouts/DashboardLayout";
-import FileInput from "components/FileInput/FileInput";
-import DateTimeInput from "components/DateTimeInput/DateTimeInput";
-import { notification } from "antd";
+import { Button, DatePicker, Form, Input, message, Skeleton, Upload } from "antd";
+import { GlobalOutlined } from "@ant-design/icons";
+import { normalizeOnUploadChanges } from "lib/support/forms";
+import slug from "slug";
 
-const articleSchema = Yup.object().shape({
-	title: Yup.string().min(5).max(100).required().trim(),
-	slug: Yup.string().min(5, "Trop court").required(),
-	content: Yup.object().nullable(),
-	published_at: Yup.date().nullable(),
-});
+const STATUS_INIT = "initializing";
+const STATUS_IDLE = "idle";
+const STATUS_SAVING = "saving";
 
-export default function ArticleEditorPage() {
+function normalizeThumbnailForInput(thumbnail) {
+	if (!thumbnail) {
+		return [];
+	}
+
+	return [{ status: "done", thumbUrl: thumbnail, uid: thumbnail }];
+}
+
+const ArticleEditorPage = () => {
 	const { query } = useRouter();
-	const [isLoading, setIsLoading] = useState(false);
 	const [article, setArticle] = useState();
+	const [autoFilledSlug, setAutoFilledSlug] = useState(true);
+	const [status, setStatus] = useState(STATUS_INIT);
 	const editor = useRef();
+	const [form] = Form.useForm();
 
-	/*
-	| -------------------------------------------------
-	| Formik
-	| -------------------------------------------------
-	 */
-
-	const formik = useFormik({
-		initialValues: { title: "", slug: "", excerpt: null, content: null, published_at: null, thumbnail: undefined },
-		validationSchema: articleSchema,
-		validateOnChange: false,
-		validateOnBlur: true,
-		onSubmit: (data) => {
-			apiArticle
-				.update({ id: article.id, ...data })
-				.then((data) => {
-					setArticle(data);
-					notification.success({ message: "Article mis à jour" });
-					formik.setValues({
-						title: data.title,
-						slug: data.slug,
-						excerpt: data.excerpt,
-						published_at: data.published_at ? dayjs(data.published_at).toDate() : undefined,
-						content: data.content,
-						thumbnail: data.thumbnail,
-					});
-					setIsLoading(false);
-				})
-				.catch((err) => {
-					formik.setErrors(err.errors);
-					setIsLoading(false);
-				});
-		},
-	});
+	const isArticleLoaded = article !== undefined;
 
 	/*
 	| -------------------------------------------------
@@ -73,24 +45,14 @@ export default function ArticleEditorPage() {
 		apiArticle
 			.get(query.id)
 			.then((data) => {
+				form.setFieldsValue({ ...data, thumbnail: normalizeThumbnailForInput(data.thumbnail) });
+				setAutoFilledSlug(data.slug === slug(data.title));
 				setArticle(data);
-				formik.setValues({
-					title: data.title,
-					slug: data.slug,
-					published_at: data.published_at ? dayjs(data.published_at).toDate() : undefined,
-					content: data.content,
-					thumbnail: data.thumbnail,
-				});
 			})
-			.catch(console.error);
+			.catch(console.error)
+			.finally(() => setStatus(STATUS_IDLE));
 		//eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [query.id]);
-
-	/*
-	| -------------------------------------------------
-	| Event handlers
-	| -------------------------------------------------
-	 */
 
 	// Update the editor when the article changes (save, reload, ...)
 	useEffect(() => {
@@ -117,12 +79,8 @@ export default function ArticleEditorPage() {
 					image: {
 						class: ImageTool,
 						config: {
-							endpoints: {
-								byFile: `${location.protocol}//${location.host}/api/articles/${article.id}/media`,
-							},
-							additionalRequestHeaders: {
-								"X-XSRF-TOKEN": getCsrfToken(),
-							},
+							endpoints: { byFile: `${location.protocol}//${location.host}/api/articles/${article.id}/media` },
+							additionalRequestHeaders: { "X-XSRF-TOKEN": getCsrfToken() },
 						},
 					},
 				},
@@ -136,12 +94,15 @@ export default function ArticleEditorPage() {
 			}
 			editor.current = undefined;
 		};
-	}, [article]);
+		//eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isArticleLoaded]);
 
-	/** @param {InputEvent} event */
-	function handleFileChange(event) {
-		formik.setFieldValue("thumbnail", event.target.files[0]);
-	}
+	/*
+	| -------------------------------------------------
+	| Event handlers
+	| -------------------------------------------------
+	*/
+
 
 	/*
 	| -------------------------------------------------
@@ -150,14 +111,52 @@ export default function ArticleEditorPage() {
 	 */
 
 	function submitForm() {
-		setIsLoading(true);
+		setStatus(STATUS_SAVING);
+
+		// Get the editor value first
 		editor.current
 			.save()
 			.then((data) => {
-				formik.setFieldValue("content", data);
-				formik.submitForm();
+				apiArticle
+					.update({ id: article.id, ...form.getFieldsValue(), content: data })
+					.then((resData) => {
+						setArticle(resData);
+						//noinspection JSIgnoredPromiseFromCall
+						message.success("Article mis à jour");
+						form.setFieldsValue({ ...resData, thumbnail: normalizeThumbnailForInput(resData.thumbnail) });
+					})
+					.catch((e) => {
+						//noinspection JSIgnoredPromiseFromCall
+						message.error("Error while saving");
+						console.error(e);
+					})
+					.finally(() => setStatus(STATUS_IDLE));
 			})
 			.catch(console.error);
+	}
+
+	/*
+	| -------------------------------------------------
+	| Inputs Middlewares
+	| -------------------------------------------------
+	 */
+
+	/** @param {InputEvent} event */
+	function slugMiddleware(event) {
+		if (autoFilledSlug) {
+			setAutoFilledSlug(false);
+		}
+
+		return slug(event.target.value, { trim: false });
+	}
+
+	/** @param {InputEvent} event */
+	function titleMiddleware(event) {
+		if (autoFilledSlug) {
+			form.setFieldsValue({ slug: slug(event.target.value, { trim: false }) });
+		}
+
+		return event.target.value;
 	}
 
 	/*
@@ -166,132 +165,92 @@ export default function ArticleEditorPage() {
 	| -------------------------------------------------
 	 */
 
+	if (STATUS_INIT === status) {
+		return (
+			<DashboardLayout>
+				<div className="grid grid-cols-3">
+					<div className="col-span-2 px-4">
+						<Skeleton active />
+					</div>
+					<aside className="col-span-1">
+						<Skeleton active />
+					</aside>
+				</div>
+			</DashboardLayout>
+		);
+	}
+
 	return (
 		<DashboardLayout>
-			<div className="grid grid-cols-3">
+			<Form form={form} initialValues={article} onFinish={submitForm} layout="vertical" className="grid grid-cols-3">
 				{/*
 				| -------------------------------------------------
 				| Content editor
 				| -------------------------------------------------
 				*/}
 				<div className="col-span-2 px-4">
-					<div className="p-4 pb-6 border-2 border-solid border-gray-300">
-						<h2 className="text-xl font-bold">Contenu</h2>
-						<p className="text-gray-500">
-							Le bloc ci-dessous représente le contenu de l&apos;article. Vous pouvez y écrire ce que vous souhaitez,
-							ajouter des images et autres médias. Le style affiché dans cet éditeur est proche du rendu final.
-						</p>
-					</div>
+					<Form.Item label="Titre" name="title" getValueFromEvent={titleMiddleware} rules={[{ required: true }]}>
+						<Input />
+					</Form.Item>
+
+					<Form.Item label="Slug" name="slug" getValueFromEvent={slugMiddleware} rules={[{ required: true }]}>
+						<Input addonBefore={`${location.origin}/actus/`} pattern="[0-9a-zA-Z-]+" />
+					</Form.Item>
+
 					<div className="relative py-4 mt-6 border-2 border-solid border-gray-300">
 						<div id="editorjs" />
 					</div>
-					{formik.errors.content &&
-						formik.errors.content.map((msg, i) => (
-							<p key={i} className="my-2 text-red-500">
-								{msg}
-							</p>
-						))}
 				</div>
-
 				{/*
 				| -------------------------------------------------
 				| Other fields (title, metadata, ...)
 				| -------------------------------------------------
 				*/}
-				<aside className="col-span-1">
+				<div className="col-span-1">
 					<div className="p-4 border-2 border-solid border-gray-300">
-						{/* See article link */}
-						<div className="text-right">
-							{Boolean(article?.slug) && (
-								<a
-									href={`/actus/${article.slug}`}
-									target="_blank"
-									className="inline-flex items-center"
-									rel="noreferrer"
-								>
-									Voir l&apos;article
-									<IconLinkExternal className="ml-2" />
-								</a>
-							)}
-						</div>
+						<Form.Item label="Chapô" name="excerpt">
+							<Input.TextArea />
+						</Form.Item>
+
+						<Form.Item label="Date de publication" name="published_at">
+							<DatePicker showTime />
+						</Form.Item>
+
+						<Form.Item
+							label="Thumbnail"
+							name="thumbnail"
+							extra="Image d'en-tête"
+							valuePropName="fileList"
+							getValueFromEvent={normalizeOnUploadChanges}
+							rules={[{ required: true }]}
+						>
+							<Upload maxCount={1} beforeUpload={() => false} accept=".jpg,.jpeg,.png,.gif" listType="picture">
+								<Button>Upload</Button>
+							</Upload>
+						</Form.Item>
 
 						<hr className="my-4 border-t-2 border-gray-300" />
 
-						{/* Inputs */}
-						<TextInput
-							type="text"
-							id="title"
-							name="title"
-							label="Titre"
-							className="mb-6"
-							required
-							onChange={formik.handleChange}
-							value={formik.values.title}
-							errorText={formik.errors.title}
-							invalid={formik.errors.title}
-						/>
-
-						<TextInput
-							type="text"
-							id="slug"
-							name="slug"
-							label="Slug"
-							helperText="Text affiché dans le lien pour identifier l'article. Attention, si l'article
-						a déjà été publié, les visiteurs ne pourront plus retrouver l'article si cette valeur
-						change (le précédent lien ne sera plus valide)."
-							className="mb-6"
-							required
-							onChange={formik.handleChange}
-							value={formik.values.slug}
-							errorText={formik.errors.slug}
-							invalid={formik.errors.slug}
-						/>
-
-						<TextArea
-							id="excerpt"
-							name="excerpt"
-							label="Chapô"
-							className="mb-6"
-							onChange={formik.handleChange}
-							value={formik.values.excerpt}
-							errorText={formik.errors.excerpt}
-							invalid={formik.errors.excerpt}
-						/>
-
-						<DateTimeInput
-							type="text"
-							id="published_at"
-							name="published_at"
-							label="Date de publication"
-							className="mb-6"
-							required
-							onChange={formik.handleChange}
-							value={formik.values.published_at}
-							errorText={formik.errors.published_at}
-							invalid={formik.errors.published_at}
-						/>
-
-						<FileInput
-							id="thumbnail"
-							name="thumbnail"
-							label="Thumbnail"
-							helperText="Image d'en-tête"
-							value={formik.values.thumbnail}
-							errorText={formik.errors.thumbnail}
-							invalid={formik.errors.thumbnail}
-							onChange={handleFileChange}
-							required
-						/>
-
 						{/* Actions */}
 						<div className="mt-8">
-							<Button onClick={submitForm} isLoading={isLoading} loadingText="Sauvegarde en cours...">
-								Sauvegarder
+							<Button type="primary" htmlType="submit" loading={STATUS_SAVING === status} className="mr-2">
+								{STATUS_SAVING === status ? "Sauvegarde en cours..." : "Sauvegarder"}
+							</Button>
+							<Button
+								type="link"
+								icon={<GlobalOutlined />}
+								href={`/actus/${article.slug}`}
+								target="_blank"
+								rel="noreferrer"
+							>
+								Voir l&apos;article
 							</Button>
 						</div>
 					</div>
-				</aside>
-			</div>
+				</div>
+			</Form>
 		</DashboardLayout>
 	);
-}
+};
+
+export default ArticleEditorPage;
