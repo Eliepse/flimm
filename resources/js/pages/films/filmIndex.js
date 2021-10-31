@@ -1,10 +1,10 @@
-import DashboardLayout from "components/layouts/DashboardLayout";
 import { useEffect, useState } from "react";
 import apiFilm from "lib/api/apiFilm";
 import { Link } from "app";
-import { Button, Table } from "antd";
+import { Badge, Button, message, Table } from "antd";
 import { EditOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
+import TitleAndActionsLayout from "components/layouts/TitleAndActionsLayout";
 
 const COLUMNS = [
 	{
@@ -28,23 +28,44 @@ const FilmIndexPage = () => {
 	const [films, setFilms] = useState([]);
 
 	useEffect(() => {
-		apiFilm.all().then(setFilms).catch(console.error);
+		apiFilm
+			.all()
+			.then(setFilms)
+			.catch((e) => {
+				console.error(e);
+				//noinspection JSIgnoredPromiseFromCall
+				message.error("Erreur lors du chargement des films.");
+			});
 	}, []);
 
+	const title = (
+		<span className="inline-flex items-center">
+			Films
+			<Badge
+				count={films.length}
+				overflowCount={99999}
+				className="ml-2"
+				style={{
+					backgroundColor: "#f3f4f6",
+					color: "#4b5563",
+				}}
+			/>
+		</span>
+	);
+
 	return (
-		<DashboardLayout>
-			<div className="flex justify-between items-center">
-				<h1>Films</h1>
-				<div>
-					<Link to="/films/create">
-						<Button icon={<PlusOutlined />} type="primary">
-							Nouveau
-						</Button>
-					</Link>
-				</div>
-			</div>
+		<TitleAndActionsLayout
+			title={title}
+			actions={
+				<Link to="/films/create">
+					<Button icon={<PlusOutlined />} type="primary">
+						Nouveau
+					</Button>
+				</Link>
+			}
+		>
 			<Table dataSource={films.map((film) => ({ ...film, key: film.id }))} columns={COLUMNS} pagination={false} />
-		</DashboardLayout>
+		</TitleAndActionsLayout>
 	);
 };
 

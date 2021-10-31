@@ -1,12 +1,12 @@
 import slug from "slug";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Modal, Table, Tag } from "antd";
+import { Badge, Button, Form, Input, Modal, Table, Tag } from "antd";
 import apiArticle from "lib/api/apiArticle";
 import { useRouter } from "lib/useRouter";
-import DashboardLayout from "components/layouts/DashboardLayout";
 import { EditOutlined, EyeOutlined, FileTextOutlined, PlusOutlined } from "@ant-design/icons";
 import { Link } from "app";
+import TitleAndActionsLayout from "components/layouts/TitleAndActionsLayout";
 
 const COLUMNS = [
 	{
@@ -43,16 +43,30 @@ const ArticleIndexPage = () => {
 			.catch(console.error);
 	}, []);
 
+	const title = (
+		<span className="inline-flex items-center">
+			Articles
+			<Badge
+				count={articles.length}
+				overflowCount={99999}
+				className="ml-2"
+				style={{
+					backgroundColor: "#f3f4f6",
+					color: "#4b5563",
+				}}
+			/>
+		</span>
+	);
+
 	return (
-		<DashboardLayout>
-			<div className="flex justify-between items-center">
-				<h1>Articles</h1>
-				<div>
-					<Button icon={<PlusOutlined />} type="primary" onClick={() => setDialogOpen(true)}>
-						Nouveau
-					</Button>
-				</div>
-			</div>
+		<TitleAndActionsLayout
+			title={title}
+			actions={
+				<Button icon={<PlusOutlined />} type="primary" onClick={() => setDialogOpen(true)}>
+					Nouveau
+				</Button>
+			}
+		>
 			<Table
 				dataSource={articles.map((article) => ({
 					...article,
@@ -62,7 +76,7 @@ const ArticleIndexPage = () => {
 				pagination={false}
 			/>
 			<CreateArticleForm visible={dialogOpen} onClose={() => setDialogOpen(false)} />
-		</DashboardLayout>
+		</TitleAndActionsLayout>
 	);
 };
 

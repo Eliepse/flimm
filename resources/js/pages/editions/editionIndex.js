@@ -1,10 +1,10 @@
-import DashboardLayout from "components/layouts/DashboardLayout";
 import { useEffect, useState } from "react";
 import { Link } from "app";
 import apiEdition from "lib/api/apiEdition";
-import { Button, Table } from "antd";
+import { Badge, Button, Table } from "antd";
 import { ClockCircleOutlined, EditOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
+import TitleAndActionsLayout from "components/layouts/TitleAndActionsLayout";
 
 const COLUMNS = [
 	{
@@ -56,18 +56,32 @@ const EditionIndexPage = () => {
 		apiEdition.all().then(setEditions).catch(console.error);
 	}, []);
 
+	const title = (
+		<span className="inline-flex items-center">
+			Éditions
+			<Badge
+				count={editions.length}
+				overflowCount={99999}
+				className="ml-2"
+				style={{
+					backgroundColor: "#f3f4f6",
+					color: "#4b5563",
+				}}
+			/>
+		</span>
+	);
+
 	return (
-		<DashboardLayout>
-			<div className="flex justify-between items-center">
-				<h1>Editions</h1>
-				<div>
-					<Link to="/editions/create">
-						<Button icon={<PlusOutlined />} type="primary">
-							Nouveau
-						</Button>
-					</Link>
-				</div>
-			</div>
+		<TitleAndActionsLayout
+			title={title}
+			actions={
+				<Link to="/editions/create">
+					<Button icon={<PlusOutlined />} type="primary">
+						Nouveau
+					</Button>
+				</Link>
+			}
+		>
 			<Table
 				dataSource={editions.map((edition) => ({
 					...edition,
@@ -76,11 +90,11 @@ const EditionIndexPage = () => {
 				columns={COLUMNS}
 				pagination={false}
 			/>
-		</DashboardLayout>
+		</TitleAndActionsLayout>
 	);
 };
 
-const dateFormat = "D MMM YYYY"
+const dateFormat = "D MMM YYYY";
 
 const SummaryCell = ({ edition }) => {
 	const isPeriodComplete = edition.open_at && edition.close_at;

@@ -1,9 +1,9 @@
-import DashboardLayout from "../components/layouts/DashboardLayout";
 import Setting from "../components/Setting/Setting";
 import { useEffect, useState } from "react";
 import apiSettings from "../lib/api/apiSettings";
 import styles from "./settings.module.scss";
 import { message } from "antd";
+import TitleAndActionsLayout from "components/layouts/TitleAndActionsLayout";
 
 export default function SettingsPage() {
 	const [initalData, setInitalData] = useState({});
@@ -25,14 +25,8 @@ export default function SettingsPage() {
 		setInitalData((state) => ({ ...state, [setting.name]: setting }));
 	}
 
-	//if (Object.values(initalData).length === 0) {
-	//	return <LoadingLayout />;
-	//}
-
 	return (
-		<DashboardLayout>
-			<h1 className="border-b-2 border-solid border-gray-200 pb-2">Paramètres</h1>
-
+		<TitleAndActionsLayout title="Paramètres">
 			<section className={styles.section}>
 				<h2 className={styles.sectionTitle}>Général</h2>
 				<Setting
@@ -73,6 +67,6 @@ export default function SettingsPage() {
 					onUpdate={handleSettingChanged}
 				/>
 			</section>
-		</DashboardLayout>
+		</TitleAndActionsLayout>
 	);
 }
