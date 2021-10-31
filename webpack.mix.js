@@ -21,19 +21,19 @@ mix.alias({
 	configs: path.join(__dirname, "resources/js/configs"),
 	lib: path.join(__dirname, "resources/js/lib"),
 	pages: path.join(__dirname, "resources/js/pages"),
-	app$: path.join(__dirname, "resources/js/app.js")
+	app$: path.join(__dirname, "resources/js/app.js"),
 });
 
 mix
-	.extract(["react", "react-dom"])
+	.extract()
 	.js("resources/js/index.js", "public/js")
 	.sass("resources/scss/app.scss", "public/css", {})
 	.webpackConfig({
 		plugins: [new AntdDayjsWebpackPlugin()],
-		resolve: { fallback: { "path": false, } }
+		resolve: { fallback: { path: false } },
 	})
 	.options({
-		postCss: [tailwindcss("./tailwind.config.js")]
+		postCss: [tailwindcss("./tailwind.config.js")],
 	})
 	.react();
 
@@ -41,7 +41,7 @@ mix
 	.sass("resources/scss/public.scss", "public/css", {})
 	.js("resources/js/public.js", "public/js")
 	.options({
-		postCss: [tailwindcss("./tailwind.config.js")]
+		postCss: [tailwindcss("./tailwind.config.js")],
 	});
 
 if (mix.inProduction()) {

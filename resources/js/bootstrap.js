@@ -1,8 +1,8 @@
 import axios from "axios";
-import isBetween from "dayjs/plugin/isBetween";
 import React from "react";
 import whyDidYouRender from "@welldone-software/why-did-you-render";
 import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
 import "dayjs/locale/fr";
 
 // Config rerender debugger
