@@ -139,7 +139,7 @@ const ActionsCell = ({ article }) => (
 			key="view"
 			size="small"
 			type="link"
-			href={`/articles/${article.slug}`}
+			href={`/actus/${article.slug}`}
 			rel="noreferrer"
 			target="_blank"
 			icon={<EyeOutlined />}
