@@ -1,45 +1,45 @@
 import DashboardLayout from "../components/layouts/DashboardLayout";
 import Setting from "../components/Setting/Setting";
 import { useEffect, useState } from "react";
-import LoadingLayout from "../components/layouts/LoadingLayout";
 import apiSettings from "../lib/api/apiSettings";
 import styles from "./settings.module.scss";
+import { message } from "antd";
 
 export default function SettingsPage() {
-	const [initalData, setInitalData] = useState();
+	const [initalData, setInitalData] = useState({});
 
 	useEffect(() => {
 		apiSettings
 			.all()
 			.then((data) => {
-				setInitalData(
-					data.reduce(
-						(acc, setting) => ({ ...acc, [setting.name]: setting }),
-						{}
-					)
-				);
+				setInitalData(Object.fromEntries(data.map((setting) => [setting.name, setting])));
 			})
-			.catch(console.error);
-		setInitalData({});
+			.catch((e) => {
+				console.error(e);
+				//noinspection JSIgnoredPromiseFromCall
+				message.error("Erreur lors du chargement des paramètres.");
+			});
 	}, []);
 
-	if (initalData === undefined) {
-		return <LoadingLayout />;
+	function handleSettingChanged(setting) {
+		setInitalData((state) => ({ ...state, [setting.name]: setting }));
 	}
+
+	//if (Object.values(initalData).length === 0) {
+	//	return <LoadingLayout />;
+	//}
 
 	return (
 		<DashboardLayout>
-			<h1 className="border-b-2 border-solid border-gray-200 pb-2">
-				Paramètres
-			</h1>
+			<h1 className="border-b-2 border-solid border-gray-200 pb-2">Paramètres</h1>
 
 			<section className={styles.section}>
 				<h2 className={styles.sectionTitle}>Général</h2>
 				<Setting
 					variant="textarea"
 					label="Text additionel du bandeau d'en-tête"
-					name="header.text"
-					initialValue={initalData["header.text"]}
+					setting={initalData["header.text"]}
+					onUpdate={handleSettingChanged}
 				/>
 			</section>
 
@@ -48,37 +48,29 @@ export default function SettingsPage() {
 				<Setting
 					variant="file"
 					label="Image en avant"
-					name="homepage.featuredImage"
-					initialValue={initalData["homepage.featuredImage"]}
+					setting={initalData["homepage.featuredImage"]}
+					onUpdate={handleSettingChanged}
 				/>
 				<Setting
 					label="Description de l'image mise en avant"
-					name="homepage.featuredImage.altText"
-					initialValue={initalData["homepage.featuredImage.altText"]}
+					setting={initalData["homepage.featuredImage.altText"]}
+					onUpdate={handleSettingChanged}
 				/>
 				<Setting
 					label="Lien de l'image mise en avant"
-					name="homepage.featuredImage.link"
-					initialValue={initalData["homepage.featuredImage.link"]}
+					setting={initalData["homepage.featuredImage.link"]}
+					onUpdate={handleSettingChanged}
 				/>
 			</section>
 
 			<section className={styles.section}>
 				<h2 className={styles.sectionTitle}>Réseaux</h2>
-				<Setting
-					label="Facebook"
-					name="socials.facebook"
-					initialValue={initalData["socials.facebook"]}
-				/>
-				<Setting
-					label="Instagram"
-					name="socials.instagram"
-					initialValue={initalData["socials.instagram"]}
-				/>
+				<Setting label="Facebook" setting={initalData["socials.facebook"]} onUpdate={handleSettingChanged} />
+				<Setting label="Instagram" setting={initalData["socials.instagram"]} onUpdate={handleSettingChanged} />
 				<Setting
 					label="Lien vers la newsletter"
-					name="newsletter.link"
-					initialValue={initalData["newsletter.link"]}
+					setting={initalData["newsletter.link"]}
+					onUpdate={handleSettingChanged}
 				/>
 			</section>
 		</DashboardLayout>
