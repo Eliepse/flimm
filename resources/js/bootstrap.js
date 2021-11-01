@@ -1,10 +1,21 @@
 import axios from "axios";
-
-// Dayjs
-
+import React from "react";
+import whyDidYouRender from "@welldone-software/why-did-you-render";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
+import "dayjs/locale/fr";
+
+// Config rerender debugger
+//eslint-disable-next-line no-undef
+if (process.env.NODE_ENV === "development") {
+	whyDidYouRender(React, {
+		trackAllPureComponents: true,
+	});
+}
+
+// Config dayjs
 dayjs.extend(isBetween);
+dayjs.locale("fr");
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests

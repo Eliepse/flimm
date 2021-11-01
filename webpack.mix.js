@@ -25,11 +25,12 @@ mix.alias({
 });
 
 mix
-	.extract(["react", "react-dom"])
+	.extract()
 	.js("resources/js/index.js", "public/js")
 	.sass("resources/scss/app.scss", "public/css", {})
 	.webpackConfig({
 		plugins: [new AntdDayjsWebpackPlugin()],
+		resolve: { fallback: { path: false } },
 	})
 	.options({
 		postCss: [tailwindcss("./tailwind.config.js")],

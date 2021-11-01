@@ -1,31 +1,42 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { authContext } from "lib/auth/authProvider";
 import PropTypes from "prop-types";
 import { Avatar, Menu } from "antd";
 import { useRouter } from "lib/useRouter";
+import { MENU } from "configs/app";
 
 const DashboardLayout = ({ children }) => {
 	const router = useRouter();
 	const { user, logout } = useContext(authContext);
 
-	function handleNavigationClick(item) {
+	function handleMenuClick(item) {
 		router.pushAdmin(item.key);
 	}
+
+	const menu = useMemo(() => {
+		return MENU.map(({ path, label }) => <Menu.Item key={path}>{label}</Menu.Item>);
+	}, []);
+
+	const activeMenu = MENU.find(({ path, strict }) => {
+		if (strict === true) {
+			return router.pathnameAdmin === path;
+		}
+
+		return router.pathnameAdmin.startsWith(path);
+	});
 
 	return (
 		<div className="flex flex-col min-h-screen">
 			<div className="border-b border-solid border-gray-200">
 				<div className="max-w-6xl mx-auto flex items-center justify-between">
 					{/* Title */}
-					<div className="font-bold text-xl mr-6">FLiMM</div>
+					<a href="/">
+						<div className="flex items-center font-bold text-xl leading-none mr-6">FLiMM</div>
+					</a>
 
 					{/* Menu */}
-					<Menu mode="horizontal" className="border-0" onClick={handleNavigationClick}>
-						<Menu.Item key="/">Dashboard</Menu.Item>
-						<Menu.Item key="/articles">Articles</Menu.Item>
-						<Menu.Item key="/films">Films</Menu.Item>
-						<Menu.Item key="/editions">Editions</Menu.Item>
-						<Menu.Item key="/settings">Paramètres</Menu.Item>
+					<Menu mode="horizontal" className="border-0" onClick={handleMenuClick} selectedKeys={[activeMenu.path]}>
+						{menu}
 					</Menu>
 
 					{/* User */}
@@ -46,11 +57,6 @@ const DashboardLayout = ({ children }) => {
 					</Menu>
 				</div>
 			</div>
-			{/*		<Navigation.Item label="Dashboard" as={Link} href="/" />*/}
-			{/*		<Navigation.Item label="Articles" as={Link} href="/articles" />*/}
-			{/*		<Navigation.Item label="Films" as={Link} href="/films" />*/}
-			{/*		<Navigation.Item label="Editions" as={Link} href="/editions" />*/}
-			{/*		<Navigation.Item label="Paramètres" as={Link} href="/settings" />*/}
 			<div className="flex-auto w-full pt-6 mx-auto max-w-6xl">{children}</div>
 		</div>
 	);

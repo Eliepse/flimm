@@ -135,3 +135,22 @@ export function normalizedUploadedFiles(fields, names) {
 		})
 	);
 }
+
+/**
+ * @param {Object} e
+ */
+export function normalizeOnUploadChanges(e) {
+	if (Array.isArray(e)) {
+		return e;
+	}
+
+	return e && e.fileList;
+}
+
+export function normalizeFileForInput(value) {
+	if (!value) {
+		return [];
+	}
+
+	return [{ status: "done", thumbUrl: value, uid: value }];
+}

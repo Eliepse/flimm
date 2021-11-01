@@ -17,6 +17,7 @@ export function useRouter() {
 			push: history.push,
 			replace: history.replace,
 			pathname: location.pathname,
+			pathnameAdmin: location.pathname.replace(URL_PREFIX, "") || "/",
 			// Merge params and parsed query string into single "query" object
 			// so that they can be used interchangeably.
 			// Example: /:topic?sort=popular -> { topic: "react", sort: "popular" }
@@ -29,6 +30,7 @@ export function useRouter() {
 			match,
 			location,
 			history,
+			goHome: () => history.push(URL_PREFIX),
 			pushAdmin: (url) => history.push(URL_PREFIX + url),
 		};
 	}, [params, match, location, history]);

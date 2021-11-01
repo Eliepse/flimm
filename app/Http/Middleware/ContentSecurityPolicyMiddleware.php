@@ -15,7 +15,16 @@ class ContentSecurityPolicyMiddleware
 	{
 		/** @var Response $response */
 		$response = $next($request);
-		$response->headers->set("Content-Security-Policy", "default-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.gstatic.com " . env("CSP_DEFAULT_SRC", "") . "; frame-src https:;");
+		$env_csp = env("CSP_DEFAULT_SRC", "");
+
+		$csps = [
+			"default-src" => "'self' 'unsafe-inline' blob: data: https://unpkg.com https://fonts.gstatic.com $env_csp",
+			"frame-src" => "frame-src https:",
+		];
+
+		$csp_segments = array_map(fn($key, $val) => "$key $val", array_keys($csps), array_values($csps));
+
+		$response->headers->set("Content-Security-Policy", join("; ", $csp_segments));
 		return $response;
 	}
 }
