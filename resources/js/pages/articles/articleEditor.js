@@ -1,15 +1,11 @@
-import EditorJS from "@editorjs/editorjs";
-import HeaderTool from "@editorjs/header";
-import EmbedTool from "@editorjs/embed";
-import ImageTool from "@editorjs/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "lib/useRouter";
 import apiArticle from "lib/api/apiArticle";
-import { getCsrfToken } from "lib/api/broker";
 import DashboardLayout from "components/layouts/DashboardLayout";
 import { Button, DatePicker, Form, Input, message, Skeleton, Upload } from "antd";
 import { GlobalOutlined } from "@ant-design/icons";
 import { normalizeOnUploadChanges } from "lib/support/forms";
+import RichtextEditorInput from "components/form/RichtextEditorInput";
 import slug from "slug";
 
 const STATUS_INIT = "initializing";
@@ -27,12 +23,11 @@ function normalizeThumbnailForInput(thumbnail) {
 const ArticleEditorPage = () => {
 	const { query } = useRouter();
 	const [article, setArticle] = useState();
+	// Useless for now, but will be usefull when article creation
+	// will look like edition one (no new model modal).
 	const [autoFilledSlug, setAutoFilledSlug] = useState(true);
 	const [status, setStatus] = useState(STATUS_INIT);
-	const editor = useRef();
 	const [form] = Form.useForm();
-
-	const isArticleLoaded = article !== undefined;
 
 	/*
 	| -------------------------------------------------
@@ -46,7 +41,7 @@ const ArticleEditorPage = () => {
 			.get(query.id)
 			.then((data) => {
 				form.setFieldsValue({ ...data, thumbnail: normalizeThumbnailForInput(data.thumbnail) });
-				setAutoFilledSlug(data.slug === slug(data.title));
+				setAutoFilledSlug(false);
 				setArticle(data);
 			})
 			.catch(console.error)
@@ -54,55 +49,15 @@ const ArticleEditorPage = () => {
 		//eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [query.id]);
 
-	// Update the editor when the article changes (save, reload, ...)
-	useEffect(() => {
-		if (!article) {
-			return;
-		}
-
-		if (!editor.current) {
-			//noinspection JSValidateTypes
-			editor.current = new EditorJS({
-				holder: "editorjs",
-				placeholder: "Écrivez votre article ici...",
-				autofocus: true,
-				minHeight: 32,
-				tools: {
-					header: {
-						class: HeaderTool,
-						config: {
-							levels: [2, 3, 4],
-							defaultLevel: 2,
-						},
-					},
-					embed: EmbedTool,
-					image: {
-						class: ImageTool,
-						config: {
-							endpoints: { byFile: `${location.protocol}//${location.host}/api/articles/${article.id}/media` },
-							additionalRequestHeaders: { "X-XSRF-TOKEN": getCsrfToken() },
-						},
-					},
-				},
-				data: article?.content || {},
-			});
-		}
-
-		return () => {
-			if (typeof editor.current?.destroy === "function") {
-				editor.current?.destroy();
-			}
-			editor.current = undefined;
-		};
-		//eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isArticleLoaded]);
-
 	/*
 	| -------------------------------------------------
 	| Event handlers
 	| -------------------------------------------------
 	*/
 
+	function handleRichtextChange(data) {
+		form.setFieldsValue({ content: data });
+	}
 
 	/*
 	| -------------------------------------------------
@@ -114,25 +69,20 @@ const ArticleEditorPage = () => {
 		setStatus(STATUS_SAVING);
 
 		// Get the editor value first
-		editor.current
-			.save()
+		apiArticle
+			.update({ id: article.id, content: form.getFieldValue("content"), ...form.getFieldsValue() })
 			.then((data) => {
-				apiArticle
-					.update({ id: article.id, ...form.getFieldsValue(), content: data })
-					.then((resData) => {
-						setArticle(resData);
-						//noinspection JSIgnoredPromiseFromCall
-						message.success("Article mis à jour");
-						form.setFieldsValue({ ...resData, thumbnail: normalizeThumbnailForInput(resData.thumbnail) });
-					})
-					.catch((e) => {
-						//noinspection JSIgnoredPromiseFromCall
-						message.error("Error while saving");
-						console.error(e);
-					})
-					.finally(() => setStatus(STATUS_IDLE));
+				form.setFieldsValue({ ...data, thumbnail: normalizeThumbnailForInput(data.thumbnail) });
+				setArticle(data);
+				//noinspection JSIgnoredPromiseFromCall
+				message.success("Article mis à jour");
 			})
-			.catch(console.error);
+			.catch((e) => {
+				console.error(e);
+				//noinspection JSIgnoredPromiseFromCall
+				message.error("Error while saving");
+			})
+			.finally(() => setStatus(STATUS_IDLE));
 	}
 
 	/*
@@ -198,7 +148,12 @@ const ArticleEditorPage = () => {
 					</Form.Item>
 
 					<div className="relative py-4 mt-6 border-2 border-solid border-gray-300">
-						<div id="editorjs" />
+						<RichtextEditorInput
+							value={article.content}
+							onChange={handleRichtextChange}
+							imageEndpoint={`${location.protocol}//${location.host}/api/articles/${article.id}/media`}
+							loading={STATUS_INIT === status}
+						/>
 					</div>
 				</div>
 				{/*

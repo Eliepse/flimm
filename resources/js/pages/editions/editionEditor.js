@@ -2,26 +2,11 @@ import DashboardLayout from "components/layouts/DashboardLayout";
 import { Button, DatePicker, Divider, Form, Input, message, Skeleton, Upload } from "antd";
 import { FileImageTwoTone, GlobalOutlined, UploadOutlined } from "@ant-design/icons";
 import { useRouter } from "lib/useRouter";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import apiEdition from "lib/api/apiEdition";
-import HeaderTool from "@editorjs/header";
-import EmbedTool from "@editorjs/embed";
-import ImageTool from "@editorjs/image";
 import { normalizeOnUploadChanges } from "lib/support/forms";
+import RichtextEditorInput from "components/form/RichtextEditorInput";
 import slug from "slug";
-import { getCsrfToken } from "lib/api/broker";
-import EditorJs from "react-editor-js";
-
-const TOOLS = {
-	header: {
-		class: HeaderTool,
-		config: {
-			levels: [2, 3, 4],
-			defaultLevel: 2,
-		},
-	},
-	embed: EmbedTool,
-};
 
 const STATUS_INIT = "initializing";
 const STATUS_IDLE = "idle";
@@ -34,26 +19,6 @@ const EditionEditorPage = () => {
 	const [autoFilledSlug, setAutoFilledSlug] = useState(isNew);
 	const [status, setStatus] = useState(STATUS_INIT);
 	const [form] = Form.useForm();
-
-	const editor = useMemo(() => {
-		// Do not render the editor on the creation state
-		// because no model is available to store imported images
-		if (!query.id) {
-			return <p>Vous devez d&apos;abord enregistrer l&apos;édition avant de pouvoir éditer le contenu.</p>;
-		}
-
-		// Do not render the editor until the data is ready
-		if (edition.presentation === undefined) {
-			return <Skeleton active />;
-		}
-
-		return (
-			<AntEditorJS
-				imageToolEndpoint={`${location.protocol}//${location.host}/api/editions/${query.id}/media`}
-				value={edition.presentation}
-			/>
-		);
-	}, [edition.presentation, query.id]);
 
 	/*
 	| -------------------------------------------------
@@ -94,10 +59,16 @@ const EditionEditorPage = () => {
 	| -------------------------------------------------
 	 */
 
+	function handleRichtextChange(data) {
+		form.setFieldsValue({ presentation: data });
+	}
+
 	function handleSubmit(values) {
 		setStatus(STATUS_SAVING);
 
-		const request = isNew ? apiEdition.create(values) : apiEdition.update({ id: query.id, ...values });
+		// The richtext éditor need manual get because it's not attached to an Form.Item
+		const presentation = form.getFieldValue("presentation");
+		const request = isNew ? apiEdition.create(values) : apiEdition.update({ id: query.id, presentation, ...values });
 
 		request
 			.then((data) => {
@@ -210,9 +181,19 @@ const EditionEditorPage = () => {
 
 					<Divider className="mb-6" />
 
-					<Form.Item label="Présentation" className="mb-6" name="presentation">
-						{editor}
-					</Form.Item>
+					<label>Présentation</label>
+					<div className="relative py-4 mt-6 border-2 border-solid border-gray-300">
+						{query.id ? (
+							<RichtextEditorInput
+								value={edition.presentation}
+								onChange={handleRichtextChange}
+								imageEndpoint={`${location.protocol}//${location.host}/api/editions/${query.id}/media`}
+								loading={STATUS_INIT === status}
+							/>
+						) : (
+							<p>Vous devez d&apos;abord enregistrer l&apos;édition avant de pouvoir éditer le contenu.</p>
+						)}
+					</div>
 				</div>
 
 				{/*
@@ -302,27 +283,6 @@ const EditionEditorPage = () => {
 			</Form>
 		</DashboardLayout>
 	);
-};
-
-const AntEditorJS = ({ value, onChange, imageToolEndpoint, ...rest }) => {
-	const tools = {
-		...TOOLS,
-		image: {
-			class: ImageTool,
-			config: {
-				endpoints: { byFile: imageToolEndpoint },
-				additionalRequestHeaders: {
-					" X-XSRF-TOKEN": getCsrfToken(),
-				},
-			},
-		},
-	};
-
-	function handleChange(editor, data) {
-		onChange(data);
-	}
-
-	return <EditorJs data={value || {}} tools={tools} onChange={handleChange} {...rest} />;
 };
 
 export default EditionEditorPage;

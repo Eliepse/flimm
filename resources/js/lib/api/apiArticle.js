@@ -31,8 +31,10 @@ export function create(article) {
 }
 
 export function update(article) {
-	return Api.post(`${basePath}/${article.id}`, prepareEditionData(article), {
-		headers: { "Content-Type": "multipart/form-data" },
+	return new Promise((resolve, reject) => {
+		Api.postMultipart(`${basePath}/${article.id}`, prepareEditionData(article))
+			.then((data) => resolve(parseArticle(data)))
+			.catch(reject);
 	});
 }
 
