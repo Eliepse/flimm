@@ -5,11 +5,9 @@ namespace App\Models;
 use App\Casts\EditorJSCast;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
@@ -212,6 +210,11 @@ class Edition extends Model implements HasMedia
 	 * Relations
 	 * ----------------
 	 */
+
+	public function sessions(): HasMany
+	{
+		return $this->hasMany(Session::class);
+	}
 
 
 	/*
