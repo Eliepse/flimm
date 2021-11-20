@@ -5,7 +5,10 @@ import { Button, Form, Input, message } from "antd";
 
 export default function LoginPage() {
 	const { login } = useAuth();
+	console.debug("hey");
+
 	const router = useRouter();
+
 
 	function handleFinish({ email, password }) {
 		login(email, password)

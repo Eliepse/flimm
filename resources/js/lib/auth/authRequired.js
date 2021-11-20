@@ -1,11 +1,13 @@
-import {useAuth} from './useAuth';
-import {useRouter} from '../useRouter';
-import {useEffect} from 'react';
-import LoadingLayout from '../../components/layouts/LoadingLayout';
+import { useAuth } from "./useAuth";
+import { useRouter } from "../useRouter";
+import { useEffect } from "react";
+import LoadingLayout from "../../components/layouts/LoadingLayout";
+import { useNavigate } from "react-router-dom";
 
-export default function AuthRequired({children}) {
+export default function AuthRequired({ children }) {
 	const auth = useAuth();
 	const router = useRouter();
+	const navigate = useNavigate();
 
 	// Redirect the client when not authenticated
 	useEffect(() => {
@@ -14,14 +16,14 @@ export default function AuthRequired({children}) {
 		}
 
 		if (!auth.isAuth) {
-			router.push("/admin/login");
+			navigate("/admin/login");
 		}
 
 		//eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [auth.isInitialized, auth.isAuth, router.pathname]);
 
 	if (!auth.isInitialized) {
-		return <LoadingLayout/>;
+		return <LoadingLayout />;
 	}
 
 	if (!auth.isAuth) {

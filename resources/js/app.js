@@ -1,4 +1,4 @@
-import { Link as RouterLink, Route, Switch } from "react-router-dom";
+import { Link as RouterLink, Route, Routes } from "react-router-dom";
 import LoginPage from "pages/login";
 import AuthRequired from "lib/auth/authRequired";
 import PropTypes from "prop-types";
@@ -8,9 +8,9 @@ import { useMemo } from "react";
 export default function App() {
 	const pages = useMemo(
 		() =>
-			Object.entries(PAGES).map(([path, component]) => {
+			Object.entries(PAGES).map(([path, Component]) => {
 				const hasParameter = /:[a-zA-Z]{2,}/.test(path);
-				return <Route key={path} exact={!hasParameter} path={URL_PREFIX + path} component={component} />;
+				return <Route key={path} exact={!hasParameter} path={URL_PREFIX + path} element={<Component />} />;
 			}),
 		[]
 	);
@@ -18,11 +18,11 @@ export default function App() {
 	return (
 		<>
 			<AuthRequired>
-				<Switch>{pages}</Switch>
+				<Routes>{pages}</Routes>
 			</AuthRequired>
-			<Switch>
-				<Route exact path={`${URL_PREFIX}/login`} component={LoginPage} />
-			</Switch>
+			<Routes>
+				<Route exact path={`${URL_PREFIX}/login`} element={<LoginPage />} />
+			</Routes>
 		</>
 	);
 }
