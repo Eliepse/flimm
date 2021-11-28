@@ -3,16 +3,17 @@
 namespace App\Models;
 
 use App\Casts\EditorJSCast;
+use App\FileField;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Class Edition
@@ -35,7 +36,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property-read  Carbon $updated_at
  * @method static Builder published()
  */
-class Edition extends Model implements HasMedia
+class Edition extends Model implements HasMedia, HasFileFields
 {
 	use HasFactory, InteractsWithMedia;
 
@@ -121,12 +122,6 @@ class Edition extends Model implements HasMedia
 	}
 
 
-	public function getContentImages(): \Illuminate\Support\Collection
-	{
-		return collect($this->getMedia("content")->all());
-	}
-
-
 	public function clearStaleContentImages()
 	{
 		// We get the uuid of images present in the content
@@ -139,89 +134,23 @@ class Edition extends Model implements HasMedia
 	}
 
 
+	public function getContentImages(): \Illuminate\Support\Collection
+	{
+		return collect($this->getMedia("content")->all());
+	}
+
+
 	public function clearAllContentImages()
 	{
 		$this->clearMediaCollection("content");
 	}
 
 
-	public function saveThumbnail(UploadedFile $thumbnail): Media
-	{
-		return $this->addMedia($thumbnail)->toMediaCollection("thumbnail");
-	}
-
-
-	public function saveProgram(UploadedFile $program): Media
-	{
-		return $this->addMedia($program)->toMediaCollection("program");
-	}
-
-
-	public function savePoster(UploadedFile $program): Media
-	{
-		return $this->addMedia($program)->toMediaCollection("poster");
-	}
-
-
-	public function saveBrochure(UploadedFile $program): Media
-	{
-		return $this->addMedia($program)->toMediaCollection("brochure");
-	}
-
-
-	public function saveFlyer(UploadedFile $program): Media
-	{
-		return $this->addMedia($program)->toMediaCollection("flyer");
-	}
-
-
-	public function removeThumbnail()
-	{
-		$this->clearMediaCollection("thumbnail");
-	}
-
-
-	public function removeProgram()
-	{
-		$this->clearMediaCollection("program");
-	}
-
-
-	public function removePoster()
-	{
-		$this->clearMediaCollection("poster");
-	}
-
-
-	public function removeBrochure()
-	{
-		$this->clearMediaCollection("brochure");
-	}
-
-
-	public function removeFlyer()
-	{
-		$this->clearMediaCollection("flyer");
-	}
-
-
-	/*
-	 * ----------------
-	 * Relations
-	 * ----------------
-	 */
-
 	public function sessions(): HasMany
 	{
 		return $this->hasMany(Session::class);
 	}
 
-
-	/*
-	 * ----------------
-	 * Misc
-	 * ----------------
-	 */
 
 	public function toArray(): array
 	{
@@ -263,5 +192,133 @@ class Edition extends Model implements HasMedia
 		}
 
 		return array_merge(parent::toArray(), $appends);
+	}
+
+
+	/**
+	 * @param string $property
+	 * @param FileField[] $files
+	 */
+	public function uploadFieldFiles(string $property, array $files): void
+	{
+		if (empty($files)) {
+			return;
+		}
+
+		$file = $files[0]->getFile();
+
+		switch ($property) {
+			case "thumbnail":
+				$this->saveThumbnail($file);
+				break;
+			case "program":
+				$this->saveProgram($file);
+				break;
+			case "poster":
+				$this->savePoster($file);
+				break;
+			case "brochure":
+				$this->saveBrochure($file);
+				break;
+			case "flyer":
+				$this->saveFlyer($file);
+				break;
+		}
+	}
+
+
+	public function saveThumbnail(UploadedFile $thumbnail): Media
+	{
+		return $this->addMedia($thumbnail)->toMediaCollection("thumbnail");
+	}
+
+
+	public function saveProgram(UploadedFile $program): Media
+	{
+		return $this->addMedia($program)->toMediaCollection("program");
+	}
+
+
+	public function savePoster(UploadedFile $program): Media
+	{
+		return $this->addMedia($program)->toMediaCollection("poster");
+	}
+
+
+	public function saveBrochure(UploadedFile $program): Media
+	{
+		return $this->addMedia($program)->toMediaCollection("brochure");
+	}
+
+
+	public function saveFlyer(UploadedFile $program): Media
+	{
+		return $this->addMedia($program)->toMediaCollection("flyer");
+	}
+
+
+	public function removeFieldFiles(string $property, array $files = null): void
+	{
+		switch ($property) {
+			case "thumbnail":
+				$this->removeThumbnail();
+				break;
+			case "program":
+				$this->removeProgram();
+				break;
+			case "poster":
+				$this->removePoster();
+				break;
+			case "brochure":
+				$this->removeBrochure();
+				break;
+			case "flyer":
+				$this->removeFlyer();
+				break;
+		}
+	}
+
+
+	public function removeThumbnail()
+	{
+		$this->clearMediaCollection("thumbnail");
+	}
+
+
+	/*
+	 * ----------------
+	 * Relations
+	 * ----------------
+	 */
+
+
+	public function removeProgram()
+	{
+		$this->clearMediaCollection("program");
+	}
+
+
+	/*
+	 * ----------------
+	 * Misc
+	 * ----------------
+	 */
+
+
+	public function removePoster()
+	{
+		$this->clearMediaCollection("poster");
+	}
+
+
+	public function removeBrochure()
+	{
+		$this->clearMediaCollection("brochure");
+	}
+
+
+	public function removeFlyer()
+	{
+		$this->clearMediaCollection("flyer");
 	}
 }

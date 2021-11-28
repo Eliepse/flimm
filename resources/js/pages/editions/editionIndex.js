@@ -53,7 +53,10 @@ const EditionIndexPage = () => {
 	const [editions, setEditions] = useState([]);
 
 	useEffect(() => {
-		apiEdition.all().then(setEditions).catch(console.error);
+		apiEdition.all().then((e) => {
+			console.debug(e);
+			setEditions(e);
+		}).catch(console.error);
 	}, []);
 
 	const title = (

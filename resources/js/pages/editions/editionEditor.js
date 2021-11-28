@@ -35,15 +35,7 @@ const EditionEditorPage = () => {
 		apiEdition
 			.get(query.id)
 			.then((data) => {
-				form.setFieldsValue({
-					...data,
-					thumbnail: data.thumbnail ? [data.thumbnail] : [],
-					program: data.program ? [data.program] : [],
-					poster: data.poster ? [data.poster] : [],
-					brochure: data.brochure ? [data.brochure] : [],
-					flyer: data.flyer ? [data.flyer] : [],
-				});
-
+				form.setFieldsValue(data);
 				// Slug has to be manually changed if article already in database
 				setAutoFilledSlug(false);
 				setEdition(data);
@@ -77,11 +69,15 @@ const EditionEditorPage = () => {
 					message.success("Édition créée");
 					router.pushAdmin(`/editions/${data.id}`);
 				} else {
+					form.setFieldsValue(data);
 					message.success("Édition mise à jour");
 					setStatus(STATUS_IDLE);
 				}
 			})
-			.catch(console.error);
+			.catch((e) => {
+				console.error(e);
+				setStatus(STATUS_IDLE);
+			});
 	}
 
 	/*
