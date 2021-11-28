@@ -60,18 +60,20 @@ const EditionEditorPage = () => {
 
 		// The richtext éditor need manual get because it's not attached to an Form.Item
 		const presentation = form.getFieldValue("presentation");
-		const request = isNew ? apiEdition.create(values) : apiEdition.update({ id: query.id, presentation, ...values });
+		const entity = { id: query.id, presentation, ...values };
 
-		request
+		apiEdition
+			.upsert(entity)
 			.then((data) => {
+				setStatus(STATUS_IDLE);
+
 				// Redirect to the edition mode on success
-				if (isNew) {
+				if (!entity.id && data.id) {
 					message.success("Édition créée");
 					router.pushAdmin(`/editions/${data.id}`);
 				} else {
 					form.setFieldsValue(data);
 					message.success("Édition mise à jour");
-					setStatus(STATUS_IDLE);
 				}
 			})
 			.catch((e) => {
