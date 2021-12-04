@@ -28,6 +28,7 @@ mix
 	.extract()
 	.js("resources/js/index.js", "public/js")
 	.sass("resources/scss/app.scss", "public/css", {})
+	.sourceMaps()
 	.webpackConfig({
 		plugins: [new AntdDayjsWebpackPlugin()],
 		resolve: { fallback: { path: false } },

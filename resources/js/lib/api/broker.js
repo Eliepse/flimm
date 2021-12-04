@@ -261,8 +261,8 @@ export class EntityBroker {
 		return apiRequest(this.basePath, "GET").then((data) => this.parser.parseAll(data));
 	}
 
-	get(id, data = null) {
-		return apiRequest(this._makeUrl(id), "GET", data).then((data) => this.parser.parse(data));
+	get(id) {
+		return apiRequest(this._makeUrl(id), "GET").then((data) => this.parser.parse(data));
 	}
 
 	post(id, data = null) {
