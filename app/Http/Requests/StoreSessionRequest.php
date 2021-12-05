@@ -18,6 +18,7 @@ class StoreSessionRequest extends FormRequest
 			"title" => ["required", "string", "nullable"],
 			"start_at" => ["nullable", "date_format:Y-m-d\TH:i:sO"],
 			"edition_id" => [Rule::exists("editions", "id"), "nullable"],
+			"films" => ["array", Rule::exists("films", "id"), "nullable"],
 			"location" => ["required", "string"],
 			"duration" => ["required", "int"],
 		];

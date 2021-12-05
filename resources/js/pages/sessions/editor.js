@@ -8,6 +8,7 @@ import sessionEditorMachine, { MODE } from "lib/stateMachines/sessionEditorMachi
 import { useEffect, useMemo, useState } from "react";
 import apiEdition from "lib/api/apiEdition";
 import { optionalArr } from "lib/support/arrays";
+import SessionFilmsInput from "components/form/SessionFilmsInput";
 
 function filterEditionOptions(input, option) {
 	return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -60,6 +61,10 @@ const SessionEditorPage = () => {
 				<div className="col-span-2 px-4">
 					<Form.Item label="Titre" className="mb-6" name="title" rules={[{ required: true }]}>
 						<Input />
+					</Form.Item>
+
+					<Form.Item label="Films" name="films" className="mt-6">
+						<SessionFilmsInput />
 					</Form.Item>
 
 					<Divider className="mb-6" />

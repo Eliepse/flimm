@@ -22,6 +22,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property int $duration
  * @property ?int $edition_id
  * @property ?Edition $edition
+ * @property-read \Illuminate\Database\Eloquent\Collection $films
  * @property Carbon $start_at
  * @property-read Carbon $created_at
  * @property-read Carbon $updated_at

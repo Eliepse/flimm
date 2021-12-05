@@ -18,9 +18,9 @@ class SessionController extends Controller
 	}
 
 
-	public function show(Session $session): Session
+	public function show(Session $session): array
 	{
-		return $session;
+		return array_merge($session->toArray(), ["films" => $session->films->pluck("id")]);
 	}
 
 
@@ -31,6 +31,10 @@ class SessionController extends Controller
 
 		if ($editionId = $request->get("edition_id")) {
 			$session->edition()->associate($editionId);
+		}
+
+		if ($films = $request->get("films")) {
+			$session->films()->sync($films);
 		}
 
 		return $session;
@@ -48,6 +52,10 @@ class SessionController extends Controller
 			} else {
 				$session->edition()->dissociate();
 			}
+		}
+
+		if ($films = $request->get("films")) {
+			$session->films()->sync($films);
 		}
 
 		return $session;
