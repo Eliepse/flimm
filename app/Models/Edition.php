@@ -96,6 +96,12 @@ class Edition extends Model implements HasMedia, HasFileFields
 	}
 
 
+	public function isPublished(): bool
+	{
+		return $this->published_at !== null && ! $this->published_at->isFuture();
+	}
+
+
 	/*
 	 * ----------------
 	 * Medias

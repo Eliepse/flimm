@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\EditorJSCast;
+use App\EditorJSAttribute;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +18,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 /**
  * @property-read int $id
  * @property string $title
- * @property string $description
+ * @property EditorJSAttribute $description
  * @property string $location
  * @property int $duration
  * @property ?int $edition_id

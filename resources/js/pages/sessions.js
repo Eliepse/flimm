@@ -75,23 +75,26 @@ export default function SessionsIndexPage() {
 	);
 }
 
-const ActionsCell = ({ session }) => (
-	<>
-		<Link key="edit" to={`/sessions/${session.id}`}>
-			<Button size="small" type="primary" icon={<EditOutlined />} className="mr-2">
-				Editer
+const ActionsCell = ({ session }) => {
+	console.debug(session);
+	return (
+		<>
+			<Link key="edit" to={`/sessions/${session.id}`}>
+				<Button size="small" type="primary" icon={<EditOutlined />} className="mr-2">
+					Editer
+				</Button>
+			</Link>
+			<Button
+				key="view"
+				size="small"
+				type="link"
+				href={`/seances/${session.id}`}
+				rel="noreferrer"
+				target="_blank"
+				icon={<EyeOutlined />}
+			>
+				Afficher
 			</Button>
-		</Link>
-		<Button
-			key="view"
-			size="small"
-			type="link"
-			href={`/sessions/${session.slug}`}
-			rel="noreferrer"
-			target="_blank"
-			icon={<EyeOutlined />}
-		>
-			Afficher
-		</Button>
-	</>
-);
+		</>
+	);
+}
