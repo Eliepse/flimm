@@ -1,19 +1,13 @@
 import { Button, Input, Select, Table } from "antd";
-import { useEffect, useMemo, useState } from "react";
-import apiFilm from "lib/api/apiFilm";
+import { useMemo, useState } from "react";
 import { optionalArr } from "lib/support/arrays";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
+import { getFilms, getFilmsList } from "reducers/filmsSlice";
 
 const SessionFilmsInput = ({ value, onChange }) => {
-	const [films, setFilms] = useState({});
-
-	useEffect(() => {
-		apiFilm
-			.all()
-			.then((data) => setFilms(Object.fromEntries(data.map((f) => [f.id, f]))))
-			.catch(console.error);
-	}, []);
+	const films = useSelector(getFilms);
 
 	const FILM_TABLE_COLUMNS = [
 		{ title: "Titre", dataIndex: "title" },
@@ -48,7 +42,7 @@ const SessionFilmsInput = ({ value, onChange }) => {
 
 	return (
 		<div>
-			<FilmsSelect films={Object.values(films)} excludedIds={value || []} onAddFilm={addFilm} />
+			<FilmsSelect excludedIds={value || []} onAddFilm={addFilm} />
 			<Table className="my-2" columns={FILM_TABLE_COLUMNS} dataSource={filmsTableData} pagination={false} />
 		</div>
 	);
@@ -58,16 +52,17 @@ function filterOptions(input, option) {
 	return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 }
 
-const FilmsSelect = ({ films, onAddFilm, excludedIds }) => {
+const FilmsSelect = ({ onAddFilm, excludedIds }) => {
+	const films = useSelector(getFilmsList);
 	const [value, setValue] = useState();
 
 	const options = useMemo(() => {
 		//noinspection EqualityComparisonWithCoercionJS
-		return Object.entries(films)
-			.filter(([k]) => excludedIds.findIndex((id) => id === k) === -1)
-			.map(([, f]) => ({
-				label: `${f.title} - ${f.filmmaker}`,
-				value: f.id,
+		return films
+			.filter((film) => !excludedIds.includes(film.id))
+			.map((film) => ({
+				label: `${film.title} - ${film.filmmaker}`,
+				value: film.id,
 			}));
 	}, [excludedIds, films]);
 
@@ -99,7 +94,6 @@ const FilmsSelect = ({ films, onAddFilm, excludedIds }) => {
 };
 
 FilmsSelect.propTypes = {
-	films: PropTypes.arrayOf(PropTypes.object).isRequired,
 	onAddFilm: PropTypes.func.isRequired,
 	excludedIds: PropTypes.array.isRequired,
 };
