@@ -3,11 +3,15 @@ import { useRouter } from "../useRouter";
 import { useEffect } from "react";
 import LoadingLayout from "../../components/layouts/LoadingLayout";
 import { useNavigate } from "react-router-dom";
+import { createStore } from "@reduxjs/toolkit";
+import rootReducer from "../../reducers";
+import { Provider } from "react-redux";
 
 export default function AuthRequired({ children }) {
 	const auth = useAuth();
 	const router = useRouter();
 	const navigate = useNavigate();
+	const store = createStore(rootReducer);
 
 	// Redirect the client when not authenticated
 	useEffect(() => {
@@ -30,5 +34,5 @@ export default function AuthRequired({ children }) {
 		return null;
 	}
 
-	return children;
+	return <Provider store={store}>{children}</Provider>;
 }
