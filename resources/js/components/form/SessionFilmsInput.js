@@ -48,7 +48,7 @@ const SessionFilmsInput = ({ value, onChange }) => {
 
 	return (
 		<div>
-			<FilmsSelect films={films} excludedIds={value || []} onAddFilm={addFilm} />
+			<FilmsSelect films={Object.values(films)} excludedIds={value || []} onAddFilm={addFilm} />
 			<Table className="my-2" columns={FILM_TABLE_COLUMNS} dataSource={filmsTableData} pagination={false} />
 		</div>
 	);
