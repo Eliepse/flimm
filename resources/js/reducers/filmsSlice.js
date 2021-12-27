@@ -22,6 +22,7 @@ const slice = createSlice({
 | -------------------------
 */
 
+export const getFilms = (state) => state.films;
 export const getFilmsList = (state) => Object.values(state.films);
 
 /*

@@ -1,11 +1,14 @@
 import PropTypes from "prop-types";
 import { useCallback, useMemo, useState } from "react";
-import { Button, DatePicker, Form, InputNumber, Modal, Table, Typography } from "antd";
+import { Button, DatePicker, Form, InputNumber, Modal, Table } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import SessionFilmsInput from "components/form/SessionFilmsInput";
 import { optionalArr } from "lib/support/arrays";
+import { useSelector } from "react-redux";
+import { getFilms } from "reducers/filmsSlice";
 
 const SessionsInput = ({ value = [], onChange }) => {
+	const films = useSelector(getFilms);
 	const [modal, setModal] = useState();
 
 	/*
@@ -55,10 +58,12 @@ const SessionsInput = ({ value = [], onChange }) => {
 	const columns = useMemo(
 		() => [
 			{
+				title: "Films",
 				dataIndex: "films",
-				render: (films) => optionalArr(films).map((f) => <div key={f}>{f}</div>),
+				render: (ids) => optionalArr(ids).map((id) => <div key={id}>{films[id]?.title}</div>),
 			},
 			{
+				title: "Horaire",
 				render: (_, record) => (
 					<>
 						<div>{record.duration} min</div>
@@ -86,15 +91,22 @@ const SessionsInput = ({ value = [], onChange }) => {
 				},
 			},
 		],
-		[onFinishSession, deleteSession]
+		[onFinishSession, deleteSession, films]
 	);
 
 	return (
 		<div>
-			<Table columns={columns} dataSource={value} />
-			<Typography.Link onClick={openModalSession}>
-				<PlusOutlined /> Ajouter une séance
-			</Typography.Link>
+			<Table
+				columns={columns}
+				dataSource={value}
+				pagination={false}
+				size="small"
+				footer={() => (
+					<Button size="small" type="link" icon={<PlusOutlined />} onClick={openModalSession}>
+						Ajouter une séance
+					</Button>
+				)}
+			/>
 			{modal}
 		</div>
 	);
