@@ -21,6 +21,7 @@ mix.alias({
 	configs: path.join(__dirname, "resources/js/configs"),
 	lib: path.join(__dirname, "resources/js/lib"),
 	pages: path.join(__dirname, "resources/js/pages"),
+	reducers: path.join(__dirname, "resources/js/reducers"),
 	app$: path.join(__dirname, "resources/js/app.js"),
 });
 
