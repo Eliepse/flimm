@@ -8,7 +8,7 @@
  * @var string $caption
  */
 ?>
-<figure>
+<figure class="embed iframe">
 	<iframe
 		src="{{ $embed }}"
 		@isset($width) width="{{ $width }}" @endisset
