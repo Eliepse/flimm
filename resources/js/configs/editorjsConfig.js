@@ -28,7 +28,8 @@ export const TOOL_EMBED = {
 			airtable: {
 				regex: /https?:\/\/airtable\.com\/(?:embed\/)?(.*)/,
 				embedUrl: "https://airtable.com/embed/<%= remote_id %>",
-				html: "<iframe height='300' scrolling='no' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'></iframe>",
+				html: "<iframe height='300' scrolling='no' frameborder='no' allowtransparency='true' allowfullscreen='true'></iframe>",
+				height: 900,
 			},
 		},
 	},

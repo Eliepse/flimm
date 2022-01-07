@@ -9,7 +9,12 @@
  */
 ?>
 <figure>
-	<iframe src="{{ $embed }}" width="{{ $width }}" height="{{ $height }}" allowfullscreen>
+	<iframe
+		src="{{ $embed }}"
+		@isset($width) width="{{ $width }}" @endisset
+		@isset($height) height="{{ $height }}" @endisset
+		allowfullscreen
+	>
 	</iframe>
 	@if(!empty($caption))
 		<figcaption>{!! $caption !!}</figcaption>
