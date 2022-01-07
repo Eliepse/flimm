@@ -1,4 +1,9 @@
-import Api, { formatDatesValues, formatEmptyValue, formatObjectValues } from "./broker";
+import Api, {
+	formatAndFilterSingleFilesValues,
+	formatDatesValues,
+	formatEmptyValue,
+	formatObjectValues,
+} from "./broker";
 import { parseToDaysjs } from "lib/support/forms";
 
 const basePath = "/editions";
@@ -39,7 +44,11 @@ function parseEdition(data) {
 const apiArticle = { all, get, create, update };
 
 function prepareEditionData(data) {
-	const cleanedData = formatObjectValues(formatEmptyValue(formatDatesValues(data)));
+	const cleanedData = formatObjectValues(
+		formatEmptyValue(
+			formatDatesValues(formatAndFilterSingleFilesValues(data, ["thumbnail", "program", "poster", "brochure", "flyer"]))
+		)
+	);
 	const params = new FormData();
 
 	Object.entries(cleanedData).forEach(([name, value]) => {

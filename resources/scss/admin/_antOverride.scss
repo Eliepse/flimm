@@ -1,0 +1,17 @@
+.ant-table-thead > tr > th,
+.ant-table-tbody > tr > td,
+.ant-table tfoot > tr > th,
+.ant-table tfoot > tr > td {
+	@apply px-2 py-3;
+}
+
+.ant-table-thead .ant-table-cell {
+	@apply uppercase text-xs text-gray-400;
+	&:before {
+		@apply hidden;
+	}
+}
+
+.ant-table-tbody > tr > td {
+	@apply duration-100 #{!important};
+}

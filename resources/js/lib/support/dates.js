@@ -19,6 +19,10 @@ export function isDate(value) {
  * @returns {String|null}
  */
 export function dateToApi(date) {
+	if (dayjs.isDayjs(date)) {
+		return date.format(API_DATETIME_FORMAT);
+	}
+
 	if (!isDate(date)) {
 		return null;
 	}
