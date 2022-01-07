@@ -11,7 +11,28 @@ export const TOOL_HEADER = {
 	},
 };
 
-export const TOOL_EMBED = EmbedTool;
+export const TOOL_EMBED = {
+	class: EmbedTool,
+	config: {
+		services: {
+			facebook: true,
+			youtube: true,
+			instagram: true,
+			twitter: true,
+			twitch: true,
+			miro: true,
+			vimeo: true,
+			gfycat: true,
+			imgur: true,
+			pinterest: true,
+			airtable: {
+				regex: /https?:\/\/airtable\.com\/(?:embed\/)?(.*)/,
+				embedUrl: "https://airtable.com/embed/<%= remote_id %>",
+				html: "<iframe height='300' scrolling='no' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'></iframe>",
+			},
+		},
+	},
+};
 
 export const makeImageTool = (endpoint) => ({
 	class: ImageTool,

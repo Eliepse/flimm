@@ -991,16 +991,16 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.5.tgz#9283c9ce5b289a3c4f61c12757469e59377f81f3"
   integrity sha512-6nFkfkmSeV/rqSaS4oWHgmpnYw194f6hmWF5is6b0J1naJZoiD0NTc9AiUwPHvWsowkjuHErCZT1wa0jg+BLIA==
 
-"@editorjs/editorjs@^2.22.0":
-  version "2.22.2"
-  resolved "https://registry.yarnpkg.com/@editorjs/editorjs/-/editorjs-2.22.2.tgz#bf1d10c9fa9dd1dc574c18d8f4b77fef43d8e7f6"
-  integrity sha512-rPCv7Z5LZebreQaaL4DZuWzoVGEqwB+P7BF1dsefGQNBmLyeLF412topeW2b6e+g4l1oQ7t75kCOACNTEyYYIA==
+"@editorjs/editorjs@^2.22.3":
+  version "2.22.3"
+  resolved "https://registry.yarnpkg.com/@editorjs/editorjs/-/editorjs-2.22.3.tgz#75c2902528941a4e28770cdf38542df6c031839d"
+  integrity sha512-CbWu/fiv7Y8EQPNFqNxNsYMtAVFoVIvPt7KZjSUrDC/Mc+pmItcKTujQuuxjGLo4gFMFwO9FkhDJ4eNksEgxwg==
   dependencies:
     codex-notifier "^1.1.2"
     codex-tooltip "^1.0.2"
     nanoid "^3.1.22"
 
-"@editorjs/embed@^2.4.6":
+"@editorjs/embed@^2.5.0":
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/@editorjs/embed/-/embed-2.5.0.tgz#1f42277b8da91e84e9033b5d90b1615a117de456"
   integrity sha512-kKMblRKWzTYP0mX/sO2/Ysn5wd76eP47DAdQc15qCveocRBCO+pSlY57p6mTd1x79yP+yFo7mv4iaZZFa4idkw==
