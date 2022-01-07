@@ -8,8 +8,13 @@
  * @var string $caption
  */
 ?>
-<figure>
-	<iframe src="{{ $embed }}" width="{{ $width }}" height="{{ $height }}" allowfullscreen>
+<figure class="embed iframe">
+	<iframe
+		src="{{ $embed }}"
+		@isset($width) width="{{ $width }}" @endisset
+		@isset($height) height="{{ $height }}" @endisset
+		allowfullscreen
+	>
 	</iframe>
 	@if(!empty($caption))
 		<figcaption>{!! $caption !!}</figcaption>
