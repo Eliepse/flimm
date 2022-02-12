@@ -1,10 +1,19 @@
 figure,
 iframe,
 img {
-	@apply max-w-2xl;
+	@apply w-full max-w-2xl;
 }
 
 figure,
 img {
-	@apply w-full my-6;
+	@apply my-6;
+}
+
+.embed.iframe {
+	@apply border border-dashed border-black;
+}
+
+.embed.iframe,
+.embed.iframe iframe {
+	@apply max-w-full;
 }
