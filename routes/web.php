@@ -4,6 +4,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\EditionController;
 use App\Http\Controllers\FilmController;
 use App\Http\Controllers\HomepageController;
+use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,3 +25,4 @@ Route::get('/actus', [ArticleController::class, "index"])->name("actus");
 Route::get('/actus/{article:slug}', [ArticleController::class, "show"])->name("article");
 Route::get('/films/{film:slug}', [FilmController::class, "show"])->name("film");
 Route::get("/editions/{edition:slug}", [EditionController::class, "show"])->name("edition");
+Route::get("/seances/{session}", [SessionController::class, "show"])->name("session");

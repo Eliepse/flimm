@@ -1,6 +1,7 @@
 import Cookie from "../cookie";
 import { dateToApi, isDate } from "lib/support/dates";
 import dayjs from "dayjs";
+import ConvertToFormData from "lib/classes/ConvertToFormData";
 
 export function getCsrfToken() {
 	return decodeURIComponent(Cookie.get("XSRF-TOKEN"));
@@ -233,5 +234,66 @@ const Api = {
 	requestToken: requestCsrfToken,
 	request: apiRequest,
 };
+
+export class EntityBroker {
+	/**
+	 *
+	 * @param {String} basePath
+	 * @param {ParseResponseData} parser
+	 * @param {PrepareQueryData} preparator
+	 */
+	constructor(basePath, parser, preparator) {
+		this.basePath = basePath;
+		this.parser = parser;
+		this.preparator = preparator;
+		this.converter = new ConvertToFormData(preparator);
+	}
+
+	_makeUrl(id) {
+		if (!id) {
+			return this.basePath;
+		}
+
+		return `${this.basePath}/${id}`;
+	}
+
+	all() {
+		return apiRequest(this.basePath, "GET").then((data) => this.parser.parseAll(data));
+	}
+
+	get(id) {
+		return apiRequest(this._makeUrl(id), "GET").then((data) => this.parser.parse(data));
+	}
+
+	post(id, data = null) {
+		return apiRequest(this._makeUrl(id), "POST", this.preparator.prepare(data)).then((data) => this.parser.parse(data));
+	}
+
+	postMultipart(id, data = null) {
+		return apiRequest(this._makeUrl(id), "POST", this.converter.convert(data), {
+			headers: { "Content-Type": "multipart/form-data" },
+		}).then((data) => this.parser.parse(data));
+	}
+
+	delete(id) {
+		return apiRequest(this._makeUrl(id), "DELETE");
+	}
+
+	create(data) {
+		return this.postMultipart(null, data);
+	}
+
+	update({ id, ...entity }) {
+		if (!id) {
+			throw new Error("Cannot update an entity without id.");
+		}
+
+		return this.postMultipart(id, entity);
+	}
+
+	upsert({ id, ...entity }) {
+		return this.postMultipart(id, entity);
+	}
+}
 
 export default Api;

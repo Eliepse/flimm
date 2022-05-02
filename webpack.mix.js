@@ -21,6 +21,7 @@ mix.alias({
 	configs: path.join(__dirname, "resources/js/configs"),
 	lib: path.join(__dirname, "resources/js/lib"),
 	pages: path.join(__dirname, "resources/js/pages"),
+	reducers: path.join(__dirname, "resources/js/reducers"),
 	app$: path.join(__dirname, "resources/js/app.js"),
 });
 
@@ -28,6 +29,7 @@ mix
 	.extract()
 	.js("resources/js/index.js", "public/js")
 	.sass("resources/scss/app.scss", "public/css", {})
+	.sourceMaps()
 	.webpackConfig({
 		plugins: [new AntdDayjsWebpackPlugin()],
 		resolve: { fallback: { path: false } },

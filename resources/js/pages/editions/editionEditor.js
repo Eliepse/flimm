@@ -35,15 +35,7 @@ const EditionEditorPage = () => {
 		apiEdition
 			.get(query.id)
 			.then((data) => {
-				form.setFieldsValue({
-					...data,
-					thumbnail: data.thumbnail ? [data.thumbnail] : [],
-					program: data.program ? [data.program] : [],
-					poster: data.poster ? [data.poster] : [],
-					brochure: data.brochure ? [data.brochure] : [],
-					flyer: data.flyer ? [data.flyer] : [],
-				});
-
+				form.setFieldsValue(data);
 				// Slug has to be manually changed if article already in database
 				setAutoFilledSlug(false);
 				setEdition(data);
@@ -68,20 +60,26 @@ const EditionEditorPage = () => {
 
 		// The richtext éditor need manual get because it's not attached to an Form.Item
 		const presentation = form.getFieldValue("presentation");
-		const request = isNew ? apiEdition.create(values) : apiEdition.update({ id: query.id, presentation, ...values });
+		const entity = { id: query.id, presentation, ...values };
 
-		request
+		apiEdition
+			.upsert(entity)
 			.then((data) => {
+				setStatus(STATUS_IDLE);
+
 				// Redirect to the edition mode on success
-				if (isNew) {
+				if (!entity.id && data.id) {
 					message.success("Édition créée");
 					router.pushAdmin(`/editions/${data.id}`);
 				} else {
+					form.setFieldsValue(data);
 					message.success("Édition mise à jour");
-					setStatus(STATUS_IDLE);
 				}
 			})
-			.catch(console.error);
+			.catch((e) => {
+				console.error(e);
+				setStatus(STATUS_IDLE);
+			});
 	}
 
 	/*
