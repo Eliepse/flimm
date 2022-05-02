@@ -68,7 +68,8 @@ export const AuthProvider = ({ children }) => {
 				.catch((err) => {
 					console.error(err);
 					reject({ message: err.statusText });
-				});
+				})
+				.finally(() => setInitializing(false));
 		});
 	}
 

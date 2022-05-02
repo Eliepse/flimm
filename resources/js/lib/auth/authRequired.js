@@ -50,7 +50,11 @@ export default function AuthRequired({ children }) {
 			.catch(() => setLoadingMsg("Error"));
 	}, [isAuth, preloader]);
 
-	if (!auth.isInitialized || !preloader.isReady()) {
+	if (!auth.isInitialized) {
+		return <LoadingLayout text={loadingMsg} />;
+	}
+
+	if (isAuth && !preloader.isReady()) {
 		return <LoadingLayout text={loadingMsg} />;
 	}
 
