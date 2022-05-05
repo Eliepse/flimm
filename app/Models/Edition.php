@@ -6,6 +6,7 @@ use App\Casts\EditorJSCast;
 use App\FileField;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -34,6 +35,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @property  Carbon $published_at
  * @property-read  Carbon $created_at
  * @property-read  Carbon $updated_at
+ * @property-read  Collection|Selection[] $selections
  * @method static Builder published()
  */
 class Edition extends Model implements HasMedia, HasFileFields
@@ -298,9 +300,9 @@ class Edition extends Model implements HasMedia, HasFileFields
 	 */
 
 
-	public function removeProgram()
+	public function selections(): HasMany
 	{
-		$this->clearMediaCollection("program");
+		return $this->hasMany(Selection::class);
 	}
 
 
@@ -309,6 +311,10 @@ class Edition extends Model implements HasMedia, HasFileFields
 	 * Misc
 	 * ----------------
 	 */
+	public function removeProgram()
+	{
+		$this->clearMediaCollection("program");
+	}
 
 
 	public function removePoster()

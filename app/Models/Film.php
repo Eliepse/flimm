@@ -37,8 +37,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property Media|null $thumbnail
  * @property-read Carbon $created_at
  * @property-read Carbon $updated_at
- * @property-read Collection $schedules
- * @property-read Collection $editions
+ * @property-read Collection|Session[] $schedules
+ * @property-read Collection|Selection[] $selections
  */
 class Film extends Model implements HasMedia
 {
@@ -50,6 +50,12 @@ class Film extends Model implements HasMedia
 	public function schedules(): BelongsToMany
 	{
 		return $this->belongsToMany(Session::class);
+	}
+
+
+	public function selections(): BelongsToMany
+	{
+		return $this->belongsToMany(Selection::class);
 	}
 
 
