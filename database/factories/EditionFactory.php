@@ -38,7 +38,7 @@ class EditionFactory extends Factory
 		return [
 			"title" => Str::random("32"),
 			"slug" => Str::slug(Str::random()),
-			"content" => json_encode($content_json),
+			"presentation" => $content_json,
 			"open_at" => $open_at = Carbon::now()->addDays(rand(-7, 21)),
 			"close_at" => $open_at->clone()->addDays(rand(4, 7)),
 			"published_at" => $open_at->clone()->subDays(rand(5, 10)),
