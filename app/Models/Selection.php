@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -31,8 +32,8 @@ class Selection extends Model
 	}
 
 
-	public function films(): HasMany
+	public function films(): BelongsToMany
 	{
-		return $this->hasMany(Film::class);
+		return $this->belongsToMany(Film::class);
 	}
 }
