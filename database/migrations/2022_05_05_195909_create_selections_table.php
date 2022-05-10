@@ -20,14 +20,16 @@ class CreateSelectionsTable extends Migration
 			$table->timestamps();
 		});
 
-		Schema::create('selection_film', function (Blueprint $table) {
-			$table->foreignId("selection_id")
+		Schema::create('film_selection', function (Blueprint $table) {
+			$table->foreignId("film_id")
 				->constrained()
 				->cascadeOnUpdate()
 				->cascadeOnDelete();
 
-			$table->foreignId("film_id")->constrained();
-			$table->timestamps();
+			$table->foreignId("selection_id")
+				->constrained()
+				->cascadeOnUpdate()
+				->cascadeOnDelete();
 		});
 	}
 
@@ -40,6 +42,6 @@ class CreateSelectionsTable extends Migration
 	public function down(): void
 	{
 		Schema::dropIfExists('selections');
-		Schema::dropIfExists('selection_film');
+		Schema::dropIfExists('film_selection');
 	}
 }
