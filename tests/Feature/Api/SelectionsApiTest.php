@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use function Pest\Laravel\assertDatabaseCount;
+use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\assertDatabaseMissing;
 
 uses(RefreshDatabase::class);
 
@@ -106,4 +108,42 @@ test("Cannot delete a selection that doesn't belong to the given edition", funct
 	$selection->films()->attach($films->pluck("id"));
 
 	actingAs($user)->delete("/api/editions/$edition->id/selections/$freeSelection->id")->assertNotFound();
+});
+
+test("Edit only selection name", function () {
+	/** @var User $user */
+	$user = User::factory()->create();
+	/** @var Selection $selection */
+	$selection = Selection::factory()->for(Edition::factory()->create())->hasAttached(Film::factory(5)->create())->create(["name" => "Foo"]);
+
+//	dd("/api/editions/{$selection->edition->id}/selections/$selection->id");
+
+	actingAs($user)
+		->postJson("/api/editions/{$selection->edition->id}/selections/$selection->id", ["name" => "Baz"])
+		->assertSuccessful();
+
+	assertDatabaseMissing("selections", ["name" => "Foo"]);
+	assertDatabaseHas("selections", ["name" => "Baz"]);
+	assertDatabaseCount("film_selection", 5);
+});
+
+test("Remove or add some films in a selection", function () {
+	/** @var User $user */
+	$user = User::factory()->create();
+	/** @var Selection $selection */
+	$selection = Selection::factory()->for(Edition::factory()->create())->hasAttached($films = Film::factory(5)->create())->create(["name" => "Foo"]);
+
+	actingAs($user)
+		->postJson("/api/editions/{$selection->edition->id}/selections/$selection->id", ["films" => $films->pluck("id")->slice(0, 3)])
+		->assertSuccessful();
+
+	assertDatabaseCount("film_selection", 3);
+	assertDatabaseMissing("film_selection", ["selection_id" => $selection->id, "film_id" => $films[3]->id]);
+	assertDatabaseMissing("film_selection", ["selection_id" => $selection->id, "film_id" => $films[4]->id]);
+
+	actingAs($user)
+		->postJson("/api/editions/{$selection->edition->id}/selections/$selection->id", ["films" => $films->pluck("id")])
+		->assertSuccessful();
+
+	assertDatabaseCount("film_selection", 5);
 });

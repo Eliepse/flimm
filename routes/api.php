@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	// Selections
 	Route::post("/editions/{edition}/selections", [SelectionController::class, "store"]);
+	Route::post("/editions/{edition}/selections/{selection}", [SelectionController::class, "update"]);
 	Route::delete("/editions/{edition}/selections/{selection}", [SelectionController::class, "destroy"]);
 
 	Route::resource("sessions", SessionController::class)->only(["index", "store", "show"]);
