@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
+ * @property-read int $id
  * @property string $name
  * @property-read Carbon $createdAt
  * @property-read Carbon $updatedAt
