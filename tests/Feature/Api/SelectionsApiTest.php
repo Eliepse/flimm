@@ -147,3 +147,57 @@ test("Remove or add some films in a selection", function () {
 
 	assertDatabaseCount("film_selection", 5);
 });
+
+test("Fetch a selection of an edition", function () {
+	/** @var User $user */
+	$user = User::factory()->create();
+	/** @var Selection $selection */
+	$selection = Selection::factory()->for(Edition::factory()->create())->hasAttached($films = Film::factory(5)->create())->create(["name" => "Foo"]);
+
+	$response = actingAs($user)->get("/api/editions/{$selection->edition->id}/selections/$selection->id");
+
+	$response->assertSuccessful();
+	$response->assertJson([
+		"id" => $selection->id,
+		"name" => "Foo",
+		"films" => $films->map(fn($f) => ["id" => $f->id, "title" => $f->title])->toArray(),
+	]);
+});
+
+test("Fetch all selections of an edition", function () {
+	/** @var User $user */
+	$user = User::factory()->create();
+	/** @var Edition $edition */
+	$edition = Edition::factory()->create();
+	/** @var Selection $selection */
+	Selection::factory(3)
+		->for($edition)
+		->hasAttached(Film::factory(5)->create())
+		->create(["name" => "Foo"]);
+
+	$response = actingAs($user)->get("/api/editions/$edition->id/selections");
+
+	$response->assertSuccessful();
+	expect($response->json())->toHaveLength(3);
+	$response->assertJsonStructure([
+		"*" => [
+			"id",
+			"name",
+			"films" => [
+				"*" => ["id", "title"],
+			],
+		],
+	]);
+});
+
+test("Empty array when fetching selections of an edition that doesn't have some", function () {
+	/** @var User $user */
+	$user = User::factory()->create();
+	/** @var Edition $edition */
+	$edition = Edition::factory()->create();
+
+	$response = actingAs($user)->get("/api/editions/$edition->id/selections");
+
+	$response->assertSuccessful();
+	expect($response->json())->toHaveLength(0);
+});

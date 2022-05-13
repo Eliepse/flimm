@@ -48,6 +48,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	// Selections
 	Route::post("/editions/{edition}/selections", [SelectionController::class, "store"]);
+	Route::get("/editions/{edition}/selections", [SelectionController::class, "index"]);
+	Route::get("/editions/{edition}/selections/{selection}", [SelectionController::class, "get"]);
 	Route::post("/editions/{edition}/selections/{selection}", [SelectionController::class, "update"]);
 	Route::delete("/editions/{edition}/selections/{selection}", [SelectionController::class, "destroy"]);
 
