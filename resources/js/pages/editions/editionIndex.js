@@ -102,18 +102,13 @@ SummaryCell.propTypes = {
 const ActionsCell = ({ edition }) => {
 	return (
 		<>
-			<Link key="edit" to={`/editions/${edition.id}`}>
+			<Link to={`/editions/${edition.id}`}>
 				<Button type="primary" icon={<EditOutlined />} className="mr-2" />
 			</Link>
-			<Button icon={<UnorderedListOutlined />} className="mr-2" />
-			<Button
-				key="view"
-				type="link"
-				href={`/editions/${edition.slug}`}
-				rel="noreferrer"
-				target="_blank"
-				icon={<EyeOutlined />}
-			/>
+			<Link to={`/editions/${edition.id}/selections`}>
+				<Button icon={<UnorderedListOutlined />} className="mr-2" />
+			</Link>
+			<Button type="link" href={`/editions/${edition.slug}`} rel="noreferrer" target="_blank" icon={<EyeOutlined />} />
 		</>
 	);
 };

@@ -8,6 +8,7 @@ import EditionIndexPage from "pages/editions/editionIndex";
 import EditionEditorPage from "pages/editions/editionEditor";
 import SessionsIndexPage from "pages/sessions";
 import SessionEditorPage from "pages/sessions/editor";
+import SelectionsIndexPage from "pages/editions/selections";
 
 export const URL_PREFIX = "/admin";
 
@@ -26,6 +27,7 @@ export const PAGES = {
 	"/editions": EditionIndexPage,
 	"/editions/create": EditionEditorPage,
 	"/editions/:id": EditionEditorPage,
+	"/editions/:id/selections": SelectionsIndexPage,
 	"/sessions": SessionsIndexPage,
 	"/sessions/create": SessionEditorPage,
 	"/sessions/:id": SessionEditorPage,
