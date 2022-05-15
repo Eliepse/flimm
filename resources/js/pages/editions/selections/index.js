@@ -5,7 +5,7 @@ import TitleAndActionsLayout from "components/layouts/TitleAndActionsLayout";
 import { useRouter } from "lib/useRouter";
 import { SelectionBroker } from "lib/api/apiSelection";
 
-const COLUMNS = [{ dataIndex: "title" }, { key: "count", render: (selection) => selection.films?.length || 0 }];
+const COLUMNS = [{ dataIndex: "name" }, { key: "count", render: (selection) => selection.films?.length || 0 }];
 
 const SelectionsIndexPage = () => {
 	const { query } = useRouter();
