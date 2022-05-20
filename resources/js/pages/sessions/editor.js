@@ -1,14 +1,14 @@
 import { useParams } from "react-router-dom";
 import { Button, DatePicker, Divider, Form, Input, InputNumber, Select } from "antd";
 import { GlobalOutlined } from "@ant-design/icons";
-import RichtextEditorInput from "components/form/RichtextEditorInput";
+import RichtextEditorInput from "components/inputs/RichtextEditorInput";
 import DashboardLayout from "components/layouts/DashboardLayout";
 import { useMachine } from "lib/hooks/useMachine";
 import sessionEditorMachine, { MODE } from "lib/stateMachines/sessionEditorMachine";
 import { useEffect, useMemo, useState } from "react";
 import apiEdition from "lib/api/apiEdition";
 import { optionalArr } from "lib/support/arrays";
-import SessionFilmsInput from "components/form/SessionFilmsInput";
+import SessionFilmsInput from "components/inputs/SessionFilmsInput";
 
 function filterEditionOptions(input, option) {
 	return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;

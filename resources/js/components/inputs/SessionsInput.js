@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useCallback, useMemo, useState } from "react";
 import { Button, DatePicker, Form, InputNumber, Modal, Table } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import SessionFilmsInput from "components/form/SessionFilmsInput";
+import SessionFilmsInput from "components/inputs/SessionFilmsInput";
 import { optionalArr } from "lib/support/arrays";
 import { useSelector } from "react-redux";
 import { getFilms } from "reducers/filmsSlice";

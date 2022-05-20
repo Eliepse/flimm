@@ -5,7 +5,7 @@ import { useRouter } from "lib/useRouter";
 import { useEffect, useState } from "react";
 import apiEdition from "lib/api/apiEdition";
 import { normalizeOnUploadChanges } from "lib/support/forms";
-import RichtextEditorInput from "components/form/RichtextEditorInput";
+import RichtextEditorInput from "components/inputs/RichtextEditorInput";
 import slug from "slug";
 
 const STATUS_INIT = "initializing";
