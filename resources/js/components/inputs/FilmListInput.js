@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Button, message, Select, Skeleton } from "antd";
+import { Button, Empty, message, Select, Skeleton } from "antd";
 import { useEffect, useRef, useState } from "react";
 import apiFilm from "lib/api/apiFilm";
 import { optionalArr } from "lib/support/arrays";
@@ -101,18 +101,22 @@ const FilmListInput = ({ value, onChange, ...rest }) => {
 				value=""
 			/>
 			<div className={styles.listWrapper}>
-				<table className={styles.list}>
-					<tbody>
-						{optionalArr(value).map((id) => {
-							const film = valueData.current[id];
-							return film ? (
-								<FilmRow key={id} id={id} title={film.title} onDelete={removeFilm} />
-							) : (
-								<LoadingRow key={id} />
-							);
-						})}
-					</tbody>
-				</table>
+				{optionalArr(value).length > 0 ? (
+					<table className={styles.list}>
+						<tbody>
+							{optionalArr(value).map((id) => {
+								const film = valueData.current[id];
+								return film ? (
+									<FilmRow key={id} id={id} title={film.title} onDelete={removeFilm} />
+								) : (
+									<LoadingRow key={id} />
+								);
+							})}
+						</tbody>
+					</table>
+				) : (
+					<Empty className="my-8 mx-16" image={Empty.PRESENTED_IMAGE_SIMPLE} description="Cherchez et ajouter un film pour commencer cette sélection" />
+				)}
 			</div>
 		</div>
 	);
