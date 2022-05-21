@@ -9,6 +9,11 @@ const SelectionFormModal = ({ editionId, onClose, onSuccess, ...rest }) => {
 	const [form] = Form.useForm();
 	const [loading, setLoading] = useState(false);
 
+	function close() {
+		form.resetFields();
+		optionFn(onClose)();
+	}
+
 	function submit() {
 		setLoading(true);
 		form
@@ -18,7 +23,7 @@ const SelectionFormModal = ({ editionId, onClose, onSuccess, ...rest }) => {
 					.create(data)
 					.then((selection) => {
 						optionFn(onSuccess)(selection);
-						optionFn(onClose)();
+						close();
 					})
 					.catch((data) => {
 						console.error(data);
@@ -32,11 +37,10 @@ const SelectionFormModal = ({ editionId, onClose, onSuccess, ...rest }) => {
 	return (
 		<Modal
 			{...rest}
-			onCancel={onClose}
 			title={editionId ? "Ajout d'une sélection" : "Modification d'un sélection"}
 			onOk={submit}
+			onCancel={close}
 			confirmLoading={loading}
-			destroyOnClose
 		>
 			<SelectionForm form={form} />
 		</Modal>
