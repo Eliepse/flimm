@@ -18,7 +18,11 @@ export function update(film) {
 	return Api.postMultipart(`${basePath}/${film.id}`, prepareFilmData(film));
 }
 
-const apiArticle = { all, get, create, update };
+export function search({ title }) {
+	return Api.get(basePath, { title });
+}
+
+const apiArticle = { all, get, create, update, search };
 
 function prepareFilmData(data) {
 	const params = new FormData();
