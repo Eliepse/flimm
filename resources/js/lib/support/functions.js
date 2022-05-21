@@ -1,3 +1,5 @@
+export const dummyFn = () => null;
+
 /**
  * @param value
  * @returns {Function}
