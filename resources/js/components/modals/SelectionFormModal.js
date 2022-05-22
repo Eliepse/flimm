@@ -31,6 +31,7 @@ const SelectionFormModal = ({ editionId, selectionId, onClose, onSuccess, ...res
 				return request
 					.then((selection) => {
 						optionFn(onSuccess)(selection);
+						message.success("Sauvegarde réussie !");
 						close();
 					})
 					.catch((data) => {
@@ -56,10 +57,7 @@ const SelectionFormModal = ({ editionId, selectionId, onClose, onSuccess, ...res
 		const selectionBroker = new SelectionBroker(editionId);
 		selectionBroker
 			.get(selectionId)
-			.then((data) => {
-				console.debug(data);
-				form.setFieldsValue({ name: data.name, films: data.films.map((f) => f.id) });
-			})
+			.then((data) => form.setFieldsValue({ name: data.name, films: data.films.map((f) => f.id) }))
 			.catch((e) => {
 				console.error(e);
 				message.error("Erreur lors du chargement de la sélection.");
