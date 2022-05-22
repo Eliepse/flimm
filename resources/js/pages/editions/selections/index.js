@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import apiEdition from "lib/api/apiEdition";
-import { Button, Table } from "antd";
+import { Button, message, Popconfirm, Table } from "antd";
 import TitleAndActionsLayout from "components/layouts/TitleAndActionsLayout";
 import { useRouter } from "lib/useRouter";
 import { SelectionBroker } from "lib/api/apiSelection";
@@ -41,6 +41,19 @@ const SelectionsIndexPage = () => {
 		setFormModalVisible(id);
 	}
 
+	function deleteSelection(id) {
+		new SelectionBroker(editionId)
+			.delete(id)
+			.then(() => {
+				message.success("Sélection supprimée");
+				setSelections((st) => st.filter((s) => s.id !== id));
+			})
+			.catch((e) => {
+				console.error(e);
+				message.error("Échec de la suppression de la sélection");
+			});
+	}
+
 	/*
 	 | ************************
 	 | Render
@@ -50,7 +63,11 @@ const SelectionsIndexPage = () => {
 	const COLUMNS = [
 		{ dataIndex: "name", title: "Nom" },
 		{ key: "count", title: "Nb de films", render: (selection) => selection.films?.length || 0 },
-		{ dataIndex: "id", align: "right", render: (id) => <ActionsCell id={id} onEdit={showEditSelectionModal} /> },
+		{
+			dataIndex: "id",
+			align: "right",
+			render: (id) => <ActionsCell id={id} onEdit={showEditSelectionModal} onDelete={deleteSelection} />,
+		},
 	];
 
 	const title = (
@@ -83,11 +100,13 @@ const SelectionsIndexPage = () => {
 	);
 };
 
-const ActionsCell = ({ id, onEdit }) => {
+const ActionsCell = ({ id, onEdit, onDelete }) => {
 	return (
 		<>
 			<Button icon={<EditOutlined />} className="mr-2" onClick={() => onEdit(id)} />
-			<Button type="text" icon={<DeleteOutlined />} disabled />
+			<Popconfirm title="Souhaitez-vous vraimer supprimer cette sélection ?" onConfirm={() => onDelete(id)}>
+				<Button type="text" icon={<DeleteOutlined />} />
+			</Popconfirm>
 		</>
 	);
 };
