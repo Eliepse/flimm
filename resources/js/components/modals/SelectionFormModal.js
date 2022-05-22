@@ -2,25 +2,33 @@ import { Form, message, Modal } from "antd";
 import { SelectionForm } from "components/forms/SelectionForm";
 import { SelectionBroker } from "lib/api/apiSelection";
 import { dummyFn, optionFn } from "lib/support/functions";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-const SelectionFormModal = ({ editionId, onClose, onSuccess, ...rest }) => {
+const SelectionFormModal = ({ editionId, selectionId, onClose, onSuccess, ...rest }) => {
+	const isEdition = typeof selectionId === "number";
 	const selectionBroker = new SelectionBroker(editionId);
 	const [form] = Form.useForm();
 	const [loading, setLoading] = useState(false);
 
-	function close() {
+	/*
+	 | ************************
+	 | Actions
+	 | ************************
+	 */
+
+	const close = useCallback(() => {
 		form.resetFields();
 		optionFn(onClose)();
-	}
+	}, [form, onClose]);
 
 	function submit() {
 		setLoading(true);
 		form
 			.validateFields()
 			.then((data) => {
-				return selectionBroker
-					.create(data)
+				const request = isEdition ? selectionBroker.update({ id: selectionId, ...data }) : selectionBroker.create(data);
+
+				return request
 					.then((selection) => {
 						optionFn(onSuccess)(selection);
 						close();
@@ -33,6 +41,37 @@ const SelectionFormModal = ({ editionId, onClose, onSuccess, ...rest }) => {
 			.catch(dummyFn)
 			.finally(() => setLoading(false));
 	}
+
+	/*
+	 | ************************
+	 | Initialization
+	 | ************************
+	 */
+
+	useEffect(() => {
+		if (!editionId || !selectionId) {
+			return;
+		}
+
+		const selectionBroker = new SelectionBroker(editionId);
+		selectionBroker
+			.get(selectionId)
+			.then((data) => {
+				console.debug(data);
+				form.setFieldsValue({ name: data.name, films: data.films.map((f) => f.id) });
+			})
+			.catch((e) => {
+				console.error(e);
+				message.error("Erreur lors du chargement de la sélection.");
+				close();
+			});
+	}, [close, editionId, form, selectionId]);
+
+	/*
+	 | ************************
+	 | Render
+	 | ************************
+	 */
 
 	return (
 		<Modal

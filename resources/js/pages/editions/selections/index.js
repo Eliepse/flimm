@@ -4,10 +4,8 @@ import { Button, Table } from "antd";
 import TitleAndActionsLayout from "components/layouts/TitleAndActionsLayout";
 import { useRouter } from "lib/useRouter";
 import { SelectionBroker } from "lib/api/apiSelection";
-import { PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import SelectionFormModal from "components/modals/SelectionFormModal";
-
-const COLUMNS = [{ dataIndex: "name" }, { key: "count", render: (selection) => selection.films?.length || 0 }];
 
 const SelectionsIndexPage = () => {
 	const { query } = useRouter();
@@ -25,8 +23,22 @@ const SelectionsIndexPage = () => {
 
 	useEffect(() => loadSelectionList(), [loadSelectionList]);
 
+	/*
+	 | ************************
+	 | Actions
+	 | ************************
+	 */
+
 	function showCreateSelectionModal() {
 		setFormModalVisible(true);
+	}
+
+	function showEditSelectionModal(id) {
+		if (typeof id !== "number") {
+			return;
+		}
+
+		setFormModalVisible(id);
 	}
 
 	/*
@@ -34,6 +46,12 @@ const SelectionsIndexPage = () => {
 	 | Render
 	 | ************************
 	 */
+
+	const COLUMNS = [
+		{ dataIndex: "name", title: "Nom" },
+		{ key: "count", title: "Nb de films", render: (selection) => selection.films?.length || 0 },
+		{ dataIndex: "id", align: "right", render: (id) => <ActionsCell id={id} onEdit={showEditSelectionModal} /> },
+	];
 
 	const title = (
 		<span className="inline-flex items-center">Sélections de l&apos;édition &quot;{edition?.title}&quot;</span>
@@ -56,11 +74,21 @@ const SelectionsIndexPage = () => {
 
 			<SelectionFormModal
 				editionId={editionId}
-				visible={formModalVisible}
+				visible={formModalVisible !== false}
+				selectionId={typeof formModalVisible === "number" ? formModalVisible : undefined}
 				onSuccess={loadSelectionList}
 				onClose={() => setFormModalVisible(false)}
 			/>
 		</TitleAndActionsLayout>
+	);
+};
+
+const ActionsCell = ({ id, onEdit }) => {
+	return (
+		<>
+			<Button icon={<EditOutlined />} className="mr-2" onClick={() => onEdit(id)} />
+			<Button type="text" icon={<DeleteOutlined />} disabled />
+		</>
 	);
 };
 
