@@ -6,10 +6,11 @@ import { useRouter } from "lib/useRouter";
 import { SelectionBroker } from "lib/api/apiSelection";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import SelectionFormModal from "components/modals/SelectionFormModal";
+import PropTypes from "prop-types";
 
 const SelectionsIndexPage = () => {
 	const { query } = useRouter();
-	const editionId = query.id;
+	const editionId = Number(query.id);
 
 	const [edition, setEdition] = useState();
 	const [selections, setSelections] = useState([]);
@@ -109,6 +110,12 @@ const ActionsCell = ({ id, onEdit, onDelete }) => {
 			</Popconfirm>
 		</>
 	);
+};
+
+ActionsCell.propTypes = {
+	id: PropTypes.number.isRequired,
+	onEdit: PropTypes.func.isRequired,
+	onDelete: PropTypes.func.isRequired,
 };
 
 export default SelectionsIndexPage;

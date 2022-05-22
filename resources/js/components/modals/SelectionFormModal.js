@@ -3,6 +3,7 @@ import { SelectionForm } from "components/forms/SelectionForm";
 import { SelectionBroker } from "lib/api/apiSelection";
 import { dummyFn, optionFn } from "lib/support/functions";
 import { useCallback, useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
 const SelectionFormModal = ({ editionId, selectionId, onClose, onSuccess, ...rest }) => {
 	const isEdition = typeof selectionId === "number";
@@ -82,6 +83,14 @@ const SelectionFormModal = ({ editionId, selectionId, onClose, onSuccess, ...res
 			<SelectionForm form={form} />
 		</Modal>
 	);
+};
+
+SelectionFormModal.propTypes = {
+	editionId: PropTypes.number.isRequired,
+	selectionId: PropTypes.number,
+	onClose: PropTypes.func.isRequired,
+	onSuccess: PropTypes.func.isRequired,
+	visible: PropTypes.bool,
 };
 
 export default SelectionFormModal;
