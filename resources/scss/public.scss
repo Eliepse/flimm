@@ -19,6 +19,20 @@ code {
 @import "public/page";
 @import "public/actus";
 
+/*
+ | ************************
+ | Base
+ | ************************
+ */
+
 @import "public/common/text";
 @import "public/common/embeded";
 @import "public/common/layout";
+
+/*
+ | ************************
+ | Components
+ | ************************
+ */
+
+@import "public/components/film-card";

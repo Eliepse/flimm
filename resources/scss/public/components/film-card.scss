@@ -1,0 +1,27 @@
+.filmCard {
+	 @apply mb-8;
+}
+
+.filmCard-image {
+	@apply my-0 w-full max-w-xl object-cover;
+	aspect-ratio: 16/9;
+}
+
+.filmCard-title {
+	@apply text-xl mt-2;
+}
+
+.filmCard-filmmaker,
+.filmCard-duration {
+	@apply text-base text-gray-500;
+}
+
+/*
+ | ************************
+ | Modifiers
+ | ************************
+ */
+
+.filmCard:hover {
+	@apply underline;
+}
