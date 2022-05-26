@@ -26,7 +26,7 @@ class FilmFactory extends Factory
 	{
 		return [
 			"title" => Str::random(32),
-			"duration" => rand(25 * 60, 75 * 60),
+			"duration" => rand(25, 75),
 			"slug" => Str::random(),
 			"synopsis" => Str::random(64),
 			"filmmaker" => Arr::random(["Empleton", "Coales", "Siney", "Cromleholme", "Janoschek", "Ilsley", "Franseco", "Lockyear", "Ebenezer"]),
