@@ -21,7 +21,7 @@ $breadcrumbItems = [
 
 		{{-- FILMS --}}
 		@foreach($selection->films as $film)
-			<x-film-card :film="$film" />
+			<x-film-card :film="$film" classes="my-16" />
 		@endforeach
 	</div>
 @endsection

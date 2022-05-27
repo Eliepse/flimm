@@ -6,7 +6,6 @@ namespace App\View\Components;
 use App\Models\Film;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class FilmCard extends Component
 {
@@ -19,10 +18,8 @@ class FilmCard extends Component
 
 	/**
 	 * Create a new component instance.
-	 *
-	 * @param Film $film
 	 */
-	public function __construct(private Film $film)
+	public function __construct(private Film $film, public string $classes = "")
 	{
 		$this->title = $this->film->title;
 		$this->url = route("film", $this->film);

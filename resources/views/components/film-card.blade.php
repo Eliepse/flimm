@@ -1,5 +1,5 @@
 <a href="{{ $url }}" class="no-underline">
-	<div class="filmCard">
+	<div class="filmCard {{ $classes }}">
 		@isset($thumbnail)
 			<img src="{{ $thumbnail }}" alt="Image du film {{ $title }}" class="filmCard-image" />
 		@endisset
