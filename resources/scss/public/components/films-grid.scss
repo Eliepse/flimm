@@ -1,0 +1,69 @@
+.filmGrid {
+	@apply flex flex-wrap;
+}
+
+.filmGrid-cell {
+	@apply w-full aspect-square;
+}
+
+.filmGrid-item {
+	@apply p-4 h-full;
+	@apply bg-center bg-cover;
+}
+
+.filmGrid-itemContent {
+	@apply p-2 h-full flex flex-col justify-center;
+	@apply text-center bg-white bg-opacity-60 break-words;
+}
+
+.filmGrid-itemTitle {
+	@apply font-bold mb-2;
+}
+
+.filmGrid-itemFilmmaker {
+	font-size: .825em;
+}
+
+/*
+ | ************************
+ | Modifiers
+ | ************************
+ */
+
+.filmGrid-item:hover {
+	@apply p-1;
+
+	.filmGrid-itemContent {
+		@apply p-5 bg-opacity-80;
+	}
+}
+
+/*
+ | ************************
+ | Media queries
+ | ************************
+ */
+
+@screen sm {
+	.filmGrid-cell {
+		@apply w-1/2;
+	}
+}
+
+@screen md {
+	.filmGrid-cell {
+		@apply w-1/4;
+	}
+}
+
+@screen lg {
+	.filmGrid-cell {
+		@apply w-1/5;
+	}
+}
+
+@screen xl {
+	.filmGrid-cell {
+		@apply w-1/6;
+	}
+}

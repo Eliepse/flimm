@@ -8,10 +8,8 @@
 	@if($description)
 		<p class="filmCard-description">{{ $description }}</p>
 	@endif
-	<a href="{{ $url }}">
-		<button class="filmCard-button">
-			Voir la fiche &rarr;
-		</button>
+	<a href="{{ $url }}" class="filmCard-button">
+		Voir la fiche &rarr;
 	</a>
 </div>
 {{--</a>--}}

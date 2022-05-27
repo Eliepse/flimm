@@ -20,7 +20,7 @@
 }
 
 .filmCard-button {
-	@apply underline;
+	@apply block underline;
 
 	&:hover {
 		@apply font-bold tracking-tight;

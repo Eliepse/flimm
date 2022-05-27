@@ -16,6 +16,8 @@ class SelectionController
 	{
 		throw_if($selection->edition_id !== $edition->id, new NotFoundHttpException());
 
+		$selection->loadMissing("films.media");
+
 		return view("selection", ["edition" => $edition, "selection" => $selection]);
 	}
 }
