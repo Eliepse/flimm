@@ -15,12 +15,14 @@
 	@apply text-base text-gray-500;
 }
 
-/*
- | ************************
- | Modifiers
- | ************************
- */
+.filmCard-description {
+	@apply mt-2 mb-4;
+}
 
-.filmCard:hover {
+.filmCard-button {
 	@apply underline;
+
+	&:hover {
+		@apply font-bold tracking-tight;
+	}
 }

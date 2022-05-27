@@ -14,6 +14,7 @@ class FilmCard extends Component
 	public string $filmmaker;
 	public int $duration;
 	public ?string $thumbnail;
+	public ?string $description;
 
 
 	/**
@@ -26,6 +27,7 @@ class FilmCard extends Component
 		$this->filmmaker = $this->film->filmmaker;
 		$this->duration = $this->film->duration;
 		$this->thumbnail = $this->film->thumbnail?->getUrl();
+		$this->description = $this->film->description;
 	}
 
 
