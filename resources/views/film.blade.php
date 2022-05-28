@@ -14,8 +14,8 @@
 
 		<h1 class="page-title">{{ $film->title }}</h1>
 
-		@if(!empty($film->teaser))
-			<p class="page-excerpt">{{ $film->teaser }}</p>
+		@if(!empty($film->description))
+			<p class="page-excerpt">{{ $film->description }}</p>
 		@endif
 
 		@if($film->trailer_link)
