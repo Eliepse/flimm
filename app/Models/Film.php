@@ -46,6 +46,8 @@ class Film extends Model implements HasMedia
 
 	protected $guarded = ["thumbnail"];
 
+	protected $with = ["media"];
+
 
 	public function schedules(): BelongsToMany
 	{
