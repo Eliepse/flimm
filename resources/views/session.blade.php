@@ -21,12 +21,10 @@
 	</header>
 	<div class="page-content">
 		<h2 class="text-lg">Films</h2>
-		<ul class="font-mono">
+		<ul>
 			@foreach($session->films as $film)
-				<li>
-					<a href="{{ route("film", $film) }}">
-						<span class="italic">{{ $film->title }}</span> de {{ $film->filmmaker }} ({{ $film->duration }} min)
-					</a>
+				<li class="my-12">
+					<x-film-card :film="$film" />
 				</li>
 			@endforeach
 		</ul>

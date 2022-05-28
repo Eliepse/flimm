@@ -55,7 +55,7 @@ use App\Models\Film;use App\Models\Session;use Carbon\Carbon;
 				<ul>
 					<?php /** @var Session $session */ ?>
 					@foreach($sessions as $session)
-						<li class="my-2 @if($session->start_at->isBefore(Carbon::now()->subMinutes($session->duration))) text-gray-500 line-through @endif">
+						<li class="my-2 font-mono @if($session->start_at->isBefore(Carbon::now()->subMinutes($session->duration))) text-gray-500 line-through @endif">
 							<a href="{{ route("session", $session) }}">
 								{{ $session->start_at->format("d/m/Y H:i") }} -
 								@if($session->edition)
