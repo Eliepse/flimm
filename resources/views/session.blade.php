@@ -20,16 +20,20 @@
 		</p>
 	</header>
 	<div class="page-content">
+		{{-- Description --}}
+		@foreach($session->description?->getBlocks() ?? [] as $block)
+			@include("common.blocks.block", $block)
+		@endforeach
+
+		{{-- Films --}}
 		<h2 class="text-lg">Films</h2>
 		<ul>
 			@foreach($session->films as $film)
 				<li class="my-12">
+					<!--suppress CheckEmptyScriptTag, HtmlUnknownTag -->
 					<x-film-card :film="$film" />
 				</li>
 			@endforeach
 		</ul>
-		@foreach($session->description?->getBlocks() ?? [] as $block)
-			@include("common.blocks.block", $block)
-		@endforeach
 	</div>
 @endsection
