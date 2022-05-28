@@ -1,8 +1,10 @@
 @extends("layouts.root-public")
 
 <?php
+use App\Models\Film;use App\Models\Session;use Carbon\Carbon;
+
 /**
- * @var \App\Models\Film $film
+ * @var Film $film
  */
 ?>
 
@@ -46,6 +48,24 @@
 				<hr class="max-w-xs my-6 border-t-2 border-black" />
 				<p>{{ $film->other_technical_infos }}</p>
 				<p>{{ $film->imdb_id }}</p>
+			@endif
+
+			@if($sessions?->count() > 0)
+				<h2>Séances</h2>
+				<ul>
+					<?php /** @var Session $session */ ?>
+					@foreach($sessions as $session)
+						<li class="my-2 @if($session->start_at->isBefore(Carbon::now()->subMinutes($session->duration))) text-gray-500 line-through @endif">
+							<a href="{{ route("session", $session) }}">
+								{{ $session->start_at->format("d/m/Y H:i") }} -
+								@if($session->edition)
+									[{{ $session->edition->title }}] -
+								@endif
+								<em>{{ $session->title }}</em> à {{ $session->location }}
+							</a>
+						</li>
+					@endforeach
+				</ul>
 			@endif
 		</div>
 
