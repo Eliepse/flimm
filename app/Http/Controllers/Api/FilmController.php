@@ -43,8 +43,13 @@ class FilmController extends Controller
 	public function update(StoreFilmRequest $request, Film $film): Film
 	{
 		$film->fill($request->validated());
-		$film->saveThumbnail($request->file("thumbnail"));
+
+		if($request->hasFile("thumbnail")) {
+			$film->saveThumbnail($request->file("thumbnail"));
+		}
+
 		$film->save();
+		$film->load("media");
 
 		return $film;
 	}
