@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class SelectionFactory extends Factory
 {
@@ -12,10 +13,10 @@ class SelectionFactory extends Factory
 	 *
 	 * @return array
 	 */
-	public function definition()
+	public function definition(): array
 	{
 		return [
-			"name" => Arr::random(["Ouverture", "Fermeture", "Selection officielle", "Selection partenaire"]),
+			"name" => Arr::random(["Ouverture", "Fermeture", "Selection officielle", "Selection partenaire"]) . " " . Str::random(4),
 		];
 	}
 }
