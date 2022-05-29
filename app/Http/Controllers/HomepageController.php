@@ -11,7 +11,7 @@ class HomepageController
 	public function __invoke(SettingRepository $settings): View
 	{
 		$actus = Article::published()
-			->orderBy("published_at", "desc")
+			->orderByDesc("published_at")
 			->limit(6)
 			->get(["id", "title", "slug", "published_at"]);
 

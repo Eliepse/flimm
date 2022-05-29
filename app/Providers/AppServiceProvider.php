@@ -34,6 +34,6 @@ class AppServiceProvider extends ServiceProvider
 		});
 
 		// Skip on console because the database is not yet migrated on first installation
-		View::share("editions_list", App::runningInConsole() ? [] : Edition::published()->get(["title", "slug"]));
+		View::share("editions_list", App::runningInConsole() ? [] : Edition::published()->orderByDesc("open_at")->get(["id", "title", "slug"]));
 	}
 }

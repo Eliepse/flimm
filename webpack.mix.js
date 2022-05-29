@@ -2,8 +2,8 @@
 
 const mix = require("laravel-mix");
 const tailwindcss = require("tailwindcss");
-const path = require("path");
 const AntdDayjsWebpackPlugin = require("antd-dayjs-webpack-plugin");
+const path = require("path");
 
 /*
  |--------------------------------------------------------------------------
@@ -16,36 +16,29 @@ const AntdDayjsWebpackPlugin = require("antd-dayjs-webpack-plugin");
  |
  */
 
-mix.alias({
-	components: path.join(__dirname, "resources/js/components"),
-	configs: path.join(__dirname, "resources/js/configs"),
-	lib: path.join(__dirname, "resources/js/lib"),
-	pages: path.join(__dirname, "resources/js/pages"),
-	app$: path.join(__dirname, "resources/js/app.js"),
-});
-
 mix
-	.extract()
-	.js("resources/js/index.js", "public/js")
-	.sass("resources/scss/app.scss", "public/css", {})
-	.webpackConfig({
-		plugins: [new AntdDayjsWebpackPlugin()],
-		resolve: { fallback: { path: false } },
-	})
-	.options({
-		postCss: [tailwindcss("./tailwind.config.js")],
-	})
-	.react();
-
-mix
-	.sass("resources/scss/public.scss", "public/css", {})
+	// [Public]
+	.sass("resources/scss/public.scss", "public/css", {}, [tailwindcss("./tailwind.config.js")])
 	.js("resources/js/public.js", "public/js")
-	.options({
-		postCss: [tailwindcss("./tailwind.config.js")],
-	});
+	// [Admin]
+	.js("resources/js/index.js", "public/js")
+	.sass("resources/scss/app.scss", "public/css", {}, [tailwindcss("./tailwind.admin.config.js")])
+	// Below applies on all, but not sure it can be improved (scoped to admin)
+	.extract()
+	.alias({
+		components: path.join(__dirname, "resources/js/components"),
+		configs: path.join(__dirname, "resources/js/configs"),
+		lib: path.join(__dirname, "resources/js/lib"),
+		pages: path.join(__dirname, "resources/js/pages"),
+		reducers: path.join(__dirname, "resources/js/reducers"),
+		app$: path.join(__dirname, "resources/js/app.js"),
+	})
+	.webpackConfig({ plugins: [new AntdDayjsWebpackPlugin()], resolve: { fallback: { path: false } } })
+	.react();
 
 if (mix.inProduction()) {
 	mix.version();
 } else {
+	mix.sourceMaps();
 	mix.disableNotifications();
 }

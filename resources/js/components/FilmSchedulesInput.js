@@ -110,7 +110,7 @@ const FilmSchedulesInput = ({ id, onChange, value = [], films = [], open_at, clo
 			</Button>
 
 			{(!open_at || !close_at) && (
-				<p className="text-yellow-400 mb-2">
+				<p className="text-amber-400 mb-2">
 					Pour ajouter des scéances, renseignez les dates de début et de fin de l&apos;édition.
 				</p>
 			)}

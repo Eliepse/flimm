@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\FileFieldHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEditionRequest;
 use App\Http\Requests\UpdateEditionRequest;
+use App\Http\Requests\RequestWithFileFields;
 use App\Models\Edition;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -40,13 +41,24 @@ class EditionController extends Controller
 	}
 
 
+	private function handleEditionFiles(RequestWithFileFields $request, Edition $edition)
+	{
+		$fileFieldHandler = new FileFieldHandler([
+			"thumbnail" => "thumbnail",
+			"program" => "program",
+			"poster" => "poster",
+			"brochure" => "brochure",
+			"flyer" => "flyer",
+		]);
+		$fileFieldHandler->updateModel($request, $edition);
+	}
+
+
 	public function update(UpdateEditionRequest $request, Edition $edition): Edition
 	{
 		$edition->fill($request->validated());
 		$this->handleEditionFiles($request, $edition);
-//		$this->handleEditionSchedules(collect($request->get("schedules", [])), $edition);
 		$edition->save();
-//		$edition->loadMissing(["schedules:id,film_id,edition_id,start_at"]);
 
 		return $edition;
 	}
@@ -68,44 +80,5 @@ class EditionController extends Controller
 				// ... and any additional fields you want to store, such as width, height, color, extension, etc
 			],
 		], 201);
-	}
-
-
-	private function handleEditionFiles(FormRequest $request, Edition $edition)
-	{
-		// Thumbnail
-		if ($request->hasFile("thumbnail")) {
-			$edition->saveThumbnail($request->file("thumbnail"));
-		} else if ($request->has("thumbnail") && is_null($request->get("thumbnail"))) {
-			$edition->removeThumbnail();
-		}
-
-		// Program
-		if ($request->hasFile("program")) {
-			$edition->saveProgram($request->file("program"));
-		} else if ($request->has("program") && is_null($request->get("program"))) {
-			$edition->removeProgram();
-		}
-
-		// Poster
-		if ($request->hasFile("poster")) {
-			$edition->savePoster($request->file("poster"));
-		} else if ($request->has("poster") && is_null($request->get("poster"))) {
-			$edition->removePoster();
-		}
-
-		// Brochure
-		if ($request->hasFile("brochure")) {
-			$edition->saveBrochure($request->file("brochure"));
-		} else if ($request->has("brochure") && is_null($request->get("brochure"))) {
-			$edition->removeBrochure();
-		}
-
-		// Flyer
-		if ($request->hasFile("flyer")) {
-			$edition->saveFlyer($request->file("flyer"));
-		} else if ($request->has("flyer") && is_null($request->get("flyer"))) {
-			$edition->removeFlyer();
-		}
 	}
 }

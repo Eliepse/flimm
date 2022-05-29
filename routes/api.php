@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EditionController;
 use App\Http\Controllers\Api\FilmController;
+use App\Http\Controllers\Api\SelectionController;
+use App\Http\Controllers\Api\SessionController;
 use App\Http\Controllers\Api\SettingController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -43,4 +45,15 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::resource("editions", EditionController::class)->only(["index", "store", "show"]);
 	Route::post("editions/{edition}", [EditionController::class, "update"]);
 	Route::post("/editions/{edition}/media", [EditionController::class, "saveContentMedia"]);
+
+	// Selections
+	Route::post("/editions/{edition}/selections", [SelectionController::class, "store"]);
+	Route::get("/editions/{edition}/selections", [SelectionController::class, "index"]);
+	Route::get("/editions/{edition}/selections/{selection}", [SelectionController::class, "get"]);
+	Route::post("/editions/{edition}/selections/{selection}", [SelectionController::class, "update"]);
+	Route::delete("/editions/{edition}/selections/{selection}", [SelectionController::class, "destroy"]);
+
+	Route::resource("sessions", SessionController::class)->only(["index", "store", "show"]);
+	Route::post("sessions/{session}", [SessionController::class, "update"]);
+	Route::post("sessions/{session}/media", [SessionController::class, "saveContentMedia"]);
 });

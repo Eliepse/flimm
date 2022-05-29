@@ -10,7 +10,7 @@
 	@apply w-48 px-4 py-4 border-r-2 border-black;
 
 	a {
-		@apply block text-sm font-bold no-underline;
+		@apply no-underline;
 
 		&:focus,
 		&:hover {
@@ -19,7 +19,21 @@
 	}
 
 	li {
-		@apply mb-1;
+		@apply break-words;
+	}
+}
+
+.mainNav-item {
+	@apply block text-sm font-bold leading-tight;
+	> a, > details {
+		@apply block py-3;
+	}
+}
+
+.mainNav-subItem {
+	@apply block font-normal;
+	> a {
+		@apply block py-1;
 	}
 }
 

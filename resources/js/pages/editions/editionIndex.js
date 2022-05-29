@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "app";
 import apiEdition from "lib/api/apiEdition";
 import { Badge, Button, Table } from "antd";
-import { ClockCircleOutlined, EditOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
+import { ClockCircleOutlined, EditOutlined, EyeOutlined, PlusOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import TitleAndActionsLayout from "components/layouts/TitleAndActionsLayout";
 
@@ -28,24 +28,7 @@ const COLUMNS = [
 	{
 		align: "right",
 		width: 200,
-		render: (edition) => [
-			<Link key="edit" to={`/editions/${edition.id}`}>
-				<Button size="small" type="primary" icon={<EditOutlined />} className="mr-2">
-					Editer
-				</Button>
-			</Link>,
-			<Button
-				key="view"
-				size="small"
-				type="link"
-				href={`/editions/${edition.slug}`}
-				rel="noreferrer"
-				target="_blank"
-				icon={<EyeOutlined />}
-			>
-				Afficher
-			</Button>,
-		],
+		render: (edition) => <ActionsCell edition={edition} />,
 	},
 ];
 
@@ -113,6 +96,24 @@ const SummaryCell = ({ edition }) => {
 };
 
 SummaryCell.propTypes = {
+	edition: PropTypes.object,
+};
+
+const ActionsCell = ({ edition }) => {
+	return (
+		<>
+			<Link to={`/editions/${edition.id}`}>
+				<Button type="primary" icon={<EditOutlined />} className="mr-2" />
+			</Link>
+			<Link to={`/editions/${edition.id}/selections`}>
+				<Button icon={<UnorderedListOutlined />} className="mr-2" />
+			</Link>
+			<Button type="link" href={`/editions/${edition.slug}`} rel="noreferrer" target="_blank" icon={<EyeOutlined />} />
+		</>
+	);
+};
+
+ActionsCell.propTypes = {
 	edition: PropTypes.object,
 };
 

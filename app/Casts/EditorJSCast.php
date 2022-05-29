@@ -34,7 +34,7 @@ class EditorJSCast implements CastsAttributes
 		}
 
 		if (! $value instanceof EditorJSAttribute) {
-			throw new \InvalidArgumentException('The given value is not an ArticleContent instance.');
+			throw new \InvalidArgumentException('The given value is not an EditorJSCast instance.');
 		}
 
 		return $value->toJson();

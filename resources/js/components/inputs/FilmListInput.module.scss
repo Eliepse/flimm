@@ -1,0 +1,15 @@
+.listWrapper {
+	@apply my-4 rounded-md border border-solid border-gray-200;
+}
+
+.list {
+	@apply w-full rounded-md;
+
+	td {
+		@apply p-4 border-b border-solid border-gray-100;
+	}
+
+	td:last-child {
+		@apply text-right;
+	}
+}

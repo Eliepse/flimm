@@ -51,13 +51,21 @@
 	</header>
 	<div class="page-content leading-tight">
 		<div class="max-w-3xl">
-
 			@if($edition->presentation)
 				@foreach($edition->presentation->getBlocks() as $block)
 					@include("common.blocks.block", $block)
 				@endforeach
 			@endif
-
 		</div>
+
+		@foreach($edition->selections as $selection)
+			@if($selection->films->count())
+				<h2>{{ $selection->name }}</h2>
+				<a href="{{ route("selection", [$edition, $selection]) }}" class="mb-8 block hover:font-bold underline">
+						Voir la sélection en détail &rarr;
+				</a>
+				@include("components.films-grid", ["films" => $selection->films])
+			@endif
+		@endforeach
 	</div>
 @endsection

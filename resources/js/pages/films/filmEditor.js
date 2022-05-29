@@ -12,7 +12,7 @@ function normalizeThumbnailForInput(thumbnail) {
 		return [];
 	}
 
-	return [{ status: "done", thumbUrl: thumbnail, uid: thumbnail }];
+	return [{ status: "done", thumbUrl: thumbnail, uid: thumbnail, name: "Thumbnail" }];
 }
 
 const FilmEditorPage = () => {

@@ -5,7 +5,7 @@ import DashboardLayout from "components/layouts/DashboardLayout";
 import { Button, DatePicker, Form, Input, message, Skeleton, Upload } from "antd";
 import { GlobalOutlined } from "@ant-design/icons";
 import { normalizeOnUploadChanges } from "lib/support/forms";
-import RichtextEditorInput from "components/form/RichtextEditorInput";
+import RichtextEditorInput from "components/inputs/RichtextEditorInput";
 import slug from "slug";
 
 const STATUS_INIT = "initializing";
