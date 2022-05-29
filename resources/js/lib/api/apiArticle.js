@@ -27,7 +27,7 @@ export function get(id) {
 }
 
 export function create(article) {
-	return Api.post(basePath, prepareEditionData(article));
+	return Api.postMultipart(basePath, prepareEditionData(article));
 }
 
 export function update(article) {
@@ -52,7 +52,10 @@ function prepareEditionData(article) {
 		//noinspection JSCheckFunctionSignatures
 		params.set(name, value);
 	});
-	params.set("content", JSON.stringify(article.content));
+
+	if (article.content) {
+		params.set("content", JSON.stringify(article.content));
+	}
 
 	return params;
 }
