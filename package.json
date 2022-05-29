@@ -2,15 +2,11 @@
     "private": true,
     "scripts": {
         "dev": "mix",
-        "dev:admin": "mix --mix-config=webpack.admin.mix.js",
         "watch": "mix watch",
-        "watch:admin": "mix watch --mix-config=webpack.admin.mix.js",
         "watch-poll": "mix watch -- --watch-options-poll=1000",
-        "watch-poll:admin": "mix watch --mix-config=webpack.admin.mix.js -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
-        "hot:admin": "mix watch --mix-config=webpack.admin.mix.js --hot",
         "prod": "npm run production",
-        "production": "mix --production && mix--mix-config=webpack.admin.mix.js --production",
+        "production": "mix --production",
         "lint": "eslint resources/js"
     },
     "devDependencies": {
