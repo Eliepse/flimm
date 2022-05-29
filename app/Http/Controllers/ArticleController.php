@@ -12,7 +12,8 @@ class ArticleController
 {
 	public function index(): View
 	{
-		return view("articlesIndex", ["articles" => Article::published()->get()]);
+		$articles = Article::published()->orderByDesc("published_at")->get();
+		return view("articlesIndex", ["articles" => $articles]);
 	}
 
 
