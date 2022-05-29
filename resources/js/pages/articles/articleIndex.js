@@ -1,7 +1,7 @@
 import slug from "slug";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { Badge, Button, Form, Input, Modal, Table, Tag } from "antd";
+import { Badge, Button, Form, Input, message, Modal, Table, Tag } from "antd";
 import apiArticle from "lib/api/apiArticle";
 import { useRouter } from "lib/useRouter";
 import { EditOutlined, EyeOutlined, FileTextOutlined, PlusOutlined } from "@ant-design/icons";
@@ -112,7 +112,10 @@ const CreateArticleForm = ({ visible, onClose }) => {
 		apiArticle
 			.create(values)
 			.then((data) => router.pushAdmin(`/articles/${data.id}`))
-			.catch((err) => console.error(err))
+			.catch((err) => {
+				message.error("Échec de la création de l'article")
+				console.error(err);
+			})
 			.finally(() => setLoading(false));
 	}
 
