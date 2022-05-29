@@ -24,8 +24,6 @@ class Selection extends Model
 
 	protected $fillable = ["name"];
 
-	protected $with = ["films"];
-
 
 	public function edition(): BelongsTo
 	{
