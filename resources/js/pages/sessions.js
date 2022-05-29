@@ -76,7 +76,6 @@ export default function SessionsIndexPage() {
 }
 
 const ActionsCell = ({ session }) => {
-	console.debug(session);
 	return (
 		<>
 			<Link key="edit" to={`/sessions/${session.id}`}>
