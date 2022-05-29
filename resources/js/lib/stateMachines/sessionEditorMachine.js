@@ -23,7 +23,6 @@ function loadSession(ctx) {
 }
 
 function saveSession(ctx) {
-	console.debug(ctx);
 	if (isCreateMode(ctx)) {
 		return apiSession
 			.create(ctx.dataToSend)
