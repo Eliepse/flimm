@@ -24,16 +24,12 @@ class EditorJSAttribute implements Jsonable, Arrayable, Castable
 			throw new \InvalidArgumentException('Invalid time for ArticleContent.');
 		}
 
-		if (! isset($this->raw["version"]) || ! is_array($this->raw["blocks"])) {
-			throw new \InvalidArgumentException('Invalid blocks for ArticleContent.');
-		}
-
 		if (! is_string($this->raw["version"]) || empty($this->raw["version"])) {
 			throw new \InvalidArgumentException('Invalid version for ArticleContent.');
 		}
 
 		$this->time = Carbon::createFromTimestamp($this->raw["time"]);
-		$this->blocks = $this->raw["blocks"];
+		$this->blocks = $this->raw["blocks"] ?? [];
 		$this->version = $this->raw["version"];
 	}
 
