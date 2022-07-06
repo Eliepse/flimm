@@ -2,6 +2,7 @@ import Cookie from "../cookie";
 import { dateToApi, isDate } from "lib/support/dates";
 import dayjs from "dayjs";
 import ConvertToFormData from "lib/classes/ConvertToFormData";
+import axios from "axios";
 
 export function getCsrfToken() {
 	return decodeURIComponent(Cookie.get("XSRF-TOKEN"));
@@ -31,12 +32,10 @@ function apiRequest(url, method = "GET", params = null, config = {}) {
 	const prefix = url.startsWith("/") ? "/api" : "/api/";
 	const requestConfig = {};
 	const requestUrl = new URL(prefix + url, document.location.href);
-	const headers = baseHeaders(config?.headers || {});
 	const hasParams = Boolean(params);
-	const hasJsonContentType = headers["Content-Type"] === "application/json";
 
 	requestConfig.method = method;
-	requestConfig.headers = headers;
+	requestConfig.headers = baseHeaders(config?.headers || {});
 
 	// Parameters as url on GET method
 	if (hasParams && typeof params === "object" && method === "GET") {
@@ -44,77 +43,15 @@ function apiRequest(url, method = "GET", params = null, config = {}) {
 			requestUrl.searchParams.set(key, value.toString());
 		});
 	} else if (hasParams) {
-		requestConfig.body = hasJsonContentType ? JSON.stringify(params) : params;
+		requestConfig.data = params;
 	}
 
-	// The browser handle the correct content type
-	// for us when handling complicated multi-part form data.
-	if (hasParams && params instanceof FormData) {
-		delete requestConfig.headers["Content-Type"];
-	}
-
-	return new Promise((resolve, reject) => {
-		fetch(requestUrl.href, requestConfig)
-			.then((res) => handleRequestResponse(res, resolve, reject))
-			.catch((err) => handeRequestError(err, resolve, reject));
-	});
-}
-
-/**
- * @param {Response} response
- */
-function isResponseJsonParsable(response) {
-	if (response.status === 204) {
-		return false;
-	}
-
-	return response.headers.get("Content-Type") === "application/json";
-}
-
-/**
- * @param {Response} response
- * @param {Function} resolve
- * @param {Function} reject
- */
-function handleRequestResponse(response, resolve, reject) {
-	if (!response.ok) {
-		response
-			.json()
-			.then((data) => reject(data, response))
-			.catch(reject);
-		return;
-	}
-
-	// Handle json compatible responses
-	if (isResponseJsonParsable(response)) {
-		response
-			.json()
-			.then((data) => resolve(data, response))
-			.catch(reject);
-		return;
-	}
-
-	resolve(null, response);
-}
-
-/**
- * @param {Object} error
- * @param {Function} resolve
- * @param {Function} reject
- */
-function handeRequestError(error, resolve, reject) {
-	console.error(error);
-	reject(error);
+	return axios({ url: requestUrl.href, ...requestConfig });
 }
 
 function requestCsrfToken() {
 	console.info("[Auth] Requesting token");
-
-	return new Promise((resolve, reject) => {
-		fetch("/sanctum/csrf-cookie")
-			.then((res) => handleRequestResponse(res, resolve, reject))
-			.catch((err) => handeRequestError(err, resolve, reject));
-	});
+	return axios.get("/sanctum/csrf-cookie");
 }
 
 /**
@@ -258,21 +195,23 @@ export class EntityBroker {
 	}
 
 	all() {
-		return apiRequest(this.basePath, "GET").then((data) => this.parser.parseAll(data));
+		return apiRequest(this.basePath, "GET").then(({ data }) => this.parser.parseAll(data));
 	}
 
 	get(id) {
-		return apiRequest(this._makeUrl(id), "GET").then((data) => this.parser.parse(data));
+		return apiRequest(this._makeUrl(id), "GET").then(({ data }) => this.parser.parse(data));
 	}
 
 	post(id, data = null) {
-		return apiRequest(this._makeUrl(id), "POST", this.preparator.prepare(data)).then((data) => this.parser.parse(data));
+		return apiRequest(this._makeUrl(id), "POST", this.preparator.prepare(data)).then(({ data }) =>
+			this.parser.parse(data)
+		);
 	}
 
 	postMultipart(id, data = null) {
-		return apiRequest(this._makeUrl(id), "POST", this.converter.convert(data), {
+		return apiRequest(this._makeUrl(id), "POST", this.preparator.prepare(data), {
 			headers: { "Content-Type": "multipart/form-data" },
-		}).then((data) => this.parser.parse(data));
+		}).then(({ data }) => this.parser.parse(data));
 	}
 
 	delete(id) {

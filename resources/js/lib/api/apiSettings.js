@@ -10,7 +10,7 @@ export function upsert(setting) {
 	const params = new FormData();
 	params.set("value", setting.value || "");
 
-	return Api.post(`${basePath}/${setting.name}`, params, { headers: { "Content-Type": "multipart/form-data" } });
+	return Api.postMultipart(`${basePath}/${setting.name}`, params);
 }
 
 const apiArticle = { all, upsert };

@@ -13,7 +13,7 @@ const basePath = "/articles";
 export function all() {
 	return new Promise((resolve, reject) => {
 		Api.get(basePath)
-			.then((data) => resolve(data.map(parseArticle)))
+			.then(({ data }) => resolve(data.map(parseArticle)))
 			.catch(reject);
 	});
 }
@@ -21,7 +21,7 @@ export function all() {
 export function get(id) {
 	return new Promise((resolve, reject) => {
 		Api.get(`${basePath}/${id}`)
-			.then((data) => resolve(parseArticle(data)))
+			.then(({ data }) => resolve(parseArticle(data)))
 			.catch(reject);
 	});
 }
@@ -33,7 +33,7 @@ export function create(article) {
 export function update(article) {
 	return new Promise((resolve, reject) => {
 		Api.postMultipart(`${basePath}/${article.id}`, prepareEditionData(article))
-			.then((data) => resolve(parseArticle(data)))
+			.then(({ data }) => resolve(parseArticle(data)))
 			.catch(reject);
 	});
 }

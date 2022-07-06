@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
 		// If there is a token, we check if the user is connected
 		console.info("[Auth] Checking auth");
 		Api.get("/me")
-			.then((data) => {
+			.then(({ data }) => {
 				console.info("[Auth] Already authenticated");
 				authInitialized();
 				setUser(data);
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
 			Api.requestToken()
 				.then(() => {
 					Api.post("/login", { email, password, remember })
-						.then((data) => {
+						.then(({ data }) => {
 							console.info("[Auth] Authenticated");
 							setUser(data);
 							resolve();
