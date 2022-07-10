@@ -10,7 +10,7 @@
 	<header class="page-header">
 		<h1 class="page-title">
 			<span class="inline-block mb-2 text-base px-2 bg-black text-white rounded">Séance</span><br />
-			Séance {{ $session->title }}
+			{{ $session->title }}
 		</h1>
 		@if(!empty($session->excerpt))
 			<p class="page-excerpt">{{ $session->excerpt }}</p>
