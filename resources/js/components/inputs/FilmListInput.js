@@ -28,7 +28,7 @@ const FilmListInput = ({ value, onChange, ...rest }) => {
 		const request = searchText.length === 0 ? apiFilm.all() : apiFilm.search({ title: searchText });
 
 		request
-			.then(setSearchFilms)
+			.then(({ data }) => setSearchFilms(data))
 			.catch(() => message.error("Erreur de la recherche de films"))
 			.finally(() => setLoading(false));
 	}, [searchText]);
@@ -115,7 +115,11 @@ const FilmListInput = ({ value, onChange, ...rest }) => {
 						</tbody>
 					</table>
 				) : (
-					<Empty className="my-8 mx-16" image={Empty.PRESENTED_IMAGE_SIMPLE} description="Cherchez et ajouter un film pour commencer cette sélection" />
+					<Empty
+						className="my-8 mx-16"
+						image={Empty.PRESENTED_IMAGE_SIMPLE}
+						description="Cherchez et ajouter un film pour commencer cette sélection"
+					/>
 				)}
 			</div>
 		</div>

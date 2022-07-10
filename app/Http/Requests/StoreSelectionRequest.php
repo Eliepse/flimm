@@ -19,6 +19,7 @@ class StoreSelectionRequest extends FormRequest
 	{
 		return [
 			"name" => "required|string|max:200",
+			"intro" => "string|max:255",
 			"films" => "required|array|min:0",
 			"films.*" => "integer|numeric|distinct|exists:App\Models\Film,id",
 		];

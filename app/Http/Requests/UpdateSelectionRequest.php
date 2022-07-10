@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @property-read ?string $name
+ * @property-read ?string $intro
  * @property-read ?int[] $films
  */
 class UpdateSelectionRequest extends FormRequest
@@ -19,6 +20,7 @@ class UpdateSelectionRequest extends FormRequest
 	{
 		return [
 			"name" => "string|max:200",
+			"intro" => "string|max:255",
 			"films" => "array|min:0",
 			"films.*" => "integer|numeric|distinct|exists:App\Models\Film,id",
 		];

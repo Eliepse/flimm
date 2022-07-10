@@ -58,7 +58,7 @@ const SelectionFormModal = ({ editionId, selectionId, onClose, onSuccess, ...res
 		const selectionBroker = new SelectionBroker(editionId);
 		selectionBroker
 			.get(selectionId)
-			.then((data) => form.setFieldsValue({ name: data.name, films: data.films.map((f) => f.id) }))
+			.then((data) => form.setFieldsValue({ name: data.name, intro: data.intro, films: data.films.map((f) => f.id) }))
 			.catch((e) => {
 				console.error(e);
 				message.error("Erreur lors du chargement de la sélection.");
@@ -80,7 +80,7 @@ const SelectionFormModal = ({ editionId, selectionId, onClose, onSuccess, ...res
 			onCancel={close}
 			confirmLoading={loading}
 		>
-			<SelectionForm form={form} />
+			<SelectionForm form={form} layout="vertical" />
 		</Modal>
 	);
 };
