@@ -37,7 +37,7 @@ const Setting = ({ label, setting, variant = "text", onUpdate }) => {
 		setState(STATE_SAVING);
 		apiSettings
 			.upsert({ name: setting.name, value })
-			.then((data) => {
+			.then(({ data }) => {
 				onUpdate(data);
 				setState(STATE_DISPLAY);
 				//noinspection JSIgnoredPromiseFromCall

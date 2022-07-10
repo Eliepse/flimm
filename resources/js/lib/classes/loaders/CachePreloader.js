@@ -46,7 +46,7 @@ export default class CachePreloader {
 			this._prepareRequestConfig()
 				.then((res) => {
 					// Prepare data for caching
-					this.data = this._prepareData(res);
+					this.data = this._prepareData(res.data);
 					this.state = CachePreloader.STATE_LOADED;
 					this.onUpdate(this);
 
