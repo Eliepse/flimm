@@ -27,7 +27,7 @@ const SessionEditorPage = () => {
 		},
 		true
 	);
-	const { data, mode } = context;
+	const { data } = context;
 
 	useEffect(() => {
 		if (state === "updateForm") {
@@ -48,7 +48,10 @@ const SessionEditorPage = () => {
 
 	function handleSubmit() {}
 
-	function handleRichtextChange() {}
+	function handleRichtextChange(data) {
+		console.debug("yo", data);
+		form.setFieldsValue({ presentation: data });
+	}
 
 	return (
 		<DashboardLayout>
@@ -69,19 +72,19 @@ const SessionEditorPage = () => {
 
 					<Divider className="mb-6" />
 
-					<label>Description</label>
-					<div className="relative py-4 mt-6 border-2 border-solid border-gray-300">
-						{MODE.edit === mode ? (
+					<Form.Item label="Description" name="description" className="mt-6">
+						{isState("init") ? (
+							<p>Vous devez d&apos;abord enregistrer la session avant de pouvoir éditer le contenu.</p>
+						) : (
 							<RichtextEditorInput
 								value={data.presentation}
 								onChange={handleRichtextChange}
 								imageEndpoint={`${location.protocol}//${location.host}/api/sessions/${id}/media`}
 								loading={isState("init")}
+								className="relative py-4 mt-6 border-2 border-solid border-gray-300"
 							/>
-						) : (
-							<p>Vous devez d&apos;abord enregistrer la session avant de pouvoir éditer le contenu.</p>
 						)}
-					</div>
+					</Form.Item>
 				</div>
 
 				{/*

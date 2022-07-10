@@ -4,7 +4,7 @@ import { Skeleton } from "antd";
 import PropTypes from "prop-types";
 import { DEFAULT_TOOLS, makeImageTool } from "configs/editorjsConfig";
 
-const RichtextEditorInput = ({ value, imageEndpoint, loading = false, onChange }) => {
+const RichtextEditorInput = ({ value, imageEndpoint, loading = false, onChange, ...rest }) => {
 	const ref = useRef();
 	const editorRef = useRef();
 	const [isReady, setIsReady] = useState(false);
@@ -72,7 +72,7 @@ const RichtextEditorInput = ({ value, imageEndpoint, loading = false, onChange }
 		return <Skeleton active loading />;
 	}
 
-	return <div ref={ref} />;
+	return <div {...rest} ref={ref} />;
 };
 
 RichtextEditorInput.propTypes = {

@@ -32,7 +32,7 @@ class Session extends Model implements HasMedia
 {
 	use HasFactory, InteractsWithMedia;
 
-	protected $fillable = ["title", "start_at", "location", "duration", "edition_id"];
+	protected $fillable = ["title", "start_at", "location", "duration", "edition_id", "description"];
 
 	protected $casts = [
 		"start_at" => "datetime",
