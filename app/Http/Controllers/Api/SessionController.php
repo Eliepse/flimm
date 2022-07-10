@@ -41,7 +41,7 @@ class SessionController extends Controller
 	}
 
 
-	public function update(UpdateSessionRequest $request, Session $session): Session
+	public function update(UpdateSessionRequest $request, Session $session): array
 	{
 		$session->fill($request->validated());
 		$session->save();
@@ -55,10 +55,10 @@ class SessionController extends Controller
 		}
 
 		if ($films = $request->get("films")) {
-			$session->films()->sync($films);
+			$session->films()->sync(array_combine($films, array_map(fn($order) => ["film_order" => $order], array_keys($films))));
 		}
 
-		return $session;
+		return array_merge($session->refresh()->toArray(), ["films" => $session->films->pluck("id")]);
 	}
 
 

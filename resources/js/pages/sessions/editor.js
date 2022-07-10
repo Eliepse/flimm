@@ -46,16 +46,9 @@ const SessionEditorPage = () => {
 		return optionalArr(editions).map((e) => ({ label: e.title, value: e.id }));
 	}, [editions]);
 
-	function handleSubmit() {}
-
-	function handleRichtextChange(data) {
-		console.debug("yo", data);
-		form.setFieldsValue({ presentation: data });
-	}
-
 	return (
 		<DashboardLayout>
-			<Form layout="vertical" form={form} className="grid grid-cols-3" onFinish={handleSubmit}>
+			<Form layout="vertical" form={form} className="grid grid-cols-3">
 				{/*
 					| -------------------------------------------------
 					| Main fields
@@ -77,8 +70,6 @@ const SessionEditorPage = () => {
 							<p>Vous devez d&apos;abord enregistrer la session avant de pouvoir éditer le contenu.</p>
 						) : (
 							<RichtextEditorInput
-								value={data.presentation}
-								onChange={handleRichtextChange}
 								imageEndpoint={`${location.protocol}//${location.host}/api/sessions/${id}/media`}
 								loading={isState("init")}
 								className="relative py-4 mt-6 border-2 border-solid border-gray-300"

@@ -50,7 +50,7 @@ class Session extends Model implements HasMedia
 	public function films(): BelongsToMany
 	{
 		return $this->belongsToMany(Film::class)
-			->withPivot(["order"]);
+			->orderByPivot("film_order");
 	}
 
 
