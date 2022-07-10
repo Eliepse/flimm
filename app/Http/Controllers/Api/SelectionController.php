@@ -30,7 +30,7 @@ class SelectionController
 	public function store(StoreSelectionRequest $request, Edition $edition): array
 	{
 		/** @var Selection $selection */
-		$selection = $edition->selections()->create($request->all(["name"]));
+		$selection = $edition->selections()->create($request->all(["name", "intro"]));
 
 		$selection->films()->attach($request->get("films", []));
 
@@ -44,8 +44,9 @@ class SelectionController
 			return response(status: 404);
 		}
 
-		if ($request->name) {
+		if ($request->hasAny(["name", "intro"])) {
 			$selection->name = $request->name;
+			$selection->intro = $request->intro;
 			$selection->save();
 		}
 

@@ -11,7 +11,7 @@ export default function SettingsPage() {
 	useEffect(() => {
 		apiSettings
 			.all()
-			.then((data) => {
+			.then(({ data }) => {
 				setInitalData(Object.fromEntries(data.map((setting) => [setting.name, setting])));
 			})
 			.catch((e) => {

@@ -23,7 +23,6 @@ export default class ConvertToFormData {
 				if (prefix.length === 0) {
 					throw new Error("Prefix cannot be empty.");
 				}
-
 				form.set(prefix, value);
 				return;
 			}

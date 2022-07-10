@@ -30,7 +30,7 @@ const FilmIndexPage = () => {
 	useEffect(() => {
 		apiFilm
 			.all()
-			.then(setFilms)
+			.then(({ data }) => setFilms(data))
 			.catch((e) => {
 				console.error(e);
 				//noinspection JSIgnoredPromiseFromCall

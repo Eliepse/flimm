@@ -10,13 +10,13 @@
 	<header class="page-header">
 		<h1 class="page-title">
 			<span class="inline-block mb-2 text-base px-2 bg-black text-white rounded">Séance</span><br />
-			Séance {{ $session->title }}
+			{{ $session->title }}
 		</h1>
 		@if(!empty($session->excerpt))
 			<p class="page-excerpt">{{ $session->excerpt }}</p>
 		@endif
 		<p class="page-publishDate text-xl">
-			<time>Début le {{ $session->start_at->format("d.m.y à h \h m") }} - {{ $session->duration }} min</time>
+			<time>{{ $session->start_at->format("d.m.y à G \h i") }}</time>
 		</p>
 	</header>
 	<div class="page-content">
@@ -26,7 +26,7 @@
 		@endforeach
 
 		{{-- Films --}}
-		<h2 class="text-lg">Films</h2>
+		<h2 class="text-lg">Film(s)</h2>
 		<ul>
 			@foreach($session->films as $film)
 				<li class="my-12">

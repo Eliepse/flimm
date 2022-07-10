@@ -1,39 +1,69 @@
 import { Link } from "app";
-import { Badge, Button, Table } from "antd";
-import { EditOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
+import { Badge, Button, message, Popconfirm, Table } from "antd";
+import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import TitleAndActionsLayout from "components/layouts/TitleAndActionsLayout";
 import { useEffect, useState } from "react";
 import apiSession from "lib/api/apiSession";
 import { optionalArr } from "lib/support/arrays";
 
-const COLUMNS = [
-	{
-		title: "title",
-		dataIndex: "title",
-		key: "title",
-	},
-	{
-		title: "Réalisateur",
-		dataIndex: "filmmaker",
-		key: "filmmaker",
-	},
-	{
-		key: "actions",
-		width: 200,
-		render: (session) => <ActionsCell session={session} />,
-	},
-];
-
 export default function SessionsIndexPage() {
-	const [sessions, setSessions] = useState();
+	const [state, setState] = useState("loading");
+	const [sessions, setSessions] = useState([]);
+
+	const COLUMNS = [
+		{
+			title: "title",
+			dataIndex: "title",
+			key: "title",
+		},
+		{
+			title: "Réalisateur",
+			dataIndex: "filmmaker",
+			key: "filmmaker",
+		},
+		{
+			key: "actions",
+			align: "right",
+			render: (session) => <ActionsCell session={session} onDelete={() => deleteSession(session.id)} />,
+		},
+	];
+
+	/*
+	 | ************************
+	 | Actions
+	 | ************************
+	 */
+
+	function deleteSession(id) {
+		apiSession
+			.delete(id)
+			.then(() => {
+				setSessions((st) => st.filter((session) => session.id !== id));
+				message.success("Séance supprimée");
+			})
+			.catch((e) => {
+				console.debug(e);
+				message.error("Impossible de supprimer la séance");
+			});
+	}
+
+	/*
+	 | ************************
+	 | Initial load
+	 | ************************
+	 */
 
 	useEffect(() => {
 		apiSession
 			.all()
-			.then(setSessions)
+			.then((data) => {
+				setSessions(data);
+				setState("done");
+			})
 			.catch((e) => {
 				console.error(e);
 				setSessions([]);
+				setState("error");
 			});
 	}, []);
 
@@ -67,7 +97,7 @@ export default function SessionsIndexPage() {
 		>
 			<Table
 				dataSource={optionalArr(sessions).map((session) => ({ ...session, key: session.id }))}
-				loading={sessions === undefined}
+				loading={state === "loading"}
 				columns={COLUMNS}
 				pagination={false}
 			/>
@@ -75,7 +105,7 @@ export default function SessionsIndexPage() {
 	);
 }
 
-const ActionsCell = ({ session }) => {
+const ActionsCell = ({ session, onDelete }) => {
 	return (
 		<>
 			<Link key="edit" to={`/sessions/${session.id}`}>
@@ -94,6 +124,9 @@ const ActionsCell = ({ session }) => {
 			>
 				Afficher
 			</Button>
+			<Popconfirm title={`Supprimer ${session.title} ?`} onConfirm={onDelete}>
+				<Button type="text" className="ml-2" icon={<DeleteOutlined />} />
+			</Popconfirm>
 		</>
 	);
-}
+};

@@ -61,8 +61,11 @@
 		@foreach($edition->selections as $selection)
 			@if($selection->films->count())
 				<h2>{{ $selection->name }}</h2>
+				@if($selection->intro)
+					<p class="text-gray-500 leading-tight -mt-4">{{ $selection->intro }}</p>
+				@endif
 				<a href="{{ route("selection", [$edition, $selection]) }}" class="mb-8 block hover:font-bold underline">
-						Voir la sélection en détail &rarr;
+					Voir la sélection en détail &rarr;
 				</a>
 				@include("components.films-grid", ["films" => $selection->films])
 			@endif

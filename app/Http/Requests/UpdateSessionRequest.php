@@ -7,6 +7,7 @@ use App\Rules\EditorJsRule;
 
 /**
  * @property-read Edition $edition
+ * @property-read ?array $description
  */
 class UpdateSessionRequest extends StoreSessionRequest
 {

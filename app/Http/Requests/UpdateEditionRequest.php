@@ -26,7 +26,7 @@ class UpdateEditionRequest extends StoreEditionRequest
 			],
 			"presentation" => ["nullable"],
 			"presentation.time" => ["required", "int"],
-			"presentation.blocks" => ["required", "array"],
+			"presentation.blocks" => ["nullable", "array"],
 			"presentation.version" => ["required", "string"],
 		]);
 	}

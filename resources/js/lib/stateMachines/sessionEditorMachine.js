@@ -26,8 +26,9 @@ function saveSession(ctx) {
 	if (isCreateMode(ctx)) {
 		return apiSession
 			.create(ctx.dataToSend)
-			.then(() => {
+			.then((data) => {
 				message.success("Séance crée");
+				return data;
 			})
 			.catch((e) => {
 				message.error("Échec de création d'une séance");
@@ -37,8 +38,9 @@ function saveSession(ctx) {
 
 	return apiSession
 		.update({ id: ctx.id, ...ctx.dataToSend })
-		.then(() => {
+		.then((data) => {
 			message.success("Séance sauvegardée");
+			return data;
 		})
 		.catch((e) => {
 			message.error("Échec de la sauvegarde");
@@ -67,7 +69,15 @@ export default createMachine(
 				reduce((ctx, ev) => ({ ...ctx, dataToSend: ev.data }))
 			)
 		),
-		submiting: invoke(saveSession, transition("done", "updateForm"), transition("error", "idle")),
+		submiting: invoke(
+			saveSession,
+			transition(
+				"done",
+				"updateForm",
+				reduce((ctx, ev) => ({ ...ctx, data: ev.data }))
+			),
+			transition("error", "idle")
+		),
 		error: final(),
 	},
 	(e) => ({

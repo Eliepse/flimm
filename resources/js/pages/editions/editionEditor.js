@@ -1,6 +1,6 @@
 import DashboardLayout from "components/layouts/DashboardLayout";
-import { Button, DatePicker, Divider, Form, Input, message, Skeleton, Upload } from "antd";
-import { FileImageTwoTone, GlobalOutlined, UploadOutlined } from "@ant-design/icons";
+import { Button, DatePicker, Divider, Form, Input, message, Popconfirm, Skeleton, Upload } from "antd";
+import { DeleteOutlined, FileImageTwoTone, GlobalOutlined, UploadOutlined } from "@ant-design/icons";
 import { useRouter } from "lib/useRouter";
 import { useEffect, useState } from "react";
 import apiEdition from "lib/api/apiEdition";
@@ -46,6 +46,29 @@ const EditionEditorPage = () => {
 	}, []);
 
 	/*
+	 | ************************
+	 | Actions
+	 | ************************
+	 */
+
+	function deleteEdition() {
+		if (!edition.id) {
+			return;
+		}
+
+		apiEdition
+			.delete(edition.id)
+			.then(() => {
+				router.pushAdmin("/editions");
+				message.success("L'édition a été supprimée");
+			})
+			.catch((e) => {
+				console.error(e);
+				message.error("Impossible de supprimer l'édition");
+			});
+	}
+
+	/*
 	| -------------------------------------------------
 	| Events handlers
 	| -------------------------------------------------
@@ -64,7 +87,7 @@ const EditionEditorPage = () => {
 
 		apiEdition
 			.upsert(entity)
-			.then((data) => {
+			.then(({ data }) => {
 				setStatus(STATUS_IDLE);
 
 				// Redirect to the edition mode on success
@@ -274,6 +297,16 @@ const EditionEditorPage = () => {
 								<Button icon={<GlobalOutlined />} href={`/editions/${edition.slug}`} target="_blank" rel="noreferrer">
 									Voir la page
 								</Button>
+							)}
+							{Boolean(edition.id) && (
+								<div>
+									<Divider />
+									<Popconfirm title="Êtes-vous sûr de vouloir supprimer ?" onConfirm={deleteEdition}>
+										<Button icon={<DeleteOutlined />}>
+											Supprimer l&rsquo;édition
+										</Button>
+									</Popconfirm>
+								</div>
 							)}
 						</div>
 					</div>

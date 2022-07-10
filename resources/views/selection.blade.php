@@ -19,6 +19,10 @@ $breadcrumbItems = [
 		{{-- SELECTION HEADER --}}
 		<h1 class="uppercase mt-8 mb-12">{{ $selection->name }}</h1>
 
+		@if($selection->intro)
+			<p class="text-gray-500 text-xl leading-tight -mt-8">{{ $selection->intro }}</p>
+		@endif
+
 		{{-- FILMS --}}
 		@foreach($selection->films as $film)
 			<x-film-card :film="$film" classes="my-16" />

@@ -9,6 +9,7 @@ use App\Models\Session;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class SessionController extends Controller
 {
@@ -41,7 +42,7 @@ class SessionController extends Controller
 	}
 
 
-	public function update(UpdateSessionRequest $request, Session $session): Session
+	public function update(UpdateSessionRequest $request, Session $session): array
 	{
 		$session->fill($request->validated());
 		$session->save();
@@ -55,10 +56,20 @@ class SessionController extends Controller
 		}
 
 		if ($films = $request->get("films")) {
-			$session->films()->sync($films);
+			$session->films()->sync(array_combine($films, array_map(fn($order) => ["film_order" => $order], array_keys($films))));
 		}
 
-		return $session;
+		return array_merge($session->refresh()->toArray(), ["films" => $session->films->pluck("id")]);
+	}
+
+
+	public function destroy(Session $session)
+	{
+		if ($session->delete()) {
+			return response()->noContent();
+		}
+
+		throw new HttpException(500, "Entity deletion didn't succeed");
 	}
 
 
