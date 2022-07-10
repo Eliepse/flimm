@@ -6,6 +6,9 @@ use Illuminate\Contracts\Validation\Rule;
 
 class EditorJsRule implements Rule
 {
+	private string $errorMessage;
+
+
 	/**
 	 * Create a new rule instance.
 	 *
@@ -28,8 +31,27 @@ class EditorJsRule implements Rule
 			return true;
 		}
 
-		// Non nullable, or not empty
-		return is_array($value) && is_int($value["time"]) && is_array($value["blocks"]) && is_string($value["version"]);
+		if (! is_array($value)) {
+			$this->errorMessage = "The value should be an array.";
+			return false;
+		}
+
+		if (! is_numeric($value["time"])) {
+			$this->errorMessage = "The time should be an number.";
+			return false;
+		}
+
+		if (! is_array($value["blocks"])) {
+			$this->errorMessage = "The blocks should be an array.";
+			return false;
+		}
+
+		if (! is_string($value["version"])) {
+			$this->errorMessage = "The version should be a string.";
+			return false;
+		}
+
+		return true;
 	}
 
 
@@ -40,6 +62,6 @@ class EditorJsRule implements Rule
 	 */
 	public function message(): string
 	{
-		return 'Le champs n\'est pas valide.';
+		return $this->errorMessage ?? 'Le champs n\'est pas valide.';
 	}
 }
