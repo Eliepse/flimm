@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\FileFieldHandler;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RequestWithFileFields;
 use App\Http\Requests\StoreEditionRequest;
 use App\Http\Requests\UpdateEditionRequest;
-use App\Http\Requests\RequestWithFileFields;
 use App\Models\Edition;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class EditionController extends Controller
 {
@@ -61,6 +62,16 @@ class EditionController extends Controller
 		$edition->save();
 
 		return $edition;
+	}
+
+
+	public function destroy(Edition $edition)
+	{
+		if ($edition->delete()) {
+			return response()->noContent();
+		}
+
+		throw new HttpException(500, "Entity deletion didn't succeed");
 	}
 
 
