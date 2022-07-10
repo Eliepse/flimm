@@ -26,7 +26,7 @@
 		@endforeach
 
 		{{-- Films --}}
-		<h2 class="text-lg">Films</h2>
+		<h2 class="text-lg">Film(s)</h2>
 		<ul>
 			@foreach($session->films as $film)
 				<li class="my-12">
