@@ -30,7 +30,7 @@ const SelectionFormModal = ({ editionId, selectionId, onClose, onSuccess, ...res
 				const request = isEdition ? selectionBroker.update({ id: selectionId, ...data }) : selectionBroker.create(data);
 
 				return request
-					.then(({ data: selection }) => {
+					.then((selection) => {
 						optionFn(onSuccess)(selection);
 						message.success("Sauvegarde réussie !");
 						close();
@@ -58,7 +58,7 @@ const SelectionFormModal = ({ editionId, selectionId, onClose, onSuccess, ...res
 		const selectionBroker = new SelectionBroker(editionId);
 		selectionBroker
 			.get(selectionId)
-			.then(({ data }) =>
+			.then((data) =>
 				form.setFieldsValue({ name: data.name, intro: data.intro, films: data.films.map((f) => f.id) })
 			)
 			.catch((e) => {

@@ -87,7 +87,7 @@ const EditionEditorPage = () => {
 
 		apiEdition
 			.upsert(entity)
-			.then(({ data }) => {
+			.then((data) => {
 				setStatus(STATUS_IDLE);
 
 				// Redirect to the edition mode on success
