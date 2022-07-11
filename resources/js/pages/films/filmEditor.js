@@ -37,7 +37,7 @@ const FilmEditorPage = () => {
 
 		apiFilm
 			.get(query.id)
-			.then((data) => {
+			.then(({ data }) => {
 				setAutoFilledSlug(false);
 				form.setFieldsValue({
 					...data,
@@ -63,12 +63,12 @@ const FilmEditorPage = () => {
 		if (isNew) {
 			apiFilm
 				.create(values)
-				.then((res) => {
+				.then(({ data }) => {
 					//noinspection JSIgnoredPromiseFromCall
 					message.success("Film créé");
 
 					// Redirect to the edition mode on success
-					router.pushAdmin(`/films/${res.id}`);
+					router.pushAdmin(`/films/${data.id}`);
 				})
 				.catch((e) => {
 					console.error(e);
@@ -79,12 +79,12 @@ const FilmEditorPage = () => {
 
 		apiFilm
 			.update({ id: query.id, ...values })
-			.then((res) => {
-				setFilm(res);
+			.then(({ data }) => {
+				setFilm(data);
 
 				form.setFieldsValue({
-					...res,
-					thumbnail: normalizeThumbnailForInput(res.thumbnail),
+					...data,
+					thumbnail: normalizeThumbnailForInput(data.thumbnail),
 				});
 
 				// Slug has to be manually changed if already in database
