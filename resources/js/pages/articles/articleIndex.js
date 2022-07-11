@@ -111,9 +111,9 @@ const CreateArticleForm = ({ visible, onClose }) => {
 		setLoading(true);
 		apiArticle
 			.create(values)
-			.then((data) => router.pushAdmin(`/articles/${data.id}`))
+			.then(({ data }) => router.pushAdmin(`/articles/${data.id}`))
 			.catch((err) => {
-				message.error("Échec de la création de l'article")
+				message.error("Échec de la création de l'article");
 				console.error(err);
 			})
 			.finally(() => setLoading(false));

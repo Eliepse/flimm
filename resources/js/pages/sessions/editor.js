@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import apiEdition from "lib/api/apiEdition";
 import { optionalArr } from "lib/support/arrays";
 import SessionFilmsInput from "components/inputs/SessionFilmsInput";
+import { useRouter } from "lib/useRouter";
 
 function filterEditionOptions(input, option) {
 	return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -18,6 +19,7 @@ const SessionEditorPage = () => {
 	const { id } = useParams();
 	const [form] = Form.useForm();
 	const [editions, setEditions] = useState();
+	const { pushAdmin } = useRouter();
 
 	const { context, isState, send, state } = useMachine(
 		sessionEditorMachine,
@@ -37,6 +39,12 @@ const SessionEditorPage = () => {
 
 		//eslint-disable-next-line
 	}, [form, send, state]);
+
+	useEffect(() => {
+		if (data.id && !id) {
+			pushAdmin(`/sessions/${data.id}`);
+		}
+	}, [data, id, pushAdmin]);
 
 	useEffect(() => {
 		apiEdition.all().then(setEditions).catch(console.error);
