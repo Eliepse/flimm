@@ -20,7 +20,7 @@ class UpdateSelectionRequest extends FormRequest
 	{
 		return [
 			"name" => "string|max:200",
-			"intro" => "string|max:255",
+			"intro" => "string|max:4096",
 			"films" => "array|min:0",
 			"films.*" => "integer|numeric|distinct|exists:App\Models\Film,id",
 		];
