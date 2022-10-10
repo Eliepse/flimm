@@ -23,7 +23,7 @@ class Selection extends Model
 {
 	use HasFactory;
 
-	protected $fillable = ["name"];
+	protected $fillable = ["name", "intro"];
 
 
 	public function edition(): BelongsTo
