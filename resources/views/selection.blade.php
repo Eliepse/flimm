@@ -20,7 +20,7 @@ $breadcrumbItems = [
 		<h1 class="uppercase mt-8 mb-12">{{ $selection->name }}</h1>
 
 		@if($selection->intro)
-			<p class="text-gray-500 text-xl leading-tight -mt-8">{{ $selection->intro }}</p>
+			<p class="text-gray-500 text-xl leading-tight -mt-8">@nl2br($selection->intro)</p>
 		@endif
 
 		{{-- FILMS --}}
