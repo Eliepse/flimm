@@ -16,7 +16,8 @@
 			<p class="page-excerpt">{{ $session->excerpt }}</p>
 		@endif
 		<p class="page-publishDate text-xl">
-			<time>{{ $session->start_at->format("d.m.y à G \h i") }}</time>
+			<time>{{ $session->start_at->format("d.m.y à G \h i") }}</time><br />
+			{{ $session->location }}
 		</p>
 	</header>
 	<div class="page-content">
