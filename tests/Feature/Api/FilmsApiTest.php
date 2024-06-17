@@ -22,7 +22,7 @@ test("Can create a film", function () {
 		]);
 
 	$response->assertCreated();
-	assertDatabaseHas("films", ["slug" => $slug]);
+	$this->assertDatabaseHas("films", ["slug" => $slug]);
 });
 
 test("Can update a film", function () {
@@ -40,9 +40,9 @@ test("Can update a film", function () {
 		]);
 
 	$response->assertOk();
-	assertDatabaseMissing("films", ["slug" => $film->slug]);
-	assertDatabaseHas("films", ["slug" => $slug]);
-	expect(Film::first()->toArray())->toMatchArray($data);
+    $this->assertDatabaseMissing("films", ["slug" => $film->slug]);
+    $this->assertDatabaseHas("films", ["slug" => $slug]);
+    expect(Film::first()->toArray())->toMatchArray($data);
 });
 
 test("Can upload a thumbnail", function () {

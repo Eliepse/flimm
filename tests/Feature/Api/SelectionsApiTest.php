@@ -28,8 +28,8 @@ test('Create a valid selection', function () {
 	expect($response->json())->toHaveKeys(["name", "films"]);
 	expect($response->json("films"))->toBeArray();
 	expect($response->json("films"))->toHaveLength(5);
-	assertDatabaseCount("selections", 1);
-	assertDatabaseCount("film_selection", 5);
+    $this->assertDatabaseCount("selections", 1);
+    $this->assertDatabaseCount("film_selection", 5);
 });
 
 test("Request fails on missing data", function () {
@@ -45,7 +45,7 @@ test("Request fails on missing data", function () {
 			"name" => "My selection",
 		])->assertUnprocessable();
 
-	assertDatabaseCount("film_selection", 0);
+    $this->assertDatabaseCount("film_selection", 0);
 });
 
 test("Films list can't have duplicates", function () {
@@ -78,7 +78,7 @@ test("Delete a selection returns success code", function () {
 		->delete("/api/editions/$edition->id/selections/$selection->id")
 		->assertSuccessful();
 
-	assertDatabaseCount("film_selection", 0);
+    $this->assertDatabaseCount("film_selection", 0);
 });
 
 test("Delete a selection clean all associated links", function () {
@@ -94,7 +94,7 @@ test("Delete a selection clean all associated links", function () {
 
 	actingAs($user)->delete("/api/editions/$edition->id/selections/$selection->id")->assertSuccessful();
 
-	assertDatabaseCount("film_selection", 0);
+    $this->assertDatabaseCount("film_selection", 0);
 });
 
 test("Cannot delete a selection that doesn't belong to the given edition", function () {
@@ -116,15 +116,13 @@ test("Edit only selection name", function () {
 	/** @var Selection $selection */
 	$selection = Selection::factory()->for(Edition::factory()->create())->hasAttached(Film::factory(5)->create())->create(["name" => "Foo"]);
 
-//	dd("/api/editions/{$selection->edition->id}/selections/$selection->id");
-
 	actingAs($user)
 		->postJson("/api/editions/{$selection->edition->id}/selections/$selection->id", ["name" => "Baz"])
 		->assertSuccessful();
 
-	assertDatabaseMissing("selections", ["name" => "Foo"]);
-	assertDatabaseHas("selections", ["name" => "Baz"]);
-	assertDatabaseCount("film_selection", 5);
+    $this->assertDatabaseMissing("selections", ["name" => "Foo"]);
+    $this->assertDatabaseHas("selections", ["name" => "Baz"]);
+    $this->assertDatabaseCount("film_selection", 5);
 });
 
 test("Remove or add some films in a selection", function () {
@@ -137,15 +135,15 @@ test("Remove or add some films in a selection", function () {
 		->postJson("/api/editions/{$selection->edition->id}/selections/$selection->id", ["films" => $films->pluck("id")->slice(0, 3)])
 		->assertSuccessful();
 
-	assertDatabaseCount("film_selection", 3);
-	assertDatabaseMissing("film_selection", ["selection_id" => $selection->id, "film_id" => $films[3]->id]);
-	assertDatabaseMissing("film_selection", ["selection_id" => $selection->id, "film_id" => $films[4]->id]);
+    $this->assertDatabaseCount("film_selection", 3);
+    $this->assertDatabaseMissing("film_selection", ["selection_id" => $selection->id, "film_id" => $films[3]->id]);
+    $this->assertDatabaseMissing("film_selection", ["selection_id" => $selection->id, "film_id" => $films[4]->id]);
 
 	actingAs($user)
 		->postJson("/api/editions/{$selection->edition->id}/selections/$selection->id", ["films" => $films->pluck("id")])
 		->assertSuccessful();
 
-	assertDatabaseCount("film_selection", 5);
+    $this->assertDatabaseCount("film_selection", 5);
 });
 
 test("Fetch a selection of an edition", function () {

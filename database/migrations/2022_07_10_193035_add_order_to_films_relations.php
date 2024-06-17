@@ -17,7 +17,7 @@ return new class extends Migration {
 			$table->smallInteger("film_order")->default(0);
 		});
 
-		Schema::table('film_selection', function (Blueprint $table) {
+		Schema::table('selection_film', function (Blueprint $table) {
 			$table->smallInteger("film_order")->default(0);
 		});
 	}
@@ -35,7 +35,7 @@ return new class extends Migration {
 			$table->dropColumn("film_order");
 		});
 
-		Schema::table('film_selection', function (Blueprint $table) {
+		Schema::table('selection_film', function (Blueprint $table) {
 			$table->dropColumn("film_order");
 		});
 	}

@@ -14,7 +14,7 @@ return new class extends Migration {
 	{
 		Schema::disableForeignKeyConstraints();
 		Schema::table('selections', function (Blueprint $table) {
-			$table->text("intro")->change();
+			$table->text("intro")->nullable()->change();
 		});
 		Schema::enableForeignKeyConstraints();
 	}
@@ -29,7 +29,7 @@ return new class extends Migration {
 	{
 		Schema::disableForeignKeyConstraints();
 		Schema::table('selections', function (Blueprint $table) {
-			$table->string("intro")->change();
+			$table->string("intro")->nullable()->change();
 		});
 		Schema::enableForeignKeyConstraints();
 	}
