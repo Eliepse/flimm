@@ -12,7 +12,7 @@ export default defineConfig({
             ],
             refresh: true,
         }),
-        react()
+        react(),
     ],
     resolve: {
         alias: {

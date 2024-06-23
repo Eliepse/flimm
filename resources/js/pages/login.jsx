@@ -8,7 +8,6 @@ export default function LoginPage() {
 
 	const router = useRouter();
 
-
 	function handleFinish({ email, password }) {
 		login(email, password)
 			.then(router.goHome)

@@ -1,3 +1,4 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: [
         "./resources/scss/admin/**/*.{css,scss}",

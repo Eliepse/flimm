@@ -23,7 +23,7 @@
 	<link rel="stylesheet" href="https://unpkg.com/carbon-components/css/carbon-components.min.css">
 	<title>FLiMM - Admin</title>
     @viteReactRefresh
-    @vite(["resources/js/index.jsx"])
+    @vite(["resources/js/index.jsx", "resources/scss/app.scss"])
 </head>
 <body>
 <noscript>You need to enable JavaScript to run this app.</noscript>
