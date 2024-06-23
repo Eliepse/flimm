@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { EditOutlined, FileOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Input, message, Skeleton, Upload } from "antd";
 import { getFilename } from "lib/support/files";
-import { nl2br } from "lib/support/strings";
+import { nl2br } from "lib/support/strings.jsx";
 import { noPropagation } from "lib/support/events";
 import apiSettings from "lib/api/apiSettings";
 

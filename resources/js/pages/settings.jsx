@@ -1,4 +1,4 @@
-import Setting from "../components/Setting/Setting";
+import Setting from "@/components/Setting/Setting.jsx";
 import { useEffect, useState } from "react";
 import apiSettings from "../lib/api/apiSettings";
 import styles from "./settings.module.scss";

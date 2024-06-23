@@ -1,7 +1,7 @@
 import { useAuth } from "./useAuth";
 import { useRouter } from "../useRouter";
 import { useEffect, useMemo, useState } from "react";
-import LoadingLayout from "../../components/layouts/LoadingLayout";
+import LoadingLayout from "@/components/layouts/LoadingLayout.jsx";
 import { useNavigate } from "react-router-dom";
 import { createStore } from "@reduxjs/toolkit";
 import rootReducer from "reducers/reducers";

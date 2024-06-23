@@ -1,4 +1,4 @@
-import { Link } from "app";
+import { Link } from "@/app";
 import { Badge, Button, message, Popconfirm, Table } from "antd";
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import TitleAndActionsLayout from "components/layouts/TitleAndActionsLayout";

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "app";
+import { Link } from "@/app";
 import apiEdition from "lib/api/apiEdition";
 import { Badge, Button, Table } from "antd";
 import { ClockCircleOutlined, EditOutlined, EyeOutlined, PlusOutlined, UnorderedListOutlined } from "@ant-design/icons";

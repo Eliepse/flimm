@@ -1,5 +1,5 @@
 import {useContext} from 'react';
-import {authContext} from './authProvider';
+import {useAuthContext} from 'lib/auth/authProvider.jsx';
 
 /**
  * @returns {{
@@ -13,7 +13,7 @@ import {authContext} from './authProvider';
  */
 export function useAuth() {
 	//noinspection JSCheckFunctionSignatures
-	const auth = useContext(authContext);
+	const auth = useAuthContext();
 
 	return {
 		...auth,

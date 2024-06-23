@@ -1,4 +1,4 @@
-import DashboardLayout from "../components/layouts/DashboardLayout";
+import DashboardLayout from "@/components/layouts/DashboardLayout.jsx";
 import { Alert } from "antd";
 
 export default function HomePage() {

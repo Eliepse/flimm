@@ -1,5 +1,5 @@
 import { useContext, useMemo } from "react";
-import { authContext } from "lib/auth/authProvider";
+import { useAuthContext } from "@/lib/auth/authProvider.jsx";
 import PropTypes from "prop-types";
 import { Avatar, Menu } from "antd";
 import { useRouter } from "lib/useRouter";
@@ -7,7 +7,7 @@ import { MENU } from "configs/app";
 
 const DashboardLayout = ({ children }) => {
 	const router = useRouter();
-	const { user, logout } = useContext(authContext);
+	const { user, logout } = useAuthContext();
 
 	function handleMenuClick(item) {
 		router.pushAdmin(item.key);

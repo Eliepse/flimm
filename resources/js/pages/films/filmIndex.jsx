@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import apiFilm from "lib/api/apiFilm";
-import { Link } from "app";
+import { Link } from "@/app";
 import { Badge, Button, message, Table } from "antd";
 import { EditOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";

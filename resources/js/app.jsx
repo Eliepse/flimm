@@ -1,6 +1,6 @@
 import { Link as RouterLink, Route, Routes } from "react-router-dom";
-import LoginPage from "pages/login";
-import AuthRequired from "lib/auth/authRequired";
+import LoginPage from "pages/login.jsx";
+import AuthRequired from "@/lib/auth/authRequired.jsx";
 import PropTypes from "prop-types";
 import { PAGES, URL_PREFIX } from "configs/app";
 import { useMemo } from "react";

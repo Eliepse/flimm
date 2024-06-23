@@ -1,17 +1,7 @@
 import axios from "axios";
-import React from "react";
-import whyDidYouRender from "@welldone-software/why-did-you-render";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import "dayjs/locale/fr";
-
-// Config rerender debugger
-//eslint-disable-next-line no-undef
-if (process.env.NODE_ENV === "development") {
-	whyDidYouRender(React, {
-		trackAllPureComponents: true,
-	});
-}
 
 // Config dayjs
 dayjs.extend(isBetween);

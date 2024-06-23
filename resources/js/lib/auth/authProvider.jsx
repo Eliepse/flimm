@@ -1,10 +1,10 @@
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import Api, { getCsrfToken } from "../api/broker";
 import PropTypes from "prop-types";
 import { Spin } from "antd";
 
 //noinspection JSUnusedLocalSymbols
-export const authContext = createContext({
+const authContext = createContext({
 	user: null,
 	apiToken: null,
 	//eslint-disable-next-line no-unused-vars
@@ -101,6 +101,10 @@ export const AuthProvider = ({ children }) => {
 
 	return <authContext.Provider value={auth}>{children}</authContext.Provider>;
 };
+
+export function useAuthContext() {
+    return useContext(authContext);
+}
 
 AuthProvider.propTypes = {
 	children: PropTypes.any,

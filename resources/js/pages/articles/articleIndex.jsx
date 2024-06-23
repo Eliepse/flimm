@@ -5,7 +5,7 @@ import { Badge, Button, Form, Input, message, Modal, Table, Tag } from "antd";
 import apiArticle from "lib/api/apiArticle";
 import { useRouter } from "lib/useRouter";
 import { EditOutlined, EyeOutlined, FileTextOutlined, PlusOutlined } from "@ant-design/icons";
-import { Link } from "app";
+import { Link } from "@/app";
 import TitleAndActionsLayout from "components/layouts/TitleAndActionsLayout";
 
 const COLUMNS = [
