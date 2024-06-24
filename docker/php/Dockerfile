@@ -1,11 +1,11 @@
 FROM dunglas/frankenphp:php8.2-alpine
 
-ARG USER=www-data
+#ARG USER=www-data
 
 WORKDIR /app
 
 # add additional extensions here:
-RUN install-php-extensions pdo_mysql gd intl zip opcache exif
+RUN install-php-extensions pdo_mysql gd intl zip opcache exif sqlite3
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
