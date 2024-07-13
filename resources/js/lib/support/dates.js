@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import moment from "moment";
 
 export const API_DATETIME_FORMAT = "YYYY-MM-DDTHH:mm:ssZZ";
 
@@ -13,6 +14,15 @@ export function isDate(value) {
 }
 
 /**
+ *
+ * @param value
+ * @return {boolean}
+ */
+export function isParsableDate(value) {
+	return isDate(value) || moment.isMoment(value) || dayjs.isDayjs(value);
+}
+
+/**
  * Format a date as expected by the API.
  *
  * @param {Date} date
@@ -23,9 +33,14 @@ export function dateToApi(date) {
 		return date.format(API_DATETIME_FORMAT);
 	}
 
-	if (!isDate(date)) {
-		return null;
+	// Legacy antd (v4) uses moment
+	if (moment.isMoment(date)) {
+		return date.format(API_DATETIME_FORMAT);
 	}
 
-	return dayjs(date).format(API_DATETIME_FORMAT);
+	if (isDate(date)) {
+		return dayjs(date).format(API_DATETIME_FORMAT);
+	}
+
+	return null;
 }

@@ -1,5 +1,5 @@
 import Cookie from "../cookie";
-import { dateToApi, isDate } from "lib/support/dates";
+import { dateToApi, isParsableDate } from "lib/support/dates";
 import dayjs from "dayjs";
 import ConvertToFormData from "lib/classes/ConvertToFormData";
 import axios from "axios";
@@ -72,7 +72,7 @@ export function formatEmptyValue(data) {
  */
 export function formatDatesValues(data) {
 	return Object.fromEntries(
-		Object.entries(data).map(([k, v]) => [k, isDate(v) || dayjs.isDayjs(v) ? dateToApi(v) : v])
+		Object.entries(data).map(([k, v]) => [k, isParsableDate(v) ? dateToApi(v) : v])
 	);
 }
 
