@@ -69,6 +69,7 @@ const FilmEditorPage = () => {
 
 					// Redirect to the edition mode on success
 					router.pushAdmin(`/films/${data.id}`);
+					setIsLoading(false);
 				})
 				.catch((e) => {
 					console.error(e);
