@@ -10,7 +10,7 @@ final readonly class CreateOrUpdateArticle
 {
 	public function __construct(private UpdateArticleThumbnail $updateArticleThumbnail) { }
 
-	public function execute(Article $article, ArticleData $data): void
+	public function execute(Article $article, ArticleData $data): Article
 	{
 		$article->slug = $data->slug ?: Str::slug(substr($data->title, 0, 64));
 		$article->fill($data->toAttributes());
@@ -18,5 +18,7 @@ final readonly class CreateOrUpdateArticle
 		$article->saveOrFail();
 
 		$this->updateArticleThumbnail->execute($article, $data->thumbnail);
+
+		return $article;
 	}
 }

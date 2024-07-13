@@ -72,6 +72,7 @@ const FilmEditorPage = () => {
 					setIsLoading(false);
 				})
 				.catch((e) => {
+					message.error("Impossible de créer le film");
 					console.error(e);
 					setIsLoading(false);
 				});
@@ -94,7 +95,10 @@ const FilmEditorPage = () => {
 				//noinspection JSIgnoredPromiseFromCall
 				message.success("Film mis à jour");
 			})
-			.catch(console.error)
+			.catch((e) => {
+				message.error("La sauvegarde a échouée");
+				console.error(e);
+			})
 			.finally(() => {
 				setAutoFilledSlug(false);
 				setIsLoading(false);

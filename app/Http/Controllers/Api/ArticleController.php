@@ -32,8 +32,7 @@ class ArticleController extends Controller
 	public function store(StoreArticleRequest $request, CreateOrUpdateArticle $action): JsonResponse
 	{
 		$data = ArticleData::fromFormRequest($request);
-		$article = new Article();
-		$action->execute($article, $data);
+		$article = $action->execute(new Article(), $data);
 
 		return response()->json($article, 201);
 	}

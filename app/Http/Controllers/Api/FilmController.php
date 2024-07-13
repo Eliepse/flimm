@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Action\CreateOrUpdateFilm;
+use App\Data\FilmData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFilmRequest;
 use App\Models\Film;
@@ -14,8 +16,7 @@ class FilmController extends Controller
 	{
 		$query = Film::query();
 
-		$title = $request->get("title");
-		if ($request->has("title") && ! empty($title)) {
+		if (! empty($title = $request->get("title"))) {
 			$query->where("title", "like", "%$title%");
 			$query->orderBy("title");
 			$query->limit(5);
@@ -31,24 +32,18 @@ class FilmController extends Controller
 	}
 
 
-	public function store(StoreFilmRequest $request): Film
+	public function store(StoreFilmRequest $request, CreateOrUpdateFilm $action): Film
 	{
-		$film = new Film($request->validated());
-		$film->save();
-
-		return $film;
+		$data = FilmData::fromFormRequest($request);
+		return $action->execute(new Film(), $data);
 	}
 
 
-	public function update(StoreFilmRequest $request, Film $film): Film
+	public function update(StoreFilmRequest $request, Film $film, CreateOrUpdateFilm $action): Film
 	{
-		$film->fill($request->validated());
+		$data = FilmData::fromFormRequest($request);
+		$action->execute($film, $data);
 
-		if($request->hasFile("thumbnail")) {
-			$film->saveThumbnail($request->file("thumbnail"));
-		}
-
-		$film->save();
 		$film->load("media");
 
 		return $film;

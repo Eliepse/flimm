@@ -21,7 +21,6 @@ class StoreFilmRequest extends FormRequest
 			"synopsis" => ["string", "nullable"],
 			"description" => ["string", "nullable"],
 			"filmmaker" => ["required", "string"],
-			"technical_members" => ["string", "nullable"],
 			"gender" => ["string", "nullable"],
 			"year" => ["required", "integer"],
 			"production_name" => ["string", "nullable"],
@@ -31,6 +30,7 @@ class StoreFilmRequest extends FormRequest
 			"video_link" => ["url", "nullable"],
 			"trailer_link" => ["url", "nullable"],
 			"imdb_id" => ["string", "nullable"],
+			"thumbnail" => ["required", "image"],
 		];
 	}
 }
