@@ -28,7 +28,7 @@ class StoreArticleRequest extends FormRequest
 		return [
 			"title" => ["required", "string", "between:3,250"],
 			"slug" => ["nullable", "string", "between:3,64", "unique:App\Models\Article,slug"],
-			"excerpt" => ["nullable", "string", "max:250"],
+//			"excerpt" => ["nullable", "string", "max:250"],
 			"content" => ["nullable", "array:time,blocks,version"],
 			"published_at" => ["nullable", "date_format:Y-m-d\TH:i:sO"],
 		];

@@ -12,7 +12,7 @@ class SessionController
 	{
 		$session->loadMissing(["edition", "films"]);
 
-		if ($session->edition && !$session->edition->isPublished()) {
+		if ($session->edition && ! $session->edition->isPublished()) {
 			throw new NotFoundHttpException();
 		}
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Action\CreateOrUpdateArticle;
+use App\Data\ArticleData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
@@ -9,7 +11,6 @@ use App\Models\Article;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class ArticleController extends Controller
 {
@@ -23,17 +24,16 @@ class ArticleController extends Controller
 	/**
 	 * Store a newly created resource in storage.
 	 *
-	 * @param StoreArticleRequest $request
+	 * @param  StoreArticleRequest  $request
 	 *
 	 * @return JsonResponse
 	 * @throws \Throwable
 	 */
-	public function store(StoreArticleRequest $request): JsonResponse
+	public function store(StoreArticleRequest $request, CreateOrUpdateArticle $action): JsonResponse
 	{
-		$article = new Article($request->all(["title", "content", "published_at"]));
-		$article->slug = $request->getSlug();
-
-		$article->saveOrFail();
+		$data = ArticleData::fromFormRequest($request);
+		$article = new Article();
+		$action->execute($article, $data);
 
 		return response()->json($article, 201);
 	}
@@ -42,7 +42,7 @@ class ArticleController extends Controller
 	/**
 	 * Display the specified resource.
 	 *
-	 * @param Article $article
+	 * @param  Article  $article
 	 *
 	 * @return Article
 	 */
@@ -55,42 +55,21 @@ class ArticleController extends Controller
 	/**
 	 * Update the specified resource in storage.
 	 *
-	 * @param Request $request
-	 * @param Article $article
+	 * @param  UpdateArticleRequest  $request
+	 * @param  Article  $article
 	 *
-	 * @return Response
+	 * @return Article
 	 */
-	public function update(UpdateArticleRequest $request, Article $article): Article
+	public function update(UpdateArticleRequest $request, Article $article, CreateOrUpdateArticle $action): Article
 	{
-		$article->fill($request->validated());
-		$article->slug = $request->getSlug();
-
-		if ($thumbnail = $request->getThumbnail()) {
-			$article->saveThumbnail($thumbnail);
-		} else if ($request->has("thumbnail")) {
-			optional($article->thumbnail)->delete();
-		}
-
-		$article->saveOrFail();
+		$data = ArticleData::fromFormRequest($request);
+		$action->execute($article, $data);
 
 		return $article;
 	}
 
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param Article $article
-	 *
-	 * @return Response
-	 */
-	public function destroy(Article $article)
-	{
-		//
-	}
-
-
-	public function saveContentMedia(Request $request, Article $article)
+	public function saveContentMedia(Request $request, Article $article): JsonResponse
 	{
 		try {
 			$media = $article->saveContentImage("image");
@@ -103,7 +82,6 @@ class ArticleController extends Controller
 			"file" => [
 				"url" => $media->getFullUrl(),
 				"uuid" => $media->uuid,
-				// ... and any additional fields you want to store, such as width, height, color, extension, etc
 			],
 		], 201);
 	}

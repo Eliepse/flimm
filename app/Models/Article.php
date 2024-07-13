@@ -43,10 +43,8 @@ class Article extends Model implements HasMedia
 
 	protected $casts = [
 		"content" => EditorJSAttribute::class,
+		"published_at" => "immutable_datetime",
 	];
-
-	protected $dates = ["published_at"];
-
 
 	public function getThumbnailAttribute(): ?Media
 	{
