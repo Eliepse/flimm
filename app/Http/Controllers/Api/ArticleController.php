@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Action\CreateOrUpdateArticle;
+use App\Action\PersistArticle;
 use App\Data\ArticleData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreArticleRequest;
@@ -29,7 +29,7 @@ class ArticleController extends Controller
 	 * @return JsonResponse
 	 * @throws \Throwable
 	 */
-	public function store(StoreArticleRequest $request, CreateOrUpdateArticle $action): JsonResponse
+	public function store(StoreArticleRequest $request, PersistArticle $action): JsonResponse
 	{
 		$data = ArticleData::fromFormRequest($request);
 		$article = $action->execute(new Article(), $data);
@@ -59,7 +59,7 @@ class ArticleController extends Controller
 	 *
 	 * @return Article
 	 */
-	public function update(UpdateArticleRequest $request, Article $article, CreateOrUpdateArticle $action): Article
+	public function update(UpdateArticleRequest $request, Article $article, PersistArticle $action): Article
 	{
 		$data = ArticleData::fromFormRequest($request);
 		$action->execute($article, $data);

@@ -6,7 +6,7 @@ use App\Data\ArticleData;
 use App\Models\Article;
 use Illuminate\Support\Str;
 
-final readonly class CreateOrUpdateArticle
+final readonly class PersistArticle
 {
 	public function __construct(private UpdateArticleThumbnail $updateArticleThumbnail) { }
 

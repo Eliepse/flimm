@@ -5,7 +5,7 @@ namespace App\Action;
 use App\Data\FilmData;
 use App\Models\Film;
 
-final readonly class CreateOrUpdateFilm
+final readonly class PersistFilm
 {
 	public function __construct(private readonly UpdateFilmThumbnail $updateFilmThumbnail) { }
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Action\CreateOrUpdateFilm;
+use App\Action\PersistFilm;
 use App\Data\FilmData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFilmRequest;
@@ -32,14 +32,14 @@ class FilmController extends Controller
 	}
 
 
-	public function store(StoreFilmRequest $request, CreateOrUpdateFilm $action): Film
+	public function store(StoreFilmRequest $request, PersistFilm $action): Film
 	{
 		$data = FilmData::fromFormRequest($request);
 		return $action->execute(new Film(), $data);
 	}
 
 
-	public function update(StoreFilmRequest $request, Film $film, CreateOrUpdateFilm $action): Film
+	public function update(StoreFilmRequest $request, Film $film, PersistFilm $action): Film
 	{
 		$data = FilmData::fromFormRequest($request);
 		$action->execute($film, $data);
