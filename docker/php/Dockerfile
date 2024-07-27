@@ -1,4 +1,4 @@
-FROM dunglas/frankenphp:php8.2-alpine
+FROM dunglas/frankenphp:php8.3-alpine
 
 #ARG USER=www-data
 
