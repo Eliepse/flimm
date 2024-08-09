@@ -3,10 +3,19 @@ import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import isBetween from "dayjs/plugin/isBetween";
 import "dayjs/locale/fr";
+import localeData from 'dayjs/plugin/localeData'
+import weekday from 'dayjs/plugin/weekday'
+import weekOfYear from 'dayjs/plugin/weekOfYear'
+import weekYear from 'dayjs/plugin/weekYear'
+
 
 // Config dayjs
 dayjs.extend(isBetween);
 dayjs.extend(localizedFormat);
+dayjs.extend(weekday)
+dayjs.extend(localeData)
+dayjs.extend(weekOfYear)
+dayjs.extend(weekYear)
 dayjs.locale("fr");
 
 /**
