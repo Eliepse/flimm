@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Action\PersistEdition;
+use App\Data\EditionData;
 use App\FileFieldHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RequestWithFileFields;
 use App\Http\Requests\StoreEditionRequest;
 use App\Http\Requests\UpdateEditionRequest;
 use App\Models\Edition;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class EditionController extends Controller
@@ -23,49 +27,25 @@ class EditionController extends Controller
 
 	public function show(Edition $edition): Edition
 	{
-//		$edition->loadMissing(["schedules:id,film_id,edition_id,start_at"]);
 		return $edition;
 	}
 
 
-	public function store(StoreEditionRequest $request): Edition
+	public function store(StoreEditionRequest $request, PersistEdition $action): Edition
 	{
-		$edition = new Edition($request->validated());
-		$edition->save();
-
-		// Relational elements have to be handled after we created our instance
-		$this->handleEditionFiles($request, $edition);
-//		$this->handleEditionSchedules(collect($request->get("schedules", [])), $edition);
-//		$edition->loadMissing(["schedules:id,film_id,edition_id,start_at"]);
-
-		return $edition;
+		$data = EditionData::fromFormRequest($request);
+		return $action->execute(new Edition(), $data);
 	}
 
 
-	private function handleEditionFiles(RequestWithFileFields $request, Edition $edition)
+	public function update(UpdateEditionRequest $request, Edition $edition, PersistEdition $action): Edition
 	{
-		$fileFieldHandler = new FileFieldHandler([
-			"thumbnail" => "thumbnail",
-			"program" => "program",
-			"poster" => "poster",
-			"brochure" => "brochure",
-			"flyer" => "flyer",
-		]);
-		$fileFieldHandler->updateModel($request, $edition);
+		$data = EditionData::fromFormRequest($request);
+		return $action->execute($edition, $data);
 	}
 
 
-	public function update(UpdateEditionRequest $request, Edition $edition): Edition
-	{
-		$edition->fill($request->validated());
-		$this->handleEditionFiles($request, $edition);
-		$edition->save();
-
-		return $edition;
-	}
-
-
-	public function destroy(Edition $edition)
+	public function destroy(Edition $edition): Response
 	{
 		if ($edition->delete()) {
 			return response()->noContent();
@@ -79,7 +59,7 @@ class EditionController extends Controller
 	{
 		try {
 			$media = $edition->saveContentImage("image");
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return response()->json(["success" => 0], 201);
 		}
 
