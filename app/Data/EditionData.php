@@ -79,7 +79,7 @@ final readonly class EditionData
 			"title" => $this->title,
 			"slug" => $this->slug,
 			"presentation" => $this->presentation,
-			"teaserLink" => $this->teaserLink,
+			"teaser_link" => $this->teaserLink,
 			"published_at" => $this->publishedAt,
 			"open_at" => $this->openAt,
 			"close_at" => $this->closeAt,
