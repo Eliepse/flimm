@@ -49,12 +49,6 @@ class StoreEditionRequest extends FormRequest implements RequestWithFileFields
 	}
 
 
-	public function getFilesToUpate(string $field): array
-	{
-//		$this->has()
-	}
-
-
 	public function getFileField(string $fieldName): array
 	{
 		return array_map(fn($file) => new FileField($file), $this->all()[$fieldName] ?? []);

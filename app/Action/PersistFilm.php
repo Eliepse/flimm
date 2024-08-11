@@ -7,7 +7,7 @@ use App\Models\Film;
 
 final readonly class PersistFilm
 {
-	public function __construct(private readonly UpdateFilmThumbnail $updateFilmThumbnail) { }
+	public function __construct(private UpdateFilmThumbnail $updateFilmThumbnail) { }
 
 	public function execute(Film $film, FilmData $data): Film
 	{
