@@ -9,6 +9,7 @@ export default defineConfig({
                 "resources/scss/app.scss",
                 "resources/scss/public.scss",
                 "resources/js/index.jsx",
+                "resources/js/public.js",
             ],
             refresh: true,
         }),

@@ -22,7 +22,7 @@
 
 </div>
 
-<script src="{{ mix("/js/public.js") }}"></script>
+@vite(["resources/js/public.js"])
 
 {!! env("TRACKING_SCRIPT") !!}
 
