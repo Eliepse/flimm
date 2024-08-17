@@ -3,14 +3,14 @@ import LoginPage from "pages/login.jsx";
 import AuthRequired from "@/lib/auth/authRequired.jsx";
 import PropTypes from "prop-types";
 import { PAGES, URL_PREFIX } from "configs/app";
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 
 export default function App() {
 	const pages = useMemo(
 		() =>
-			Object.entries(PAGES).map(([path, Component]) => {
+			Object.entries(PAGES).map(([path, pageAsync]) => {
 				const hasParameter = /:[a-zA-Z]{2,}/.test(path);
-				return <Route key={path} exact={!hasParameter} path={URL_PREFIX + path} element={<Component />} />;
+				return <Route key={path} exact={!hasParameter} path={URL_PREFIX + path} element={<Loader PageAsync={pageAsync} />} />;
 			}),
 		[]
 	);
@@ -25,6 +25,12 @@ export default function App() {
 			</Routes>
 		</>
 	);
+}
+
+function Loader({ PageAsync }) {
+	return <Suspense fallback={<div>Loading...</div>}>
+		<PageAsync />
+	</Suspense>
 }
 
 export function Link({ to, ...props }) {

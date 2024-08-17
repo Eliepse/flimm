@@ -1,14 +1,4 @@
-import SettingsPage from "pages/settings";
-import ArticleIndexPage from "pages/articles/articleIndex";
-import HomePage from "pages/home";
-import ArticleEditorPage from "pages/articles/articleEditor";
-import FilmIndexPage from "pages/films/filmIndex";
-import FilmEditorPage from "pages/films/filmEditor";
-import EditionIndexPage from "pages/editions/editionIndex";
-import EditionEditorPage from "pages/editions/editionEditor";
-import SessionsIndexPage from "pages/sessions";
-import SessionEditorPage from "pages/sessions/editor";
-import SelectionsIndexPage from "pages/editions/selections";
+import {lazy} from "react";
 
 export const URL_PREFIX = "/admin";
 
@@ -17,20 +7,20 @@ export default {
 };
 
 export const PAGES = {
-	"/": HomePage,
-	"/settings": SettingsPage,
-	"/articles": ArticleIndexPage,
-	"/articles/:id": ArticleEditorPage,
-	"/films": FilmIndexPage,
-	"/films/create": FilmEditorPage,
-	"/films/:id": FilmEditorPage,
-	"/editions": EditionIndexPage,
-	"/editions/create": EditionEditorPage,
-	"/editions/:id": EditionEditorPage,
-	"/editions/:id/selections": SelectionsIndexPage,
-	"/sessions": SessionsIndexPage,
-	"/sessions/create": SessionEditorPage,
-	"/sessions/:id": SessionEditorPage,
+	"/": lazy(() => import("../pages/home")),
+	"/settings": lazy(() => import("../pages/settings")),
+	"/articles": lazy(() => import("../pages/articles/articleIndex")),
+	"/articles/:id": lazy(() => import("../pages/articles/articleEditor")),
+	"/films": lazy(() => import("../pages/films/filmIndex")),
+	"/films/create": lazy(() => import("../pages/films/filmEditor")),
+	"/films/:id": lazy(() => import("../pages/films/filmEditor")),
+	"/editions": lazy(() => import("../pages/editions/editionIndex")),
+	"/editions/create": lazy(() => import("../pages/editions/editionEditor")),
+	"/editions/:id": lazy(() => import("../pages/editions/editionEditor")),
+	"/editions/:id/selections": lazy(() => import("../pages/editions/selections")),
+	"/sessions": lazy(() => import("../pages/sessions")),
+	"/sessions/create": lazy(() => import("../pages/sessions/editor")),
+	"/sessions/:id": lazy(() => import("../pages/sessions/editor")),
 };
 
 export const MENU = [
