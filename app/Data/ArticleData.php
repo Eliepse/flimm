@@ -10,7 +10,7 @@ final readonly class ArticleData
 {
 	public function __construct(
 		public string $title,
-		public ?array $excerpt = null,
+		public ?string $excerpt = null,
 		public ?string $slug = null,
 		public ?array $content = null,
 		public ?Carbon $publishedAt = null,
