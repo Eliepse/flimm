@@ -4,6 +4,7 @@ import AuthRequired from "@/lib/auth/authRequired.jsx";
 import PropTypes from "prop-types";
 import { PAGES, URL_PREFIX } from "configs/app";
 import { Suspense, useMemo } from "react";
+import LoadingLayout from "@/components/layouts/LoadingLayout.jsx";
 
 export default function App() {
 	const pages = useMemo(
@@ -28,7 +29,7 @@ export default function App() {
 }
 
 function Loader({ PageAsync }) {
-	return <Suspense fallback={<div>Loading...</div>}>
+	return <Suspense fallback={<LoadingLayout />}>
 		<PageAsync />
 	</Suspense>
 }
