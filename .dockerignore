@@ -1,0 +1,8 @@
+public/build
+.phpunit.cache
+vendor
+node_modules
+storage/public/*
+public/storage
+bootstrap/cache/*.php
+*.sqlite

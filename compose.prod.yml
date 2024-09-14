@@ -1,0 +1,20 @@
+name: flimm
+
+services:
+  php:
+    build:
+      target: prod
+    ports:
+      - "80:80" # HTTP
+      - "443:443" # HTTPS
+      - "443:443/udp" # HTTP/3
+    volumes: !override
+      - caddy_data:/data
+      - caddy_config:/config
+      - db_data:/app/database/sqlite
+      - app_storage:/app/storage
+    tty: false
+
+volumes:
+  db_data:
+  app_storage:
