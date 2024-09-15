@@ -1,7 +1,7 @@
 #!/bin/bash
 
 docker compose build
-docker compose exec -ti php php artisan down
+docker compose exec -ti app php artisan down
 docker compose up -d
-docker compose exec -ti php php artisan migrate
-docker compose exec -ti php php artisan up
+docker compose exec -ti app php artisan migrate
+docker compose exec -ti app php artisan up

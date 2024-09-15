@@ -1,7 +1,7 @@
 name: flimm
 
 services:
-  php:
+  app:
     build:
       target: prod
     volumes: !override
