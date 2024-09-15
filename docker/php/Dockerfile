@@ -1,4 +1,4 @@
-FROM dunglas/frankenphp:php8.3 as base
+FROM dunglas/frankenphp:php8.3 AS base
 
 WORKDIR /app
 VOLUME /app/database/sqlite
@@ -15,13 +15,13 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 #	# Give write access to /data/caddy and /config/caddy
 #	chown -R ${USER}:${USER} /data/caddy && chown -R ${USER}:${USER} /config/caddy
 
-FROM base as dev
+FROM base AS dev
 
 COPY docker/php/99-php-dev.ini $PHP_INI_DIR/conf.d/99-php-dev.ini
 RUN cp $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 
 
-FROM base as preprod
+FROM base AS preprod
 
 ENV DB_DATABASE=/app/database/sqlite/database.sqlite
 ENV NODE_VERSION=20.17.0
@@ -51,6 +51,6 @@ RUN mkdir $NVM_DIR &&\
     composer install --no-dev -oa --prefer-dist &&\
     php artisan optimize
 
-FROM base as prod
+FROM base AS prod
 COPY --from=preprod /app /app
 
