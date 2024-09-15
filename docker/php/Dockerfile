@@ -29,7 +29,7 @@ ENV NVM_DIR=/root/.nvm
 ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 
 COPY docker/php/99-php-prod.ini $PHP_INI_DIR/conf.d/99-php-prod.ini
-COPY --exclude=.env . /app
+COPY . /app
 
 RUN mkdir $NVM_DIR &&\
     cp $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini &&\
