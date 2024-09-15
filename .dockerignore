@@ -6,3 +6,4 @@ storage/public/*
 public/storage
 bootstrap/cache/*.php
 *.sqlite
+.env
