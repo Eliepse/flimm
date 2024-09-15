@@ -48,8 +48,7 @@ RUN mkdir $NVM_DIR &&\
     rm -rf node_modules &&\
     rm -rf "$NVM_DIR" &&\
     apt clean &&\
-    composer install --no-dev -oa --prefer-dist &&\
-    php artisan optimize
+    composer install --no-dev -oa --prefer-dist
 
 FROM base AS prod
 COPY --from=preprod /app /app
