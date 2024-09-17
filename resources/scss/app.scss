@@ -1,11 +1,11 @@
 @import "admin/tailwindCustomPreflight";
 
-@config "../../tailwind.admin.config.js"
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @import "../../node_modules/antd/dist/antd.css";
+
 
 body {
 	margin: 0;
@@ -26,3 +26,5 @@ code {
 }
 
 @import "admin/antOverride";
+
+@config "../../tailwind.admin.config.js"

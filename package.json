@@ -4,11 +4,6 @@
     "scripts": {
         "dev": "vite -c vite.config.js",
         "build": "vite build -c vite.config.js",
-        "watch": "mix watch",
-        "watch-poll": "mix watch -- --watch-options-poll=1000",
-        "hot": "mix watch --hot",
-        "prod": "npm run production",
-        "production": "mix --production",
         "lint": "eslint resources/js"
     },
     "devDependencies": {

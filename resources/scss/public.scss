@@ -1,7 +1,7 @@
-@config "../../tailwind.public.config.js"
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 body {
 	margin: 0;
@@ -39,3 +39,6 @@ code {
 @import "public/components/film-card";
 @import "public/components/breadcrumb";
 @import "public/components/films-grid";
+
+
+@config "../../tailwind.public.config.js"
