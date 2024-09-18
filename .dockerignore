@@ -12,3 +12,4 @@ storage/logs/*
 public/storage
 bootstrap/cache/*.php
 *.sqlite
+compose.override.yml
