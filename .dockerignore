@@ -2,7 +2,13 @@ public/build
 .phpunit.cache
 vendor
 node_modules
-storage/public/*
+storage/app/public/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+storage/debugbar/*
+storage/logs/*
 public/storage
 bootstrap/cache/*.php
 *.sqlite
