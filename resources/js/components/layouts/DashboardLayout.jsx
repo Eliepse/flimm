@@ -1,4 +1,4 @@
-import { useContext, useMemo } from "react";
+import { useMemo } from "react";
 import { useAuthContext } from "@/lib/auth/authProvider.jsx";
 import PropTypes from "prop-types";
 import { Avatar, Menu } from "antd";
