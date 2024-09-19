@@ -5,6 +5,9 @@ import PropTypes from "prop-types";
 import { PAGES, URL_PREFIX } from "configs/app";
 import { Suspense, useMemo } from "react";
 import LoadingLayout from "@/components/layouts/LoadingLayout.jsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 export default function App() {
 	const pages = useMemo(
@@ -17,14 +20,14 @@ export default function App() {
 	);
 
 	return (
-		<>
+		<QueryClientProvider client={queryClient}>
 			<AuthRequired>
 				<Routes>{pages}</Routes>
 			</AuthRequired>
 			<Routes>
 				<Route exact path={`${URL_PREFIX}/login`} element={<LoginPage />} />
 			</Routes>
-		</>
+		</QueryClientProvider>
 	);
 }
 

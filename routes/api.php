@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EditionController;
@@ -27,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::get("/me", fn() => Auth::user());
 	Route::get("/user", fn() => Auth::user());
 	Route::post("/logout", [AuthController::class, "logout"]);
+
+	Route::get("/dashboard", [DashboardController::class, "content"]);
 
 	// Articles
 	Route::resource("articles", ArticleController::class);
