@@ -41,7 +41,7 @@ class EditionObserver
 	 */
 	public function deleted(Edition $edition)
 	{
-		//
+		$edition->clearAllContentImages();
 	}
 
 
