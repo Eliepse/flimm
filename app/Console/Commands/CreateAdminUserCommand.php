@@ -18,7 +18,6 @@ class CreateAdminUserCommand extends Command
             "email" => $this->ask("Email"),
             "firstname" => $this->ask("Firstname"),
             "lastname" => $this->ask("Lastname"),
-//            "role" => $this->choice("Role", ["admin", "visitor"], "visitor"),
             "password" => $this->secret("Password"),
         ];
 
@@ -26,7 +25,6 @@ class CreateAdminUserCommand extends Command
             "email" => "required|email|unique:App\Models\User,email",
             "firstname" => "required|between:2,50",
             "lastname" => "required|between:2,50",
-            "role" => "required|in:admin,visitor",
             "password" => "required|between:8,32",
         ]);
 
