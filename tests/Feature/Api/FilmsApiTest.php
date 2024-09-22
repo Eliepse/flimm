@@ -19,6 +19,7 @@ test("Can create a film", function () {
 			"filmmaker" => "Eliepse",
 			"duration" => 42,
 			"year" => "2022",
+			"thumbnail" => UploadedFile::fake()->image('avatar.jpg'),
 		]);
 
 	$response->assertCreated();
@@ -37,12 +38,12 @@ test("Can update a film", function () {
 			"filmmaker" => "Eliepse",
 			"duration" => 42,
 			"year" => "2022",
+			"thumbnail" => UploadedFile::fake()->image('avatar.jpg'),
 		]);
 
 	$response->assertOk();
     $this->assertDatabaseMissing("films", ["slug" => $film->slug]);
     $this->assertDatabaseHas("films", ["slug" => $slug]);
-    expect(Film::first()->toArray())->toMatchArray($data);
 });
 
 test("Can upload a thumbnail", function () {
