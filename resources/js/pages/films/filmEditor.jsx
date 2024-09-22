@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import apiFilm from "lib/api/apiFilm";
 import { useRouter } from "lib/useRouter";
 import DashboardLayout from "components/layouts/DashboardLayout";
-import { Button, Form, Input, message, Upload } from "antd";
-import { GlobalOutlined, UploadOutlined } from "@ant-design/icons";
+import { Button, Divider, Form, Input, message, Popconfirm, Upload } from "antd";
+import { DeleteOutlined, GlobalOutlined, UploadOutlined } from "@ant-design/icons";
 import { normalizeOnUploadChanges } from "lib/support/forms";
 import slug from "slug";
+import apiEdition from "lib/api/apiEdition.js";
 
 function normalizeThumbnailForInput(thumbnail) {
 	if (!thumbnail) {
@@ -102,6 +103,23 @@ const FilmEditorPage = () => {
 			.finally(() => {
 				setAutoFilledSlug(false);
 				setIsLoading(false);
+			});
+	}
+
+	function deleteFilm() {
+		if (!film.id) {
+			return;
+		}
+
+		apiFilm
+			.delete(film)
+			.then(() => {
+				router.pushAdmin("/films");
+				message.success("Le film a été supprimée");
+			})
+			.catch((e) => {
+				console.error(e);
+				message.error("Impossible de supprimer le film");
 			});
 	}
 
@@ -246,6 +264,16 @@ const FilmEditorPage = () => {
 								</Button>
 							)}
 						</div>
+						{Boolean(film.id) && (
+							<div>
+								<Divider />
+								<Popconfirm title="Êtes-vous sûr de vouloir supprimer ?" onConfirm={deleteFilm}>
+									<Button icon={<DeleteOutlined />}>
+										Supprimer le film
+									</Button>
+								</Popconfirm>
+							</div>
+						)}
 					</div>
 				</aside>
 			</Form>

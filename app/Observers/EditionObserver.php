@@ -41,7 +41,6 @@ class EditionObserver
 	 */
 	public function deleted(Edition $edition)
 	{
-		//
 	}
 
 
@@ -67,6 +66,5 @@ class EditionObserver
 	 */
 	public function forceDeleted(Edition $edition)
 	{
-		$edition->clearAllContentImages();
 	}
 }

@@ -20,7 +20,7 @@ class CreateSelectionsTable extends Migration
 			$table->timestamps();
 		});
 
-		Schema::create('selection_film', function (Blueprint $table) {
+		Schema::create('film_selection', function (Blueprint $table) {
 			$table->foreignId("film_id")
 				->constrained()
 				->cascadeOnUpdate()

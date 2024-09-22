@@ -41,7 +41,6 @@ class ArticleObserver
 	 */
 	public function deleted(Article $article)
 	{
-		//
 	}
 
 
@@ -67,6 +66,5 @@ class ArticleObserver
 	 */
 	public function forceDeleted(Article $article)
 	{
-		$article->clearAllContentImages();
 	}
 }

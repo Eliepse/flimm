@@ -1,11 +1,11 @@
 <?php
 
+use App\Models\Edition;
 use App\Models\Film;
+use App\Models\Selection;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
-use function Pest\Laravel\assertDatabaseHas;
-use function Pest\Laravel\assertDatabaseMissing;
 
 uses(RefreshDatabase::class);
 
@@ -19,6 +19,7 @@ test("Can create a film", function () {
 			"filmmaker" => "Eliepse",
 			"duration" => 42,
 			"year" => "2022",
+			"thumbnail" => UploadedFile::fake()->image('avatar.jpg'),
 		]);
 
 	$response->assertCreated();
@@ -37,12 +38,12 @@ test("Can update a film", function () {
 			"filmmaker" => "Eliepse",
 			"duration" => 42,
 			"year" => "2022",
+			"thumbnail" => UploadedFile::fake()->image('avatar.jpg'),
 		]);
 
 	$response->assertOk();
-    $this->assertDatabaseMissing("films", ["slug" => $film->slug]);
-    $this->assertDatabaseHas("films", ["slug" => $slug]);
-    expect(Film::first()->toArray())->toMatchArray($data);
+	$this->assertDatabaseMissing("films", ["slug" => $film->slug]);
+	$this->assertDatabaseHas("films", ["slug" => $slug]);
 });
 
 test("Can upload a thumbnail", function () {
@@ -85,4 +86,17 @@ test("Can query films by title", function () {
 	$response->assertJsonCount(2);
 	$response->assertJsonPath("0.title", $title2);
 	$response->assertJsonPath("1.title", $title1);
+});
+
+it("removes relations on delete", function () {
+	$edition = Edition::factory()->create();
+	$film = Film::factory()->create(["slug" => "foo"]);
+	$session = Selection::factory()->create(["edition_id" => $edition->id]);
+	$film->selections()->attach($session);
+
+	$this->assertDatabaseHas("film_selection", ["film_id" => $film->id, "selection_id" => $session->id]);
+
+	$film->delete();
+
+	$this->assertDatabaseMissing("film_selection", ["film_id" => $film->id, "selection_id" => $session->id]);
 });

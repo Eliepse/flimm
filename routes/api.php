@@ -41,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::post("settings/{name}", [SettingController::class, "upsert"]);
 
 	// Films
-	Route::resource("films", FilmController::class)->only(["index", "store", "show"]);
+	Route::resource("films", FilmController::class)->only(["index", "store", "show", "destroy"]);
 	Route::post("films/{film}", [FilmController::class, "update"]);
 
 	// Editions

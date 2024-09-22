@@ -22,7 +22,11 @@ export function search({ title }) {
 	return Api.get(basePath, { title });
 }
 
-const apiArticle = { all, get, create, update, search };
+export function deleteFilm(film) {
+	return Api.delete(`${basePath}/${film.id}`);
+}
+
+const apiArticle = { all, get, create, update, search, delete: deleteFilm };
 
 function prepareFilmData(data) {
 	const params = new FormData();
