@@ -9,6 +9,8 @@ use App\Http\Requests\StoreFilmRequest;
 use App\Models\Film;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class FilmController extends Controller
 {
@@ -47,5 +49,15 @@ class FilmController extends Controller
 		$film->load("media");
 
 		return $film;
+	}
+
+
+	public function destroy(Film $film): Response
+	{
+		if ($film->delete()) {
+			return response()->noContent();
+		}
+
+		throw new HttpException(500, "Entity deletion didn't succeed");
 	}
 }
