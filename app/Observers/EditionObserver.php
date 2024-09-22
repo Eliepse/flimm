@@ -42,6 +42,10 @@ class EditionObserver
 	public function deleted(Edition $edition)
 	{
 		$edition->clearAllContentImages();
+		$edition->removeBrochure();
+		$edition->removeFlyer();
+		$edition->removePoster();
+		$edition->removeThumbnail();
 	}
 
 
@@ -68,5 +72,9 @@ class EditionObserver
 	public function forceDeleted(Edition $edition)
 	{
 		$edition->clearAllContentImages();
+		$edition->removeBrochure();
+		$edition->removeFlyer();
+		$edition->removePoster();
+		$edition->removeThumbnail();
 	}
 }
