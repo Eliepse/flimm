@@ -42,6 +42,10 @@ export function remove(article) {
 	return Api.delete(`${basePath}/${article.id}`);
 }
 
+export function deleteFilm(article) {
+	return Api.delete(`${basePath}/${article.id}`);
+}
+
 function prepareEditionData(article) {
 	const cleanedData = formatObjectValues(
 		formatEmptyValue(formatDatesValues(formatAndFilterSingleFilesValues(article, ["thumbnail"])))
@@ -64,6 +68,6 @@ function parseArticle(data) {
 	return parseToDaysjs(data, ["published_at", "created_at", "updated_at"]);
 }
 
-const apiArticle = { all, get, create, update, remove };
+const apiArticle = { all, get, create, update, remove, delete: deleteFilm };
 
 export default apiArticle;

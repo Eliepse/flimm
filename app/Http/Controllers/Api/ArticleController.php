@@ -11,6 +11,8 @@ use App\Models\Article;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ArticleController extends Controller
 {
@@ -65,6 +67,16 @@ class ArticleController extends Controller
 		$action->execute($article, $data);
 
 		return $article;
+	}
+
+
+	public function destroy(Article $article): Response
+	{
+		if ($article->delete()) {
+			return response()->noContent();
+		}
+
+		throw new HttpException(500, "Entity deletion didn't succeed");
 	}
 
 

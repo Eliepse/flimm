@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "lib/useRouter";
 import apiArticle from "lib/api/apiArticle";
 import DashboardLayout from "components/layouts/DashboardLayout";
-import { Button, DatePicker, Form, Input, message, Skeleton, Upload } from "antd";
-import { GlobalOutlined } from "@ant-design/icons";
+import { Button, DatePicker, Divider, Form, Input, message, Popconfirm, Skeleton, Upload } from "antd";
+import { DeleteOutlined, GlobalOutlined } from "@ant-design/icons";
 import { normalizeOnUploadChanges } from "lib/support/forms";
 import RichtextEditorInput from "components/inputs/RichtextEditorInput";
 import slug from "slug";
+import apiEdition from "lib/api/apiEdition.js";
 
 const STATUS_INIT = "initializing";
 const STATUS_IDLE = "idle";
@@ -21,7 +22,7 @@ function normalizeThumbnailForInput(thumbnail) {
 }
 
 const ArticleEditorPage = () => {
-	const { query } = useRouter();
+	const { query, ...router } = useRouter();
 	const [article, setArticle] = useState();
 	// Useless for now, but will be usefull when article creation
 	// will look like edition one (no new model modal).
@@ -83,6 +84,23 @@ const ArticleEditorPage = () => {
 				message.error("Error while saving");
 			})
 			.finally(() => setStatus(STATUS_IDLE));
+	}
+
+	function deleteArticle() {
+		if (!article.id) {
+			return;
+		}
+
+		apiArticle
+			.delete(article)
+			.then(() => {
+				router.pushAdmin("/articles");
+				message.success("L'article a été supprimé");
+			})
+			.catch((e) => {
+				console.error(e);
+				message.error("Impossible de supprimer l'article");
+			});
 	}
 
 	/*
@@ -201,6 +219,16 @@ const ArticleEditorPage = () => {
 								Voir l&apos;article
 							</Button>
 						</div>
+						{Boolean(article.id) && (
+							<div>
+								<Divider />
+								<Popconfirm title="Êtes-vous sûr de vouloir supprimer ?" onConfirm={deleteArticle}>
+									<Button icon={<DeleteOutlined />}>
+										Supprimer l'article
+									</Button>
+								</Popconfirm>
+							</div>
+						)}
 					</div>
 				</div>
 			</Form>
