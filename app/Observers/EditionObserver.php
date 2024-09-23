@@ -41,6 +41,7 @@ class EditionObserver
 	 */
 	public function deleted(Edition $edition)
 	{
+		$edition->sessions()->update(["edition_id" => null]);
 	}
 
 
@@ -66,5 +67,6 @@ class EditionObserver
 	 */
 	public function forceDeleted(Edition $edition)
 	{
+		$edition->sessions()->update(["edition_id" => null]);
 	}
 }
