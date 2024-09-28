@@ -129,13 +129,16 @@
 
 		<ul>
 			<li>
-				<img src="/images/DOC-logo.svg" alt="Logo du DOC" style="max-width: 8rem;" />
+				<img src="/images/DOC-logo.png" alt="Logo du DOC" style="max-width: 8rem;" />
 			</li>
 			<li>
-				<img src="/images/m-19.png" alt="Logo de la mairie du 19e arrondissement de Paris" style="max-width: 8rem;" />
+				<img src="/images/m-19.png" alt="Logo de la mairie du 19e arrondissement de Paris" style="max-width: 6rem;" />
 			</li>
 			<li>
 				<img src="/images/logo-culture-lien-social-vignette.jpeg" alt="Logo du préfet de la région d'Île de France" style="max-width: 8rem;" />
+			</li>
+			<li>
+				<img src="/images/theatre-national-colline.png" alt="Logo du Théatre National - La Colline" style="max-width: 8rem;" />
 			</li>
 		</ul>
 	</div>
