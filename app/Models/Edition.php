@@ -133,7 +133,7 @@ class Edition extends Model implements HasMedia, HasFileFields
 	public function clearStaleContentImages()
 	{
 		// We get the uuid of images present in the content
-		$uuids = $this->content->getBlocksByType("image")->pluck("data.file.uuid")->toArray();
+		$uuids = $this->content?->getBlocksByType("image")?->pluck("data.file.uuid")?->toArray() ?? [];
 		$images = $this->getContentImages();
 
 		// Then we get all stored images that we want to keep
